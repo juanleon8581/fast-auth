@@ -6,44 +6,56 @@
       "UNKNOWN_VALIDATION_ERROR": "Unknown validation error",
       "INVALID_DATA": "Invalid data"
     },
-    "REGISTER_VALIDATION": {
-      "NAME": {
-        "MIN_LENGTH": "Name must be at least 2 characters long",
-        "MAX_LENGTH": "Name cannot exceed 50 characters",
-        "INVALID_FORMAT": "Name can only contain letters and spaces"
-      },
-      "LASTNAME": {
-        "MIN_LENGTH": "Last name must be at least 2 characters long",
-        "MAX_LENGTH": "Last name cannot exceed 50 characters",
-        "INVALID_FORMAT": "Last name can only contain letters and spaces"
-      },
-      "EMAIL": {
-        "INVALID_FORMAT": "Must be a valid email",
-        "MAX_LENGTH": "Email cannot exceed 100 characters"
-      },
-      "PASSWORD": {
-        "MIN_LENGTH": "Password must be at least 8 characters long",
-        "MAX_LENGTH": "Password cannot exceed 128 characters",
-        "INVALID_FORMAT": "Password must contain at least: 1 lowercase, 1 uppercase, 1 number and 1 special character"
+    "AUTH": {
+      "REGISTER": {
+        "USER_NO_CREATED": "User not created",
+        "VALIDATION": {
+          "NAME": {
+            "MIN_LENGTH": "Name must be at least 2 characters long",
+            "MAX_LENGTH": "Name cannot exceed 50 characters",
+            "INVALID_FORMAT": "Name can only contain letters and spaces"
+          },
+          "LASTNAME": {
+            "MIN_LENGTH": "Last name must be at least 2 characters long",
+            "MAX_LENGTH": "Last name cannot exceed 50 characters",
+            "INVALID_FORMAT": "Last name can only contain letters and spaces"
+          },
+          "EMAIL": {
+            "INVALID_FORMAT": "Must be a valid email",
+            "MAX_LENGTH": "Email cannot exceed 100 characters"
+          },
+          "PASSWORD": {
+            "MIN_LENGTH": "Password must be at least 8 characters long",
+            "MAX_LENGTH": "Password cannot exceed 128 characters",
+            "INVALID_FORMAT": "Password must contain at least: 1 lowercase, 1 uppercase, 1 number and 1 special character"
+          }
+        }
       }
     },
-    "LOGIN_VALIDATION": {
-      "EMAIL": {
-        "REQUIRED": "Email is required",
-        "INVALID_FORMAT": "Must be a valid email",
-        "MAX_LENGTH": "Email cannot exceed 100 characters"
-      },
-      "PASSWORD": {
-        "REQUIRED": "Password is required",
-        "MIN_LENGTH": "Password must be at least 1 character long"
+    "LOGIN": {
+      "USER_NOT_FOUND": "User not found",
+      "INVALID_CREDENTIALS": "Invalid credentials",
+      "VALIDATION": {
+        "EMAIL": {
+          "REQUIRED": "Email is required",
+          "INVALID_FORMAT": "Must be a valid email",
+          "MAX_LENGTH": "Email cannot exceed 100 characters"
+        },
+        "PASSWORD": {
+          "REQUIRED": "Password is required",
+          "MIN_LENGTH": "Password must be at least 1 character long"
+        }
       }
     },
-    "LOGOUT_VALIDATION": {
-      "ACCESS_TOKEN": {
-        "REQUIRED": "Access token is required"
-      },
-      "REFRESH_TOKEN": {
-        "REQUIRED": "Refresh token is required"
+    "LOGOUT": {
+      "USER_NOT_LOGGED_OUT": "User not logged out",
+      "VALIDATION": {
+        "ACCESS_TOKEN": {
+          "REQUIRED": "Access token is required"
+        },
+        "REFRESH_TOKEN": {
+          "REQUIRED": "Refresh token is required"
+        }
       }
     }
   }
