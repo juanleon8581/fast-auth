@@ -116,3 +116,7 @@ pids
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Supabase
+supabase/*
+!supabase/config.toml
