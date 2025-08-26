@@ -40,7 +40,11 @@ export class RegisterValidator {
     try {
       const validatedData = registerSchema.parse(data);
 
-      const registerDto = RegisterDto.createFrom(validatedData)[1];
+      const [dtoError, registerDto] = RegisterDto.createFrom(validatedData);
+      
+      if (dtoError) {
+        return [dtoError, undefined];
+      }
 
       return [undefined, registerDto];
     } catch (error) {
