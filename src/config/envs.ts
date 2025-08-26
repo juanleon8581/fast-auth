@@ -7,7 +7,7 @@ config();
 
 const envSchema = z.object({
   NODE_ENV: z
-    .enum(["development", "production", "test"])
+    .enum(["development", "production", "test", "dev", "prod", "qa"])
     .default("development"),
   PORT: z.coerce.number().default(3000),
 
