@@ -98,11 +98,15 @@ pids
 *.pid.lock
 
 # IDE
-.vscode/
+.vscode/*
 .idea/
 *.swp
 *.swo
 *~
+
+# IDE Exceptions
+!.vscode/settings.json
+!.vscode/extensions.json
 
 # OS
 .DS_Store
