@@ -1,5 +1,12 @@
 import { ERRORS } from "@/config/strings/global.strings.json";
 
+interface IRegisterDto {
+  name: string;
+  lastname: string;
+  email: string;
+  password: string;
+}
+
 export class RegisterDto {
   constructor(
     public readonly name: string,
@@ -8,12 +15,17 @@ export class RegisterDto {
     public readonly password: string
   ) {}
 
-  static create(props: { [key: string]: any }): [string?, RegisterDto?] {
+  private static create(props: IRegisterDto): RegisterDto {
+    const { name, lastname, email, password } = props;
+
+    return new RegisterDto(name, lastname, email, password);
+  }
+  static createFrom(props: { [key: string]: any }): [string?, RegisterDto?] {
     const { name, lastname, email, password } = props;
 
     if (!name || !lastname || !email || !password)
       return [ERRORS.DATA_VALIDATION.INVALID_DATA];
 
-    return [, new RegisterDto(name, lastname, email, password)];
+    return [, RegisterDto.create({ name, lastname, email, password })];
   }
 }
