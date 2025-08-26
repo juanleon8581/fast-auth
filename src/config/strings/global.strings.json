@@ -33,6 +33,7 @@
       }
     },
     "LOGIN": {
+      "INVALID_DATA_RECEIVED": "Invalid data received",
       "USER_NOT_FOUND": "User not found",
       "INVALID_CREDENTIALS": "Invalid credentials",
       "VALIDATION": {

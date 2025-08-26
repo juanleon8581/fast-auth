@@ -4,6 +4,7 @@ import { UserEntity } from "@/domain/entities/user.entity";
 import { AuthRepository } from "@/domain/repositories/auth.repository";
 import { AuthClient } from "../config/auth.client";
 import { ERRORS } from "@/config/strings/global.strings.json";
+import { DatasourceUserDto } from "../dtos/datasource-user.dto";
 
 export class AuthDatasource implements AuthRepository {
   constructor(private readonly client: typeof AuthClient) {}
@@ -24,7 +25,11 @@ export class AuthDatasource implements AuthRepository {
     if (error) throw error;
     if (!data.user) throw new Error(ERRORS.AUTH.REGISTER.USER_NO_CREATED);
 
-    const user = UserEntity.createFrom(data.user);
+    const [errorDto, datasourceUserDto] = DatasourceUserDto.createFrom(
+      data.user
+    );
+    if (errorDto) throw errorDto;
+    const user = UserEntity.createFrom(datasourceUserDto!);
     if (!data.session) return user;
     const authUser = AuthUserEntity.createFrom({
       user,
