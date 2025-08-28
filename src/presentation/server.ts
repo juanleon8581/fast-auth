@@ -49,6 +49,9 @@ export class Server {
     // Start server
     this.app.listen(this.port, () => {
       console.log(`🚀 Server is running on http://localhost:${this.port}`);
+      console.log(
+        `📑 documentation available at http://localhost:${this.port}/api-docs`
+      );
     });
   }
 }
