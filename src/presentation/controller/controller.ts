@@ -16,9 +16,9 @@ export class AuthController {
       new RegisterUser(this.datasource)
         .execute(dto)
         .then((user) => res.json(user))
-        .catch(next);
+        .catch(next); // Delegar errores al middleware centralizado
     } catch (error) {
-      next(error);
+      next(error); // Delegar errores de validación al middleware centralizado
     }
   };
 }

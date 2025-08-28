@@ -5,6 +5,8 @@ import { AuthRepository } from "@/domain/repositories/auth.repository";
 import { AuthClient } from "../config/auth.client";
 import { ERRORS } from "@/config/strings/global.strings.json";
 import { DatasourceUserDto } from "../dtos/datasource-user.dto";
+import { BadRequestError } from "@/domain/errors/bad-request-error";
+import { ValidationError } from "@/domain/errors/validation-error";
 
 export class AuthDatasource implements AuthRepository {
   constructor(private readonly client: typeof AuthClient) {}
@@ -22,13 +24,19 @@ export class AuthDatasource implements AuthRepository {
       },
     });
 
-    if (error) throw error;
-    if (!data.user) throw new Error(ERRORS.AUTH.REGISTER.USER_NO_CREATED);
+    if (error)
+      throw new BadRequestError(
+        error.message,
+        error.code,
+        error.status?.toString()
+      );
+    if (!data.user)
+      throw new BadRequestError(ERRORS.AUTH.REGISTER.USER_NO_CREATED);
 
     const [errorDto, datasourceUserDto] = DatasourceUserDto.createFrom(
       data.user
     );
-    if (errorDto) throw errorDto;
+    if (errorDto) throw new ValidationError(errorDto);
     const user = UserEntity.createFrom(datasourceUserDto!);
     if (!data.session) return user;
     const authUser = AuthUserEntity.createFrom({
