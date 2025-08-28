@@ -1,0 +1,41 @@
+components:
+  schemas:
+    RegisterUserResponse:
+      type: object
+      properties:
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+              description: User id
+              example: 123-abc-45678
+            email:
+              type: string
+              description: User email
+              example: joe.doe@example.com
+              format: email
+            name:
+              type: string
+              description: Display user name
+              example: Joe Doe
+            email_verified:
+              type: boolean
+              description: User email verified
+              example: true
+            phone:
+              type: string
+              description: User phone
+              example: 1234567890
+
+        accessToken:
+          type: string
+          description: Access token
+          example: 123-abc-45678
+          format: jwt
+
+        refreshToken:
+          type: string
+          description: Refresh token
+          example: 123-abc-45678
+          format: jwt

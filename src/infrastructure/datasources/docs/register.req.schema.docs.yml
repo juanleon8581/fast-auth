@@ -1,0 +1,38 @@
+components:
+  schemas:
+    RegisterUserRequest:
+      type: object
+      required:
+        - name
+        - lastname
+        - email
+        - password
+      properties:
+        name:
+          type: string
+          description: User name
+          minLength: 2
+          maxLength: 50
+          example: Joe
+
+        lastname:
+          type: string
+          description: User lastname
+          minLength: 2
+          maxLength: 50
+          example: Doe
+
+        email:
+          type: string
+          description: User email
+          maxLength: 100
+          example: joe.doe@example.com
+          format: email
+
+        password:
+          type: string
+          description: User password (min 8 max 128, must have number, lower and uppercase )
+          minLength: 8
+          maxLength: 128
+          example: 12345678
+          format: password

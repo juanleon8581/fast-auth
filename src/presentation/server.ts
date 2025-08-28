@@ -1,6 +1,8 @@
 import express, { Router } from "express";
 import cors from "cors";
 import helmet from "helmet";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "@/config/docs/swagger";
 
 interface IOptions {
   port: number;
@@ -26,9 +28,14 @@ export class Server {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
 
+    // Swagger documentation
+    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
     // Health check endpoint
     this.app.get("/health", (req, res) => {
-      res.status(200).json({ status: "OK", timestamp: new Date().toISOString() });
+      res
+        .status(200)
+        .json({ status: "OK", timestamp: new Date().toISOString() });
     });
 
     // API Routes
