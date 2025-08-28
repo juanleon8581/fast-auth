@@ -51,13 +51,13 @@ export class Server {
     // API Routes
     this.app.use("/api", this.router);
 
-    // Error handling middleware
-    this.app.use(ErrorMiddleware.handleError);
-
     // 404 handler
     this.app.use("*", (req, res, next) => {
       next(new NotFoundError("Route not found"));
     });
+
+    // Error handling middleware (must be last)
+    this.app.use(ErrorMiddleware.handleError);
 
     // Start server
     this.app.listen(this.port, () => {
