@@ -1,5 +1,7 @@
 import swaggerJsdoc from "swagger-jsdoc";
 import { version, name } from "@/../package.json";
+import fs from "fs";
+import path from "path";
 
 const options = {
   definition: {
@@ -24,6 +26,54 @@ const options = {
   apis: ["./src/config/docs/**/*.yml"],
 };
 
-const swaggerSpec = swaggerJsdoc(options);
+// Función para generar la especificación de Swagger
+const generateSwaggerSpec = () => {
+  return swaggerJsdoc(options);
+};
 
-export default swaggerSpec;
+// Cache para la especificación
+let cachedSpec: any = null;
+let lastModified = 0;
+
+// Función para verificar si los archivos YAML han cambiado
+const checkForChanges = () => {
+  const docsPath = path.join(process.cwd(), 'src/config/docs');
+  let latestModified = 0;
+  
+  const checkDirectory = (dir: string) => {
+    if (!fs.existsSync(dir)) return;
+    
+    const files = fs.readdirSync(dir);
+    files.forEach(file => {
+      const filePath = path.join(dir, file);
+      const stat = fs.statSync(filePath);
+      
+      if (stat.isDirectory()) {
+        checkDirectory(filePath);
+      } else if (file.endsWith('.yml') || file.endsWith('.yaml')) {
+        if (stat.mtime.getTime() > latestModified) {
+          latestModified = stat.mtime.getTime();
+        }
+      }
+    });
+  };
+  
+  checkDirectory(docsPath);
+  return latestModified;
+};
+
+// Función para obtener la especificación con cache inteligente
+const getSwaggerSpec = () => {
+  const currentModified = checkForChanges();
+  
+  if (!cachedSpec || currentModified > lastModified) {
+    console.log('🔄 Regenerating Swagger documentation...');
+    cachedSpec = generateSwaggerSpec();
+    lastModified = currentModified;
+  }
+  
+  return cachedSpec;
+};
+
+export default getSwaggerSpec;
+export { generateSwaggerSpec };

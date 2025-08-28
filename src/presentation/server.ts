@@ -1,8 +1,8 @@
-import express, { Router } from "express";
+import express, { Router, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import swaggerUi from "swagger-ui-express";
-import swaggerSpec from "@/config/docs/swagger";
+import getSwaggerSpec from "@/config/docs/swagger";
 
 interface IOptions {
   port: number;
@@ -28,8 +28,12 @@ export class Server {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
 
-    // Swagger documentation
-    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    // Swagger documentation with HMR support
+    this.app.use("/api-docs", swaggerUi.serve, (req: Request, res: Response, next: NextFunction) => {
+      // Regenerate swagger spec on each request in development
+      const swaggerSpec = getSwaggerSpec();
+      swaggerUi.setup(swaggerSpec)(req, res, next);
+    });
 
     // Health check endpoint
     this.app.get("/health", (req, res) => {
