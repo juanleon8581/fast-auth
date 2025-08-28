@@ -5,6 +5,8 @@ import {
   NAME_LASTNAME_REGEX,
   SECURE_PASSWORD_REGEX,
 } from "@/config/regex/validations.regex";
+import { ValidationError } from "@/domain/errors/validation-error";
+import { BadRequestError } from "@/domain/errors/bad-request-error";
 
 const { DATA_VALIDATION } = globalStrings.ERRORS;
 const { VALIDATION } = globalStrings.ERRORS.AUTH.REGISTER;
@@ -36,26 +38,32 @@ const registerSchema = z.object({
 });
 
 export class RegisterValidator {
-  static validate(data: { [key: string]: any }): [string?, RegisterDto?] {
+  static validate(data: { [key: string]: any }): RegisterDto {
     try {
       const validatedData = registerSchema.parse(data);
 
       const [dtoError, registerDto] = RegisterDto.createFrom(validatedData);
       
       if (dtoError) {
-        return [dtoError, undefined];
+        throw new BadRequestError(dtoError);
       }
 
-      return [undefined, registerDto];
+      return registerDto!;
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const errorMessages = error.errors
-          .map((err) => `${err.path.join(".")}: ${err.message}`)
-          .join(", ");
-        return [errorMessages, undefined];
+        const firstError = error.errors[0];
+        if (firstError) {
+          const field = firstError.path.join(".");
+          throw new ValidationError(firstError.message, field, "VALIDATION_ERROR");
+        }
+        throw new BadRequestError(DATA_VALIDATION.UNKNOWN_VALIDATION_ERROR);
       }
 
-      return [DATA_VALIDATION.UNKNOWN_VALIDATION_ERROR, undefined];
+      if (error instanceof ValidationError || error instanceof BadRequestError) {
+        throw error;
+      }
+
+      throw new BadRequestError(DATA_VALIDATION.UNKNOWN_VALIDATION_ERROR);
     }
   }
 }
