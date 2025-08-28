@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { AuthController } from '../controller';
 import { RegisterDto } from '@/domain/dtos/register.dto';
 import { AuthRepository } from '@/domain/repositories/auth.repository';
@@ -15,6 +15,7 @@ describe('AuthController', () => {
   let mockDatasource: jest.Mocked<AuthRepository>;
   let mockRequest: Partial<Request>;
   let mockResponse: Partial<Response>;
+  let mockNext: jest.MockedFunction<NextFunction>;
   let mockRegisterUser: jest.Mocked<RegisterUser>;
 
   beforeEach(() => {
@@ -39,6 +40,9 @@ describe('AuthController', () => {
       status: jest.fn().mockReturnThis(),
       json: jest.fn().mockReturnThis(),
     };
+
+    // Mock NextFunction
+    mockNext = jest.fn();
 
     // Mock RegisterUser
     mockRegisterUser = {
@@ -66,14 +70,14 @@ describe('AuthController', () => {
     describe('Successful registration', () => {
       beforeEach(() => {
         const mockDto = new RegisterDto('John', 'Doe', 'john.doe@example.com', 'SecurePass123!');
-        (RegisterValidator.validate as jest.Mock).mockReturnValue([null, mockDto]);
+        (RegisterValidator.validate as jest.Mock).mockReturnValue(mockDto);
       });
 
       it('should validate request body', () => {
         const mockUser = new UserEntity('1', 'john.doe@example.com', 'John Doe', true, '+1234567890');
         mockRegisterUser.execute.mockResolvedValue(mockUser);
 
-        authController.register(mockRequest as Request, mockResponse as Response);
+        authController.register(mockRequest as Request, mockResponse as Response, mockNext);
 
         expect(RegisterValidator.validate).toHaveBeenCalledTimes(1);
         expect(RegisterValidator.validate).toHaveBeenCalledWith(mockRequest.body);
@@ -83,7 +87,7 @@ describe('AuthController', () => {
         const mockUser = new UserEntity('1', 'john.doe@example.com', 'John Doe', true, '+1234567890');
         mockRegisterUser.execute.mockResolvedValue(mockUser);
 
-        authController.register(mockRequest as Request, mockResponse as Response);
+        authController.register(mockRequest as Request, mockResponse as Response, mockNext);
 
         expect(RegisterUser).toHaveBeenCalledTimes(1);
         expect(RegisterUser).toHaveBeenCalledWith(mockDatasource);
@@ -93,10 +97,10 @@ describe('AuthController', () => {
         const mockDto = new RegisterDto('John', 'Doe', 'john.doe@example.com', 'SecurePass123!');
         const mockUser = new UserEntity('1', 'john.doe@example.com', 'John Doe', true, '+1234567890');
         
-        (RegisterValidator.validate as jest.Mock).mockReturnValue([null, mockDto]);
+        (RegisterValidator.validate as jest.Mock).mockReturnValue(mockDto);
         mockRegisterUser.execute.mockResolvedValue(mockUser);
 
-        authController.register(mockRequest as Request, mockResponse as Response);
+        authController.register(mockRequest as Request, mockResponse as Response, mockNext);
 
         expect(mockRegisterUser.execute).toHaveBeenCalledTimes(1);
         expect(mockRegisterUser.execute).toHaveBeenCalledWith(mockDto);
@@ -106,10 +110,10 @@ describe('AuthController', () => {
         const mockDto = new RegisterDto('John', 'Doe', 'john.doe@example.com', 'SecurePass123!');
         const mockUser = new UserEntity('1', 'john.doe@example.com', 'John Doe', true, '+1234567890');
         
-        (RegisterValidator.validate as jest.Mock).mockReturnValue([null, mockDto]);
+        (RegisterValidator.validate as jest.Mock).mockReturnValue(mockDto);
         mockRegisterUser.execute.mockResolvedValue(mockUser);
 
-        authController.register(mockRequest as Request, mockResponse as Response);
+        authController.register(mockRequest as Request, mockResponse as Response, mockNext);
 
         // Wait for promise to resolve
         await new Promise(resolve => setTimeout(resolve, 0));
@@ -120,36 +124,27 @@ describe('AuthController', () => {
     });
 
     describe('Validation errors', () => {
-      it('should return 400 status when validation fails', () => {
-        const validationError = { message: 'Invalid email format' };
-        (RegisterValidator.validate as jest.Mock).mockReturnValue([validationError, null]);
+      it('should call next with validation error when validation fails', () => {
+        const validationError = new Error('Invalid email format');
+        (RegisterValidator.validate as jest.Mock).mockImplementation(() => {
+          throw validationError;
+        });
 
-        const result = authController.register(mockRequest as Request, mockResponse as Response);
+        authController.register(mockRequest as Request, mockResponse as Response, mockNext);
 
-        expect(mockResponse.status).toHaveBeenCalledTimes(1);
-        expect(mockResponse.status).toHaveBeenCalledWith(400);
-        expect(mockResponse.json).toHaveBeenCalledTimes(1);
-        expect(mockResponse.json).toHaveBeenCalledWith(validationError);
-        expect(result).toBe(mockResponse);
-      });
-
-      it('should return 400 status when DTO is null', () => {
-        (RegisterValidator.validate as jest.Mock).mockReturnValue([null, null]);
-
-        const result = authController.register(mockRequest as Request, mockResponse as Response);
-
-        expect(mockResponse.status).toHaveBeenCalledTimes(1);
-        expect(mockResponse.status).toHaveBeenCalledWith(400);
-        expect(mockResponse.json).toHaveBeenCalledTimes(1);
-        expect(mockResponse.json).toHaveBeenCalledWith(null);
-        expect(result).toBe(mockResponse);
+        expect(mockNext).toHaveBeenCalledTimes(1);
+        expect(mockNext).toHaveBeenCalledWith(validationError);
+        expect(mockResponse.status).not.toHaveBeenCalled();
+        expect(mockResponse.json).not.toHaveBeenCalled();
       });
 
       it('should not execute use case when validation fails', () => {
-        const validationError = { message: 'Invalid data' };
-        (RegisterValidator.validate as jest.Mock).mockReturnValue([validationError, null]);
+        const validationError = new Error('Invalid data');
+        (RegisterValidator.validate as jest.Mock).mockImplementation(() => {
+          throw validationError;
+        });
 
-        authController.register(mockRequest as Request, mockResponse as Response);
+        authController.register(mockRequest as Request, mockResponse as Response, mockNext);
 
         expect(RegisterUser).not.toHaveBeenCalled();
         expect(mockRegisterUser.execute).not.toHaveBeenCalled();
@@ -159,52 +154,35 @@ describe('AuthController', () => {
     describe('Use case execution errors', () => {
       beforeEach(() => {
         const mockDto = new RegisterDto('John', 'Doe', 'john.doe@example.com', 'SecurePass123!');
-        (RegisterValidator.validate as jest.Mock).mockReturnValue([null, mockDto]);
+        (RegisterValidator.validate as jest.Mock).mockReturnValue(mockDto);
       });
 
-      it('should handle use case errors with status code', async () => {
-        const error = { message: 'User already exists', status: 409 };
+      it('should call next with use case error', async () => {
+        const error = new Error('User already exists');
         mockRegisterUser.execute.mockRejectedValue(error);
 
-        authController.register(mockRequest as Request, mockResponse as Response);
+        authController.register(mockRequest as Request, mockResponse as Response, mockNext);
 
         // Wait for promise to reject
         await new Promise(resolve => setTimeout(resolve, 0));
 
-        expect(mockResponse.status).toHaveBeenCalledTimes(1);
-        expect(mockResponse.status).toHaveBeenCalledWith(409);
-        expect(mockResponse.json).toHaveBeenCalledTimes(1);
-        expect(mockResponse.json).toHaveBeenCalledWith(error);
+        expect(mockNext).toHaveBeenCalledTimes(1);
+        expect(mockNext).toHaveBeenCalledWith(error);
+        expect(mockResponse.status).not.toHaveBeenCalled();
+        expect(mockResponse.json).not.toHaveBeenCalled();
       });
 
-      it('should default to 400 status when error has no status', async () => {
-        const error = { message: 'Unknown error' };
-        mockRegisterUser.execute.mockRejectedValue(error);
-
-        authController.register(mockRequest as Request, mockResponse as Response);
-
-        // Wait for promise to reject
-        await new Promise(resolve => setTimeout(resolve, 0));
-
-        expect(mockResponse.status).toHaveBeenCalledTimes(1);
-        expect(mockResponse.status).toHaveBeenCalledWith(400);
-        expect(mockResponse.json).toHaveBeenCalledTimes(1);
-        expect(mockResponse.json).toHaveBeenCalledWith(error);
-      });
-
-      it('should handle errors without status property', async () => {
+      it('should handle database connection errors', async () => {
         const error = new Error('Database connection failed');
         mockRegisterUser.execute.mockRejectedValue(error);
 
-        authController.register(mockRequest as Request, mockResponse as Response);
+        authController.register(mockRequest as Request, mockResponse as Response, mockNext);
 
         // Wait for promise to reject
         await new Promise(resolve => setTimeout(resolve, 0));
 
-        expect(mockResponse.status).toHaveBeenCalledTimes(1);
-        expect(mockResponse.status).toHaveBeenCalledWith(400);
-        expect(mockResponse.json).toHaveBeenCalledTimes(1);
-        expect(mockResponse.json).toHaveBeenCalledWith(error);
+        expect(mockNext).toHaveBeenCalledTimes(1);
+        expect(mockNext).toHaveBeenCalledWith(error);
       });
     });
   });
@@ -215,11 +193,11 @@ describe('AuthController', () => {
       const mockDto = new RegisterDto('John', 'Doe', 'john.doe@example.com', 'SecurePass123!');
       const mockUser = new UserEntity('1', 'john.doe@example.com', 'John Doe', true, '+1234567890');
       
-      (RegisterValidator.validate as jest.Mock).mockReturnValue([null, mockDto]);
+      (RegisterValidator.validate as jest.Mock).mockReturnValue(mockDto);
       mockRegisterUser.execute.mockResolvedValue(mockUser);
 
       // Should work even when method is extracted from instance
-      expect(() => register(mockRequest as Request, mockResponse as Response)).not.toThrow();
+      expect(() => register(mockRequest as Request, mockResponse as Response, mockNext)).not.toThrow();
       expect(RegisterUser).toHaveBeenCalledWith(mockDatasource);
     });
   });
@@ -229,10 +207,10 @@ describe('AuthController', () => {
       const mockDto = new RegisterDto('John', 'Doe', 'john.doe@example.com', 'SecurePass123!');
       const mockUser = new UserEntity('1', 'john.doe@example.com', 'John Doe', true, '+1234567890');
       
-      (RegisterValidator.validate as jest.Mock).mockReturnValue([null, mockDto]);
+      (RegisterValidator.validate as jest.Mock).mockReturnValue(mockDto);
       mockRegisterUser.execute.mockResolvedValue(mockUser);
 
-      authController.register(mockRequest as Request, mockResponse as Response);
+      authController.register(mockRequest as Request, mockResponse as Response, mockNext);
 
       // Verify the complete flow
       expect(RegisterValidator.validate).toHaveBeenCalledWith(mockRequest.body);
@@ -242,6 +220,7 @@ describe('AuthController', () => {
       // Wait for async operations
       await new Promise(resolve => setTimeout(resolve, 0));
       expect(mockResponse.json).toHaveBeenCalledWith(mockUser);
+      expect(mockNext).not.toHaveBeenCalled(); // No errors should be passed to next
     });
   });
 });

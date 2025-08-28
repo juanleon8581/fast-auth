@@ -178,14 +178,15 @@ describe('Server', () => {
         status: jest.fn().mockReturnThis(),
         json: jest.fn()
       };
+      const mockNext = jest.fn();
       
       if (notFoundHandler) {
-        notFoundHandler(mockReq, mockRes);
+        notFoundHandler(mockReq, mockRes, mockNext);
         
-        expect(mockRes.status).toHaveBeenCalledWith(404);
-        expect(mockRes.json).toHaveBeenCalledWith({
-          error: 'Route not found'
-        });
+        expect(mockNext).toHaveBeenCalledWith(expect.any(Error));
+        expect(mockNext).toHaveBeenCalledWith(expect.objectContaining({
+          message: 'Route not found'
+        }));
       }
     });
 
