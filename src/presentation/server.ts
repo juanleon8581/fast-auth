@@ -3,6 +3,8 @@ import cors from "cors";
 import helmet from "helmet";
 import swaggerUi from "swagger-ui-express";
 import getSwaggerSpec from "@/config/docs/swagger";
+import { ErrorMiddleware } from "./middlewares/error.middleware";
+import { NotFoundError } from "@/domain/errors/not-found-error";
 
 interface IOptions {
   port: number;
@@ -29,11 +31,15 @@ export class Server {
     this.app.use(express.urlencoded({ extended: true }));
 
     // Swagger documentation with HMR support
-    this.app.use("/api-docs", swaggerUi.serve, (req: Request, res: Response, next: NextFunction) => {
-      // Regenerate swagger spec on each request in development
-      const swaggerSpec = getSwaggerSpec();
-      swaggerUi.setup(swaggerSpec)(req, res, next);
-    });
+    this.app.use(
+      "/api-docs",
+      swaggerUi.serve,
+      (req: Request, res: Response, next: NextFunction) => {
+        // Regenerate swagger spec on each request in development
+        const swaggerSpec = getSwaggerSpec();
+        swaggerUi.setup(swaggerSpec)(req, res, next);
+      }
+    );
 
     // Health check endpoint
     this.app.get("/health", (req, res) => {
@@ -45,9 +51,12 @@ export class Server {
     // API Routes
     this.app.use("/api", this.router);
 
+    // Error handling middleware
+    this.app.use(ErrorMiddleware.handleError);
+
     // 404 handler
-    this.app.use("*", (req, res) => {
-      res.status(404).json({ error: "Route not found" });
+    this.app.use("*", (req, res, next) => {
+      next(new NotFoundError("Route not found"));
     });
 
     // Start server
