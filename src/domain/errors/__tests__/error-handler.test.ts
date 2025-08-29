@@ -25,7 +25,7 @@ describe('ErrorHandler', () => {
           'email',
           'INVALID_EMAIL'
         );
-        const result = ErrorHandler.handle(error);
+        const result = ErrorHandler.handle(error, 'test-request-id', '1.0.0');
 
         expect(result).toEqual({
           status: 'error',
@@ -36,7 +36,12 @@ describe('ErrorHandler', () => {
               field: 'email',
               code: 'INVALID_EMAIL'
             }
-          ]
+          ],
+          meta: {
+            requestId: 'test-request-id',
+            timestamp: expect.any(String),
+            version: '1.0.0'
+          }
         });
       });
 
@@ -46,7 +51,7 @@ describe('ErrorHandler', () => {
           'userId',
           'USER_NOT_FOUND'
         );
-        const result = ErrorHandler.handle(error);
+        const result = ErrorHandler.handle(error, 'test-request-id', '1.0.0');
 
         expect(result).toEqual({
           status: 'error',
@@ -57,7 +62,12 @@ describe('ErrorHandler', () => {
               field: 'userId',
               code: 'USER_NOT_FOUND'
             }
-          ]
+          ],
+          meta: {
+            requestId: 'test-request-id',
+            timestamp: expect.any(String),
+            version: '1.0.0'
+          }
         });
       });
 
@@ -67,7 +77,7 @@ describe('ErrorHandler', () => {
           'token',
           'INVALID_TOKEN'
         );
-        const result = ErrorHandler.handle(error);
+        const result = ErrorHandler.handle(error, 'test-request-id', '1.0.0');
 
         expect(result).toEqual({
           status: 'error',
@@ -78,7 +88,12 @@ describe('ErrorHandler', () => {
               field: 'token',
               code: 'INVALID_TOKEN'
             }
-          ]
+          ],
+          meta: {
+            requestId: 'test-request-id',
+            timestamp: expect.any(String),
+            version: '1.0.0'
+          }
         });
       });
 
@@ -88,7 +103,7 @@ describe('ErrorHandler', () => {
           'password',
           'REQUIRED_FIELD'
         );
-        const result = ErrorHandler.handle(error);
+        const result = ErrorHandler.handle(error, 'test-request-id', '1.0.0');
 
         expect(result).toEqual({
           status: 'error',
@@ -99,7 +114,12 @@ describe('ErrorHandler', () => {
               field: 'password',
               code: 'REQUIRED_FIELD'
             }
-          ]
+          ],
+          meta: {
+            requestId: 'test-request-id',
+            timestamp: expect.any(String),
+            version: '1.0.0'
+          }
         });
       });
 
@@ -109,7 +129,7 @@ describe('ErrorHandler', () => {
           'customField',
           'CUSTOM_CODE'
         );
-        const result = ErrorHandler.handle(error);
+        const result = ErrorHandler.handle(error, 'test-request-id', '1.0.0');
 
         expect(result).toEqual({
           status: 'error',
@@ -120,13 +140,18 @@ describe('ErrorHandler', () => {
               field: 'customField',
               code: 'CUSTOM_CODE'
             }
-          ]
+          ],
+          meta: {
+            requestId: 'test-request-id',
+            timestamp: expect.any(String),
+            version: '1.0.0'
+          }
         });
       });
 
       it('should handle CustomError with minimal data', () => {
         const error = new BadRequestError('Simple error');
-        const result = ErrorHandler.handle(error);
+        const result = ErrorHandler.handle(error, 'test-request-id', '1.0.0');
 
         expect(result).toEqual({
           status: 'error',
@@ -137,7 +162,12 @@ describe('ErrorHandler', () => {
               field: undefined,
               code: undefined
             }
-          ]
+          ],
+          meta: {
+            requestId: 'test-request-id',
+            timestamp: expect.any(String),
+            version: '1.0.0'
+          }
         });
       });
     });
@@ -145,7 +175,7 @@ describe('ErrorHandler', () => {
     describe('Non-CustomError instances', () => {
       it('should handle standard Error instances', () => {
         const error = new Error('Standard error message');
-        const result = ErrorHandler.handle(error);
+        const result = ErrorHandler.handle(error, 'test-request-id', '1.0.0');
 
         expect(result).toEqual({
           status: 'error',
@@ -154,13 +184,18 @@ describe('ErrorHandler', () => {
             {
               message: 'Internal Server Error'
             }
-          ]
+          ],
+          meta: {
+            requestId: 'test-request-id',
+            timestamp: expect.any(String),
+            version: '1.0.0'
+          }
         });
       });
 
       it('should handle string errors', () => {
         const error = 'String error message';
-        const result = ErrorHandler.handle(error);
+        const result = ErrorHandler.handle(error, 'test-request-id', '1.0.0');
 
         expect(result).toEqual({
           status: 'error',
@@ -169,13 +204,18 @@ describe('ErrorHandler', () => {
             {
               message: 'Internal Server Error'
             }
-          ]
+          ],
+          meta: {
+            requestId: 'test-request-id',
+            timestamp: expect.any(String),
+            version: '1.0.0'
+          }
         });
       });
 
       it('should handle null errors', () => {
         const error = null;
-        const result = ErrorHandler.handle(error);
+        const result = ErrorHandler.handle(error, 'test-request-id', '1.0.0');
 
         expect(result).toEqual({
           status: 'error',
@@ -184,13 +224,18 @@ describe('ErrorHandler', () => {
             {
               message: 'Internal Server Error'
             }
-          ]
+          ],
+          meta: {
+            requestId: 'test-request-id',
+            timestamp: expect.any(String),
+            version: '1.0.0'
+          }
         });
       });
 
       it('should handle undefined errors', () => {
         const error = undefined;
-        const result = ErrorHandler.handle(error);
+        const result = ErrorHandler.handle(error, 'test-request-id', '1.0.0');
 
         expect(result).toEqual({
           status: 'error',
@@ -199,13 +244,18 @@ describe('ErrorHandler', () => {
             {
               message: 'Internal Server Error'
             }
-          ]
+          ],
+          meta: {
+            requestId: 'test-request-id',
+            timestamp: expect.any(String),
+            version: '1.0.0'
+          }
         });
       });
 
       it('should handle object errors', () => {
         const error = { message: 'Object error', code: 'OBJECT_ERROR' };
-        const result = ErrorHandler.handle(error);
+        const result = ErrorHandler.handle(error, 'test-request-id', '1.0.0');
 
         expect(result).toEqual({
           status: 'error',
@@ -214,13 +264,18 @@ describe('ErrorHandler', () => {
             {
               message: 'Internal Server Error'
             }
-          ]
+          ],
+          meta: {
+            requestId: 'test-request-id',
+            timestamp: expect.any(String),
+            version: '1.0.0'
+          }
         });
       });
 
       it('should handle number errors', () => {
         const error = 404;
-        const result = ErrorHandler.handle(error);
+        const result = ErrorHandler.handle(error, 'test-request-id', '1.0.0');
 
         expect(result).toEqual({
           status: 'error',
@@ -229,7 +284,12 @@ describe('ErrorHandler', () => {
             {
               message: 'Internal Server Error'
             }
-          ]
+          ],
+          meta: {
+            requestId: 'test-request-id',
+            timestamp: expect.any(String),
+            version: '1.0.0'
+          }
         });
       });
     });
