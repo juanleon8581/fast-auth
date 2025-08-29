@@ -21,7 +21,15 @@
     "no-var": "error",
     "no-console": "off",
     "eqeqeq": "error",
-    "curly": "error"
+    "curly": "off"
   },
-  "ignorePatterns": ["dist/", "node_modules/", "*.js"]
+  "ignorePatterns": ["dist/", "node_modules/", "*.js"],
+  "overrides": [
+    {
+      "files": ["*.test.ts", "*.spec.ts"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    }
+  ]
 }
