@@ -262,6 +262,41 @@ describe('AuthDatasource', () => {
         // Just verify the method completes successfully
         expect(typeof result).toBe('object');
       });
+
+      it('should return UserEntity when session is null', async () => {
+        const mockUser = {
+          id: 'user-123',
+          email: 'john.doe@example.com',
+          user_metadata: { display_name: 'John Doe' },
+          email_confirmed_at: '2024-01-01T00:00:00Z',
+          created_at: '2024-01-01T00:00:00Z'
+        };
+
+        mockSupabaseClient.auth.signUp.mockResolvedValue({
+          data: { 
+            user: mockUser,
+            session: null // No session case
+          },
+          error: null
+        });
+
+        const mockDatasourceUserDto = {
+          id: 'user-123',
+          email: 'john.doe@example.com',
+          name: 'John Doe'
+        };
+        
+        const mockUserEntity = { id: 'user-123', email: 'john.doe@example.com', name: 'John Doe' } as UserEntity;
+        
+        (MockedDatasourceUserDto.createFrom as jest.Mock).mockReturnValue([undefined, mockDatasourceUserDto]);
+        (MockedUserEntity.createFrom as jest.Mock).mockReturnValue(mockUserEntity);
+        
+        const result = await authDatasource.register(mockRegisterDto);
+        
+        expect(result).toBe(mockUserEntity);
+        expect(MockedUserEntity.createFrom).toHaveBeenCalledWith(mockDatasourceUserDto);
+        expect(MockedAuthUserEntity.createFrom).not.toHaveBeenCalled();
+      });
     });
   });
 

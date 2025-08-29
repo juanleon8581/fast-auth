@@ -325,6 +325,55 @@ describe('RegisterValidator', () => {
       });
     });
 
+    describe('error handling edge cases', () => {
+      it('should re-throw ValidationError when RegisterDto.createFrom throws ValidationError', () => {
+        const validData = {
+          name: 'John',
+          lastname: 'Doe',
+          email: 'john.doe@example.com',
+          password: 'SecurePass123!'
+        };
+
+        const validationError = new (require('@/domain/errors/validation-error').ValidationError)('Custom validation error');
+        (MockedRegisterDto.createFrom as jest.Mock).mockImplementation(() => {
+          throw validationError;
+        });
+
+        expect(() => RegisterValidator.validate(validData)).toThrow(validationError);
+      });
+
+      it('should re-throw BadRequestError when RegisterDto.createFrom throws BadRequestError', () => {
+        const validData = {
+          name: 'John',
+          lastname: 'Doe',
+          email: 'john.doe@example.com',
+          password: 'SecurePass123!'
+        };
+
+        const badRequestError = new (require('@/domain/errors/bad-request-error').BadRequestError)('Custom bad request error');
+        (MockedRegisterDto.createFrom as jest.Mock).mockImplementation(() => {
+          throw badRequestError;
+        });
+
+        expect(() => RegisterValidator.validate(validData)).toThrow(badRequestError);
+      });
+
+      it('should throw BadRequestError for unknown errors', () => {
+        const validData = {
+          name: 'John',
+          lastname: 'Doe',
+          email: 'john.doe@example.com',
+          password: 'SecurePass123!'
+        };
+
+        (MockedRegisterDto.createFrom as jest.Mock).mockImplementation(() => {
+          throw new Error('Unknown error type');
+        });
+
+        expect(() => RegisterValidator.validate(validData)).toThrow(DATA_VALIDATION.UNKNOWN_VALIDATION_ERROR);
+      });
+    });
+
     describe('return type validation', () => {
       it('should throw error on validation failure', () => {
         const invalidData = {

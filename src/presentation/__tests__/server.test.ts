@@ -91,6 +91,17 @@ describe('Server', () => {
       expect(mockApp.get).toHaveBeenCalledWith('/health', expect.any(Function));
     });
 
+    it('should set up Swagger documentation endpoint', async () => {
+      await server.start();
+      
+      // Check that swagger endpoint was configured
+      const swaggerCall = mockApp.use.mock.calls.find((call: any[]) => 
+        call[0] === '/api-docs'
+      );
+      expect(swaggerCall).toBeDefined();
+      expect(swaggerCall).toHaveLength(3);
+    });
+
     it('should configure API routes', async () => {
       await server.start();
       
