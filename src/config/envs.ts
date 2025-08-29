@@ -44,18 +44,18 @@ const loadEnvironmentConfig = () => {
 
   try {
     // Validate environment variables against the schema
-    const validatedEnvs = envSchema.parse(process.env);
+    const validatedEnvs: IEnv = envSchema.parse(process.env);
     console.log(
-      `✅ Environment variables validated successfully for ${normalizedEnv}`
+      `✅ Environment variables validated successfully for ${normalizedEnv}`,
     );
     return validatedEnvs;
   } catch (error) {
     console.error(
       `❌ Invalid environment variables for ${normalizedEnv}:`,
-      error
+      error,
     );
     throw new Error(
-      `Failed to validate environment variables for ${normalizedEnv}`
+      `Failed to validate environment variables for ${normalizedEnv}`,
     );
   }
 };

@@ -38,7 +38,7 @@ export class Server {
         // Regenerate swagger spec on each request in development
         const swaggerSpec = getSwaggerSpec();
         swaggerUi.setup(swaggerSpec)(req, res, next);
-      }
+      },
     );
 
     // Health check endpoint
@@ -63,7 +63,7 @@ export class Server {
     this.app.listen(this.port, () => {
       console.log(`🚀 Server is running on http://localhost:${this.port}`);
       console.log(
-        `📑 documentation available at http://localhost:${this.port}/api-docs`
+        `📑 documentation available at http://localhost:${this.port}/api-docs`,
       );
     });
   }
