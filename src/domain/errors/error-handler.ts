@@ -1,25 +1,32 @@
 import { CustomError } from "./custom-error";
-
-interface ErrorResponse {
-  status: "error";
-  code: number;
-  errors: { message: string; field?: string; code?: string }[];
-}
+import { ApiErrorResponse, ApiResponseBuilder } from "@/presentation/utils/api-response";
 
 export class ErrorHandler {
-  static handle(error: unknown): ErrorResponse {
+  static handle(
+    error: unknown,
+    requestId?: string,
+    version: string = "1.0.0"
+  ): ApiErrorResponse {
     if (error instanceof CustomError) {
-      return {
-        status: "error",
-        code: error.getStatusCode(),
-        errors: error.serializeErrors(),
-      };
+      return ApiResponseBuilder.error(
+        error.getStatusCode(),
+        error.serializeErrors(),
+        {
+          requestId: requestId || '',
+          timestamp: new Date().toISOString(),
+          version
+        }
+      );
     }
 
-    return {
-      status: "error",
-      code: 500,
-      errors: [{ message: "Internal Server Error" }],
-    };
+    return ApiResponseBuilder.error(
+      500,
+      [{ message: "Internal Server Error" }],
+      {
+        requestId: requestId || '',
+        timestamp: new Date().toISOString(),
+        version
+      }
+    );
   }
 }
