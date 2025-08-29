@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { ErrorMiddleware } from '../error.middleware';
 import { ErrorHandler } from '@/domain/errors/error-handler';
 import { BadRequestError } from '@/domain/errors/bad-request-error';
@@ -10,12 +10,14 @@ const mockErrorHandler = ErrorHandler as jest.Mocked<typeof ErrorHandler>;
 describe('ErrorMiddleware', () => {
   let mockReq: Partial<Request>;
   let mockRes: Partial<Response>;
+  let mockNext: NextFunction;
   let mockStatus: jest.Mock;
   let mockJson: jest.Mock;
 
   beforeEach(() => {
     mockStatus = jest.fn().mockReturnThis();
     mockJson = jest.fn();
+    mockNext = jest.fn();
     
     mockReq = {
       requestId: 'test-request-id'
@@ -49,7 +51,8 @@ describe('ErrorMiddleware', () => {
       ErrorMiddleware.handleError(
         error,
         mockReq as Request,
-        mockRes as Response
+        mockRes as Response,
+        mockNext
       );
 
       // Assert
@@ -78,7 +81,8 @@ describe('ErrorMiddleware', () => {
       ErrorMiddleware.handleError(
         error,
         mockReq as Request,
-        mockRes as Response
+        mockRes as Response,
+        mockNext
       );
 
       // Assert
@@ -107,7 +111,8 @@ describe('ErrorMiddleware', () => {
       ErrorMiddleware.handleError(
         error,
         mockReq as Request,
-        mockRes as Response
+        mockRes as Response,
+        mockNext
       );
 
       // Assert
@@ -136,7 +141,8 @@ describe('ErrorMiddleware', () => {
       ErrorMiddleware.handleError(
         error,
         mockReq as Request,
-        mockRes as Response
+        mockRes as Response,
+        mockNext
       );
 
       // Assert
@@ -165,7 +171,8 @@ describe('ErrorMiddleware', () => {
       ErrorMiddleware.handleError(
         error,
         mockReq as Request,
-        mockRes as Response
+        mockRes as Response,
+        mockNext
       );
 
       // Assert
