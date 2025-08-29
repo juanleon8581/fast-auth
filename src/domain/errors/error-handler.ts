@@ -1,12 +1,12 @@
 import { CustomError } from "./custom-error";
-import { ApiErrorResponse, ApiResponseBuilder } from "@/presentation/utils/api-response";
+import { IApiErrorResponse, ApiResponseBuilder } from "@/presentation/utils/api-response";
 
 export class ErrorHandler {
   static handle(
     error: unknown,
     requestId?: string,
     version: string = "1.0.0"
-  ): ApiErrorResponse {
+  ): IApiErrorResponse {
     if (error instanceof CustomError) {
       return ApiResponseBuilder.error(
         error.getStatusCode(),

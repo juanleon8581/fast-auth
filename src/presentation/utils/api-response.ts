@@ -1,4 +1,4 @@
-export interface ApiResponseMeta {
+export interface IApiResponseMeta {
   requestId: string;
   timestamp: string;
   version: string;
@@ -11,13 +11,13 @@ export interface ApiResponseMeta {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface ApiSuccessResponse<T = any> {
+export interface IApiSuccessResponse<T = any> {
   status: "success";
   data: T;
-  meta: ApiResponseMeta;
+  meta: IApiResponseMeta;
 }
 
-export interface ApiErrorResponse {
+export interface IApiErrorResponse {
   status: "error";
   code: number;
   errors: {
@@ -25,11 +25,11 @@ export interface ApiErrorResponse {
     field?: string;
     code?: string;
   }[];
-  meta: ApiResponseMeta;
+  meta: IApiResponseMeta;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ApiResponse<T = any> = ApiSuccessResponse<T> | ApiErrorResponse;
+export type ApiResponse<T = any> = IApiSuccessResponse<T> | IApiErrorResponse;
 
 export class ApiResponseBuilder {
   /**
@@ -37,8 +37,8 @@ export class ApiResponseBuilder {
    */
   static success<T>(
     data: T,
-    meta: Partial<ApiResponseMeta> = {},
-  ): ApiSuccessResponse<T> {
+    meta: Partial<IApiResponseMeta> = {},
+  ): IApiSuccessResponse<T> {
     return {
       status: "success",
       data,
@@ -61,8 +61,8 @@ export class ApiResponseBuilder {
       field?: string;
       code?: string;
     }[],
-    meta: Partial<ApiResponseMeta> = {},
-  ): ApiErrorResponse {
+    meta: Partial<IApiResponseMeta> = {},
+  ): IApiErrorResponse {
     return {
       status: "error",
       code,
@@ -85,8 +85,8 @@ export class ApiResponseBuilder {
       limit: number;
       total: number;
     },
-    meta: Partial<ApiResponseMeta> = {},
-  ): ApiSuccessResponse<T[]> {
+    meta: Partial<IApiResponseMeta> = {},
+  ): IApiSuccessResponse<T[]> {
     const totalPages = Math.ceil(pagination.total / pagination.limit);
 
     return {

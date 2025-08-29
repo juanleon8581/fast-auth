@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { ApiResponseBuilder, ApiSuccessResponse } from './api-response';
+import { ApiResponseBuilder, IApiSuccessResponse } from './api-response';
 
 export class ResponseHelper {
   /**
@@ -11,7 +11,7 @@ export class ResponseHelper {
     req?: Request,
     statusCode: number = 200
   ): void {
-    const response: ApiSuccessResponse<T> = ApiResponseBuilder.success(data, {
+    const response: IApiSuccessResponse<T> = ApiResponseBuilder.success(data, {
       requestId: req?.requestId || '',
       timestamp: new Date().toISOString(),
       version: '1.0.0'
