@@ -2,6 +2,7 @@
   "name": "fast-auth",
   "version": "1.0.0",
   "description": "Api de Autenticación",
+  "type": "module",
   "main": "dist/app.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules --watch src/config/docs -r tsconfig-paths/register src/app.ts",
@@ -10,8 +11,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix",
+    "lint": "eslint 'src/**/*.ts'",
+    "lint:fix": "eslint 'src/**/*.ts' --fix",
     "format": "prettier --write src/**/*.ts",
     "format:check": "prettier --check src/**/*.ts",
     "code:check": "pnpm lint && pnpm format:check",

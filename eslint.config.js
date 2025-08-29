@@ -37,7 +37,8 @@ export default [
       'no-var': 'error',
       'no-console': 'off',
       'eqeqeq': 'error',
-      'curly': 'off'
+      'curly': 'off',
+      'no-useless-escape': 'error'
     }
   },
   {
