@@ -1,9 +1,7 @@
-import { RegisterDto } from "@/domain/dtos/register.dto";
-import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
-import { UserEntity } from "@/domain/entities/user.entity";
 import { AuthRepository } from "@/domain/repositories/auth.repository";
 import { RegisterUser } from "@/domain/use-cases/register-user";
 import { RegisterValidator } from "@/infrastructure/validators/register.validator";
+import { ResponseHelper } from "@/presentation/utils/response-helper";
 
 import { Request, Response, NextFunction } from "express";
 
@@ -15,7 +13,7 @@ export class AuthController {
 
       new RegisterUser(this.datasource)
         .execute(dto)
-        .then((user) => res.json(user))
+        .then((user) => ResponseHelper.success(res, user, req, 201))
         .catch(next); // Delegar errores al middleware centralizado
     } catch (error) {
       next(error); // Delegar errores de validación al middleware centralizado
