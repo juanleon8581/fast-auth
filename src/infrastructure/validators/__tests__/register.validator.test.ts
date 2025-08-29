@@ -130,7 +130,7 @@ describe('RegisterValidator', () => {
           password: 'SecurePass123!'
         };
 
-        expect(() => RegisterValidator.validate(invalidData)).toThrow('Required');
+        expect(() => RegisterValidator.validate(invalidData)).toThrow('Invalid input: expected string, received undefined');
       });
     });
 
@@ -175,7 +175,7 @@ describe('RegisterValidator', () => {
           password: 'SecurePass123!'
         };
 
-        expect(() => RegisterValidator.validate(invalidData)).toThrow('Required');
+        expect(() => RegisterValidator.validate(invalidData)).toThrow('Invalid input: expected string, received undefined');
       });
     });
 
@@ -209,7 +209,7 @@ describe('RegisterValidator', () => {
           password: 'SecurePass123!'
         };
 
-        expect(() => RegisterValidator.validate(invalidData)).toThrow('Required');
+        expect(() => RegisterValidator.validate(invalidData)).toThrow('Invalid input: expected string, received undefined');
       });
     });
 
@@ -287,7 +287,7 @@ describe('RegisterValidator', () => {
           email: 'john.doe@example.com'
         };
 
-        expect(() => RegisterValidator.validate(invalidData)).toThrow('Required');
+        expect(() => RegisterValidator.validate(invalidData)).toThrow('Invalid input: expected string, received undefined');
       });
     });
 

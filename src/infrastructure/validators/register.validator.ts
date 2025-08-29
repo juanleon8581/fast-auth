@@ -52,7 +52,7 @@ export class RegisterValidator {
     } catch (error) {
       if (error instanceof z.ZodError) {
         // Lanzar el primer error de validación con información detallada
-        const firstError = error.errors[0];
+        const firstError = error.issues[0];
         if (firstError) {
           const field = firstError.path.join(".");
           throw new ValidationError(
