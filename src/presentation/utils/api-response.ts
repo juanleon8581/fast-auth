@@ -10,14 +10,15 @@ export interface ApiResponseMeta {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface ApiSuccessResponse<T = any> {
-  status: 'success';
+  status: "success";
   data: T;
   meta: ApiResponseMeta;
 }
 
 export interface ApiErrorResponse {
-  status: 'error';
+  status: "error";
   code: number;
   errors: {
     message: string;
@@ -27,6 +28,7 @@ export interface ApiErrorResponse {
   meta: ApiResponseMeta;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ApiResponse<T = any> = ApiSuccessResponse<T> | ApiErrorResponse;
 
 export class ApiResponseBuilder {
@@ -35,17 +37,17 @@ export class ApiResponseBuilder {
    */
   static success<T>(
     data: T,
-    meta: Partial<ApiResponseMeta> = {}
+    meta: Partial<ApiResponseMeta> = {},
   ): ApiSuccessResponse<T> {
     return {
-      status: 'success',
+      status: "success",
       data,
       meta: {
-        requestId: meta.requestId || '',
+        requestId: meta.requestId || "",
         timestamp: meta.timestamp || new Date().toISOString(),
-        version: meta.version || '1.0.0',
-        ...(meta.pagination && { pagination: meta.pagination })
-      }
+        version: meta.version || "1.0.0",
+        ...(meta.pagination && { pagination: meta.pagination }),
+      },
     };
   }
 
@@ -59,17 +61,17 @@ export class ApiResponseBuilder {
       field?: string;
       code?: string;
     }[],
-    meta: Partial<ApiResponseMeta> = {}
+    meta: Partial<ApiResponseMeta> = {},
   ): ApiErrorResponse {
     return {
-      status: 'error',
+      status: "error",
       code,
       errors,
       meta: {
-        requestId: meta.requestId || '',
+        requestId: meta.requestId || "",
         timestamp: meta.timestamp || new Date().toISOString(),
-        version: meta.version || '1.0.0'
-      }
+        version: meta.version || "1.0.0",
+      },
     };
   }
 
@@ -83,22 +85,22 @@ export class ApiResponseBuilder {
       limit: number;
       total: number;
     },
-    meta: Partial<ApiResponseMeta> = {}
+    meta: Partial<ApiResponseMeta> = {},
   ): ApiSuccessResponse<T[]> {
     const totalPages = Math.ceil(pagination.total / pagination.limit);
-    
+
     return {
-      status: 'success',
+      status: "success",
       data,
       meta: {
-        requestId: meta.requestId || '',
+        requestId: meta.requestId || "",
         timestamp: meta.timestamp || new Date().toISOString(),
-        version: meta.version || '1.0.0',
+        version: meta.version || "1.0.0",
         pagination: {
           ...pagination,
-          totalPages
-        }
-      }
+          totalPages,
+        },
+      },
     };
   }
 }

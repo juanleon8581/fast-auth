@@ -32,32 +32,33 @@ const generateSwaggerSpec = () => {
 };
 
 // Cache para la especificación
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let cachedSpec: any = null;
 let lastModified = 0;
 
 // Función para verificar si los archivos YAML han cambiado
 const checkForChanges = () => {
-  const docsPath = path.join(process.cwd(), 'src/config/docs');
+  const docsPath = path.join(process.cwd(), "src/config/docs");
   let latestModified = 0;
-  
+
   const checkDirectory = (dir: string) => {
     if (!fs.existsSync(dir)) return;
-    
+
     const files = fs.readdirSync(dir);
-    files.forEach(file => {
+    files.forEach((file) => {
       const filePath = path.join(dir, file);
       const stat = fs.statSync(filePath);
-      
+
       if (stat.isDirectory()) {
         checkDirectory(filePath);
-      } else if (file.endsWith('.yml') || file.endsWith('.yaml')) {
+      } else if (file.endsWith(".yml") || file.endsWith(".yaml")) {
         if (stat.mtime.getTime() > latestModified) {
           latestModified = stat.mtime.getTime();
         }
       }
     });
   };
-  
+
   checkDirectory(docsPath);
   return latestModified;
 };
@@ -65,13 +66,13 @@ const checkForChanges = () => {
 // Función para obtener la especificación con cache inteligente
 const getSwaggerSpec = () => {
   const currentModified = checkForChanges();
-  
+
   if (!cachedSpec || currentModified > lastModified) {
-    console.log('🔄 Regenerating Swagger documentation...');
+    console.log("🔄 Regenerating Swagger documentation...");
     cachedSpec = generateSwaggerSpec();
     lastModified = currentModified;
   }
-  
+
   return cachedSpec;
 };
 

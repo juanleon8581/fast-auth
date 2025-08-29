@@ -7,7 +7,7 @@ export class UserEntity implements IUserData {
     public readonly email: string,
     public readonly name: string,
     public readonly email_verified: boolean,
-    public readonly phone?: string
+    public readonly phone?: string,
   ) {
     Object.freeze(this);
   }
@@ -18,10 +18,11 @@ export class UserEntity implements IUserData {
       data.email,
       data.name,
       data.email_verified,
-      data.phone
+      data.phone,
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static createFrom = (raw: { [key: string]: any }): UserEntity => {
     const { id, email, name, email_verified, phone } = raw;
 

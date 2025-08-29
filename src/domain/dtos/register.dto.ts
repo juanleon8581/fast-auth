@@ -12,7 +12,7 @@ export class RegisterDto {
     public readonly name: string,
     public readonly lastname: string,
     public readonly email: string,
-    public readonly password: string
+    public readonly password: string,
   ) {}
 
   private static create(props: IRegisterDto): RegisterDto {
@@ -20,12 +20,13 @@ export class RegisterDto {
 
     return new RegisterDto(name, lastname, email, password);
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static createFrom(props: { [key: string]: any }): [string?, RegisterDto?] {
     const { name, lastname, email, password } = props;
 
     if (!name || !lastname || !email || !password)
       return [ERRORS.DATA_VALIDATION.INVALID_DATA];
 
-    return [, RegisterDto.create({ name, lastname, email, password })];
+    return [undefined, RegisterDto.create({ name, lastname, email, password })];
   }
 }

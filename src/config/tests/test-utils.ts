@@ -1,5 +1,6 @@
-import request from 'supertest';
-import { Express } from 'express';
+import request from "supertest";
+import { Express } from "express";
+import { jest } from "@jest/globals";
 
 // Helper to create test requests
 export const createTestRequest = (app: Express) => {
@@ -8,20 +9,21 @@ export const createTestRequest = (app: Express) => {
 
 // Common mock data for tests
 export const mockUser = {
-  id: 'test-user-id',
-  email: 'test@example.com',
-  name: 'Test User',
+  id: "test-user-id",
+  email: "test@example.com",
+  name: "Test User",
   created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString()
+  updated_at: new Date().toISOString(),
 };
 
 // Helper to generate mock tokens
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const generateMockToken = (payload: any = {}) => {
   return {
-    access_token: 'mock-access-token',
-    refresh_token: 'mock-refresh-token',
+    access_token: "mock-access-token",
+    refresh_token: "mock-refresh-token",
     expires_in: 3600,
-    user: { ...mockUser, ...payload }
+    user: { ...mockUser, ...payload },
   };
 };
 
@@ -32,5 +34,5 @@ export const clearAllMocks = () => {
 
 // Helper to wait for a specific amount of time
 export const wait = (ms: number) => {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 };

@@ -38,6 +38,7 @@ const registerSchema = z.object({
 });
 
 export class RegisterValidator {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static validate(data: { [key: string]: any }): RegisterDto {
     try {
       const validatedData = registerSchema.parse(data);
@@ -58,7 +59,7 @@ export class RegisterValidator {
           throw new ValidationError(
             firstError.message,
             field,
-            "VALIDATION_ERROR"
+            "VALIDATION_ERROR",
           );
         }
         throw new BadRequestError(DATA_VALIDATION.UNKNOWN_VALIDATION_ERROR);
