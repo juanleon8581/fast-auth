@@ -119,7 +119,15 @@ describe('AuthController', () => {
         await new Promise(resolve => setTimeout(resolve, 0));
 
         expect(mockResponse.json).toHaveBeenCalledTimes(1);
-        expect(mockResponse.json).toHaveBeenCalledWith(mockUser);
+        expect(mockResponse.json).toHaveBeenCalledWith({
+          status: 'success',
+          data: mockUser,
+          meta: {
+            requestId: expect.any(String),
+            timestamp: expect.any(String),
+            version: '1.0.0'
+          }
+        });
       });
     });
 
@@ -219,7 +227,15 @@ describe('AuthController', () => {
 
       // Wait for async operations
       await new Promise(resolve => setTimeout(resolve, 0));
-      expect(mockResponse.json).toHaveBeenCalledWith(mockUser);
+      expect(mockResponse.json).toHaveBeenCalledWith({
+        status: 'success',
+        data: mockUser,
+        meta: {
+          requestId: expect.any(String),
+          timestamp: expect.any(String),
+          version: '1.0.0'
+        }
+      });
       expect(mockNext).not.toHaveBeenCalled(); // No errors should be passed to next
     });
   });

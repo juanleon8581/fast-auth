@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { ErrorMiddleware } from '../error.middleware';
 import { ErrorHandler } from '@/domain/errors/error-handler';
 import { BadRequestError } from '@/domain/errors/bad-request-error';
@@ -10,7 +10,6 @@ const mockErrorHandler = ErrorHandler as jest.Mocked<typeof ErrorHandler>;
 describe('ErrorMiddleware', () => {
   let mockReq: Partial<Request>;
   let mockRes: Partial<Response>;
-  let mockNext: NextFunction;
   let mockStatus: jest.Mock;
   let mockJson: jest.Mock;
 
@@ -18,12 +17,13 @@ describe('ErrorMiddleware', () => {
     mockStatus = jest.fn().mockReturnThis();
     mockJson = jest.fn();
     
-    mockReq = {};
+    mockReq = {
+      requestId: 'test-request-id'
+    };
     mockRes = {
       status: mockStatus,
       json: mockJson,
     };
-    mockNext = jest.fn();
 
     jest.clearAllMocks();
   });
@@ -35,7 +35,12 @@ describe('ErrorMiddleware', () => {
       const expectedResponse = {
         status: "error" as const,
         code: 400,
-        errors: [{ message: 'Test error' }]
+        errors: [{ message: 'Test error' }],
+        meta: {
+          requestId: 'test-request-id',
+          timestamp: expect.any(String),
+          version: '1.0.0'
+        }
       };
       
       mockErrorHandler.handle.mockReturnValue(expectedResponse);
@@ -44,12 +49,11 @@ describe('ErrorMiddleware', () => {
       ErrorMiddleware.handleError(
         error,
         mockReq as Request,
-        mockRes as Response,
-        mockNext
+        mockRes as Response
       );
 
       // Assert
-      expect(mockErrorHandler.handle).toHaveBeenCalledWith(error);
+      expect(mockErrorHandler.handle).toHaveBeenCalledWith(error, 'test-request-id', '1.0.0');
       expect(mockStatus).toHaveBeenCalledWith(400);
       expect(mockJson).toHaveBeenCalledWith(expectedResponse);
     });
@@ -60,7 +64,12 @@ describe('ErrorMiddleware', () => {
       const expectedResponse = {
         status: "error" as const,
         code: 500,
-        errors: [{ message: 'Something went wrong' }]
+        errors: [{ message: 'Something went wrong' }],
+        meta: {
+          requestId: 'test-request-id',
+          timestamp: expect.any(String),
+          version: '1.0.0'
+        }
       };
       
       mockErrorHandler.handle.mockReturnValue(expectedResponse);
@@ -69,12 +78,11 @@ describe('ErrorMiddleware', () => {
       ErrorMiddleware.handleError(
         error,
         mockReq as Request,
-        mockRes as Response,
-        mockNext
+        mockRes as Response
       );
 
       // Assert
-      expect(mockErrorHandler.handle).toHaveBeenCalledWith(error);
+      expect(mockErrorHandler.handle).toHaveBeenCalledWith(error, 'test-request-id', '1.0.0');
       expect(mockStatus).toHaveBeenCalledWith(500);
       expect(mockJson).toHaveBeenCalledWith(expectedResponse);
     });
@@ -85,7 +93,12 @@ describe('ErrorMiddleware', () => {
       const expectedResponse = {
         status: "error" as const,
         code: 500,
-        errors: [{ message: 'Something went wrong' }]
+        errors: [{ message: 'Something went wrong' }],
+        meta: {
+          requestId: 'test-request-id',
+          timestamp: expect.any(String),
+          version: '1.0.0'
+        }
       };
       
       mockErrorHandler.handle.mockReturnValue(expectedResponse);
@@ -94,12 +107,11 @@ describe('ErrorMiddleware', () => {
       ErrorMiddleware.handleError(
         error,
         mockReq as Request,
-        mockRes as Response,
-        mockNext
+        mockRes as Response
       );
 
       // Assert
-      expect(mockErrorHandler.handle).toHaveBeenCalledWith(error);
+      expect(mockErrorHandler.handle).toHaveBeenCalledWith(error, 'test-request-id', '1.0.0');
       expect(mockStatus).toHaveBeenCalledWith(500);
       expect(mockJson).toHaveBeenCalledWith(expectedResponse);
     });
@@ -110,7 +122,12 @@ describe('ErrorMiddleware', () => {
       const expectedResponse = {
         status: "error" as const,
         code: 500,
-        errors: [{ message: 'Something went wrong' }]
+        errors: [{ message: 'Something went wrong' }],
+        meta: {
+          requestId: 'test-request-id',
+          timestamp: expect.any(String),
+          version: '1.0.0'
+        }
       };
       
       mockErrorHandler.handle.mockReturnValue(expectedResponse);
@@ -119,12 +136,11 @@ describe('ErrorMiddleware', () => {
       ErrorMiddleware.handleError(
         error,
         mockReq as Request,
-        mockRes as Response,
-        mockNext
+        mockRes as Response
       );
 
       // Assert
-      expect(mockErrorHandler.handle).toHaveBeenCalledWith(error);
+      expect(mockErrorHandler.handle).toHaveBeenCalledWith(error, 'test-request-id', '1.0.0');
       expect(mockStatus).toHaveBeenCalledWith(500);
       expect(mockJson).toHaveBeenCalledWith(expectedResponse);
     });
@@ -135,7 +151,12 @@ describe('ErrorMiddleware', () => {
       const expectedResponse = {
         status: "error" as const,
         code: 422,
-        errors: [{ message: 'Validation failed' }]
+        errors: [{ message: 'Validation failed' }],
+        meta: {
+          requestId: 'test-request-id',
+          timestamp: expect.any(String),
+          version: '1.0.0'
+        }
       };
       
       mockErrorHandler.handle.mockReturnValue(expectedResponse);
@@ -144,12 +165,11 @@ describe('ErrorMiddleware', () => {
       ErrorMiddleware.handleError(
         error,
         mockReq as Request,
-        mockRes as Response,
-        mockNext
+        mockRes as Response
       );
 
       // Assert
-      expect(mockErrorHandler.handle).toHaveBeenCalledWith(error);
+      expect(mockErrorHandler.handle).toHaveBeenCalledWith(error, 'test-request-id', '1.0.0');
       expect(mockStatus).toHaveBeenCalledWith(422);
       expect(mockJson).toHaveBeenCalledWith(expectedResponse);
     });
