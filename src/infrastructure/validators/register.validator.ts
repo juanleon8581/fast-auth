@@ -43,7 +43,7 @@ export class RegisterValidator {
       const validatedData = registerSchema.parse(data);
 
       const [dtoError, registerDto] = RegisterDto.createFrom(validatedData);
-      
+
       if (dtoError) {
         throw new BadRequestError(dtoError);
       }
@@ -55,13 +55,20 @@ export class RegisterValidator {
         const firstError = error.errors[0];
         if (firstError) {
           const field = firstError.path.join(".");
-          throw new ValidationError(firstError.message, field, "VALIDATION_ERROR");
+          throw new ValidationError(
+            firstError.message,
+            field,
+            "VALIDATION_ERROR"
+          );
         }
         throw new BadRequestError(DATA_VALIDATION.UNKNOWN_VALIDATION_ERROR);
       }
 
       // Si no es un ZodError, re-lanzar el error original
-      if (error instanceof ValidationError || error instanceof BadRequestError) {
+      if (
+        error instanceof ValidationError ||
+        error instanceof BadRequestError
+      ) {
         throw error;
       }
 
