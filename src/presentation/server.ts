@@ -4,6 +4,8 @@ import helmet from "helmet";
 import swaggerUi from "swagger-ui-express";
 import getSwaggerSpec from "@/config/docs/swagger";
 import { ErrorMiddleware } from "./middlewares/error.middleware";
+import { RequestIdMiddleware } from "./middlewares/request-id.middleware";
+import { ResponseHelper } from "./utils/response-helper";
 import { NotFoundError } from "@/domain/errors/not-found-error";
 
 interface IOptions {
@@ -26,6 +28,9 @@ export class Server {
     this.app.use(helmet());
     this.app.use(cors());
 
+    // Request ID middleware
+    this.app.use(RequestIdMiddleware.generate);
+
     // Body parsing middlewares
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
@@ -43,9 +48,12 @@ export class Server {
 
     // Health check endpoint
     this.app.get("/health", (req, res) => {
-      res
-        .status(200)
-        .json({ status: "OK", timestamp: new Date().toISOString() });
+      ResponseHelper.success(
+        res,
+        { status: "OK", timestamp: new Date().toISOString() },
+        req,
+        200
+      );
     });
 
     // API Routes
