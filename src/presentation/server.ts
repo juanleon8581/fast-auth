@@ -52,7 +52,7 @@ export class Server {
         res,
         { status: "OK", timestamp: new Date().toISOString() },
         req,
-        200
+        200,
       );
     });
 

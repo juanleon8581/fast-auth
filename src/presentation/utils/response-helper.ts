@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { ApiResponseBuilder, IApiSuccessResponse } from './api-response';
+import { Request, Response } from "express";
+import { ApiResponseBuilder, IApiSuccessResponse } from "./api-response";
 
 export class ResponseHelper {
   /**
@@ -9,12 +9,12 @@ export class ResponseHelper {
     res: Response,
     data: T,
     req?: Request,
-    statusCode: number = 200
+    statusCode: number = 200,
   ): void {
     const response: IApiSuccessResponse<T> = ApiResponseBuilder.success(data, {
-      requestId: req?.requestId || '',
+      requestId: req?.requestId || "",
       timestamp: new Date().toISOString(),
-      version: '1.0.0'
+      version: "1.0.0",
     });
 
     res.status(statusCode).json(response);
@@ -32,12 +32,12 @@ export class ResponseHelper {
       total: number;
     },
     req?: Request,
-    statusCode: number = 200
+    statusCode: number = 200,
   ): void {
     const response = ApiResponseBuilder.paginated(data, pagination, {
-      requestId: req?.requestId || '',
+      requestId: req?.requestId || "",
       timestamp: new Date().toISOString(),
-      version: '1.0.0'
+      version: "1.0.0",
     });
 
     res.status(statusCode).json(response);
