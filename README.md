@@ -8,6 +8,7 @@ Authentication API built with Express.js and TypeScript following Clean Architec
 - ✅ Clean Architecture
 - ✅ Environment variables validation with Zod
 - ✅ Security middlewares (Helmet, CORS)
+- ✅ API documentation with Swagger
 - ✅ Linting with ESLint
 - ✅ Code formatting with Prettier
 - ✅ Testing with Jest
@@ -16,19 +17,17 @@ Authentication API built with Express.js and TypeScript following Clean Architec
 ## Project Structure
 
 ```
-├── .env.example                    # Environment variables template
-├── .gitignore                      # Files ignored by Git
-├── package.json                    # Dependencies and scripts
-├── tsconfig.json                   # TypeScript configuration
-├── README.md                       # Project documentation
-├── Dockerfile                      # Configuration for containerization
-├── docker-compose.yml              # Container orchestration
-└── src/
-    ├── app.ts                      # Main entry point
-    ├── config/                     # Configurations
-    ├── domain/                     # Domain layer
-    ├── infrastructure/             # Infrastructure layer
-    └── presentation/               # Presentation layer
+├── docs/                           # Project documentation
+│   └── api/                       # API documentation (Swagger)
+├── src/
+│   ├── app.ts                     # Main entry point
+│   ├── config/                    # Application configurations
+│   ├── domain/                    # Domain layer (entities, use cases)
+│   ├── infrastructure/            # Infrastructure layer (databases, external services)
+│   └── presentation/              # Presentation layer (controllers, routes)
+├── .env.example                   # Environment variables template
+├── package.json                   # Dependencies and scripts
+└── tsconfig.json                  # TypeScript configuration
 ```
 
 ## Installation
@@ -59,11 +58,16 @@ Authentication API built with Express.js and TypeScript following Clean Architec
 - `npm run lint:fix` - Run the linter and fix errors automatically
 - `npm run format` - Format code with Prettier
 
-## API Endpoints
+## API Documentation
 
-### Health Check
-- `GET /health` - Check server status
-- `GET /api/` - Basic API information
+The API documentation is available via Swagger UI:
+- **Development**: `http://localhost:3000/api-docs`
+- **Production**: `https://your-domain.com/api-docs`
+
+### Quick Endpoints
+- `GET /health` - Health check
+- `GET /api/` - API information
+- `POST /api/auth/register` - User registration
 
 ## Docker
 
