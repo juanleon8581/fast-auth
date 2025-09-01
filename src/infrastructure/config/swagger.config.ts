@@ -23,7 +23,7 @@ const options = {
       ],
     },
   },
-  apis: ["./src/config/docs/**/*.yml"],
+  apis: ["./docs/api/**/*.yml"],
 };
 
 // Función para generar la especificación de Swagger
@@ -38,7 +38,7 @@ let lastModified = 0;
 
 // Función para verificar si los archivos YAML han cambiado
 const checkForChanges = () => {
-  const docsPath = path.join(process.cwd(), "src/config/docs");
+  const docsPath = path.join(process.cwd(), "docs/api");
   let latestModified = 0;
 
   const checkDirectory = (dir: string) => {
