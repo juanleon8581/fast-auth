@@ -7,6 +7,7 @@ import { ERRORS } from "@/config/strings/global.strings.json";
 import { DatasourceUserDto } from "../dtos/datasource-user.dto";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { ValidationError } from "@/domain/errors/validation-error";
+import { LoginDto } from "@/domain/dtos/login.dto";
 
 export class AuthDatasource implements AuthRepository {
   constructor(private readonly client: typeof AuthClient) {}
@@ -28,17 +29,49 @@ export class AuthDatasource implements AuthRepository {
       throw new BadRequestError(
         error.message,
         error.code,
-        error.status?.toString()
+        error.status?.toString(),
       );
     if (!data.user)
       throw new BadRequestError(ERRORS.AUTH.REGISTER.USER_NO_CREATED);
 
     const [errorDto, datasourceUserDto] = DatasourceUserDto.createFrom(
-      data.user
+      data.user,
     );
     if (errorDto) throw new ValidationError(errorDto);
     const user = UserEntity.createFrom(datasourceUserDto!);
     if (!data.session) return user;
+    const authUser = AuthUserEntity.createFrom({
+      user,
+      data: data.session,
+    });
+    return authUser;
+  }
+
+  async login(dto: LoginDto): Promise<AuthUserEntity> {
+    //* Create a new and unique instance of AuthClient for this request
+    const authClient = new this.client().create();
+
+    const { data, error } = await authClient.auth.signInWithPassword({
+      email: dto.email,
+      password: dto.password,
+    });
+
+    if (error)
+      throw new BadRequestError(
+        error.message,
+        error.code,
+        error.status?.toString(),
+      );
+    if (!data.session)
+      throw new BadRequestError(ERRORS.AUTH.LOGIN.USER_NOT_FOUND);
+
+    const [errorDto, datasourceUserDto] = DatasourceUserDto.createFrom(
+      data.user,
+    );
+
+    if (errorDto) throw new ValidationError(errorDto);
+    const user = UserEntity.createFrom(datasourceUserDto!);
+
     const authUser = AuthUserEntity.createFrom({
       user,
       data: data.session,

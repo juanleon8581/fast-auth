@@ -30,32 +30,32 @@
             "INVALID_FORMAT": "Password must contain at least: 1 lowercase, 1 uppercase, 1 number and 1 special character"
           }
         }
-      }
-    },
-    "LOGIN": {
-      "INVALID_DATA_RECEIVED": "Invalid data received",
-      "USER_NOT_FOUND": "User not found",
-      "INVALID_CREDENTIALS": "Invalid credentials",
-      "VALIDATION": {
-        "EMAIL": {
-          "REQUIRED": "Email is required",
-          "INVALID_FORMAT": "Must be a valid email",
-          "MAX_LENGTH": "Email cannot exceed 100 characters"
-        },
-        "PASSWORD": {
-          "REQUIRED": "Password is required",
-          "MIN_LENGTH": "Password must be at least 1 character long"
+      },
+      "LOGIN": {
+        "INVALID_DATA_RECEIVED": "Invalid data received",
+        "USER_NOT_FOUND": "User not found",
+        "INVALID_CREDENTIALS": "Invalid credentials",
+        "VALIDATION": {
+          "EMAIL": {
+            "REQUIRED": "Email is required",
+            "INVALID_FORMAT": "Must be a valid email",
+            "MAX_LENGTH": "Email cannot exceed 100 characters"
+          },
+          "PASSWORD": {
+            "REQUIRED": "Password is required",
+            "MIN_LENGTH": "Password must be at least 1 character long"
+          }
         }
-      }
-    },
-    "LOGOUT": {
-      "USER_NOT_LOGGED_OUT": "User not logged out",
-      "VALIDATION": {
-        "ACCESS_TOKEN": {
-          "REQUIRED": "Access token is required"
-        },
-        "REFRESH_TOKEN": {
-          "REQUIRED": "Refresh token is required"
+      },
+      "LOGOUT": {
+        "USER_NOT_LOGGED_OUT": "User not logged out",
+        "VALIDATION": {
+          "ACCESS_TOKEN": {
+            "REQUIRED": "Access token is required"
+          },
+          "REFRESH_TOKEN": {
+            "REQUIRED": "Refresh token is required"
+          }
         }
       }
     }
