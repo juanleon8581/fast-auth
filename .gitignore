@@ -120,3 +120,6 @@ Thumbs.db
 # Supabase
 supabase/*
 !supabase/config.toml
+
+# Development
+actual_process_checklist.md
