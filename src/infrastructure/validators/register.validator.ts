@@ -51,7 +51,7 @@ export class RegisterValidator {
       return registerDto!;
     } catch (error) {
       if (error instanceof z.ZodError) {
-        // Lanzar el primer error de validación con información detallada
+        // launch the first error from zod validation
         const firstError = error.issues[0];
         if (firstError) {
           const field = firstError.path.join(".");
@@ -64,7 +64,7 @@ export class RegisterValidator {
         throw new BadRequestError(DATA_VALIDATION.UNKNOWN_VALIDATION_ERROR);
       }
 
-      // Si no es un ZodError, re-lanzar el error original
+      // if not is a zod error, relaunch the error
       if (
         error instanceof ValidationError ||
         error instanceof BadRequestError
