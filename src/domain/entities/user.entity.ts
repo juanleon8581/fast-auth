@@ -1,3 +1,4 @@
+import { TRawJson } from "../interfaces/general.interfaces";
 import { IUserData } from "../interfaces/user.interfaces";
 import { ERRORS } from "@/config/strings/global.strings.json";
 
@@ -22,8 +23,7 @@ export class UserEntity implements IUserData {
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static createFrom = (raw: { [key: string]: any }): UserEntity => {
+  static createFrom = (raw: TRawJson): UserEntity => {
     const { id, email, name, email_verified, phone } = raw;
 
     if (!id || !email || !name || !email_verified) {

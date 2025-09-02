@@ -7,6 +7,7 @@ import {
 } from "@/config/regex/validations.regex";
 import { ValidationError } from "@/domain/errors/validation-error";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
+import { TRawJson } from "@/domain/interfaces/general.interfaces";
 
 const { DATA_VALIDATION } = globalStrings.ERRORS;
 const { VALIDATION } = globalStrings.ERRORS.AUTH.REGISTER;
@@ -25,7 +26,6 @@ const registerSchema = z.object({
     .regex(NAME_LASTNAME_REGEX, VALIDATION.LASTNAME.INVALID_FORMAT),
 
   email: z
-    .string()
     .email(VALIDATION.EMAIL.INVALID_FORMAT)
     .max(100, VALIDATION.EMAIL.MAX_LENGTH)
     .toLowerCase(),
@@ -38,8 +38,7 @@ const registerSchema = z.object({
 });
 
 export class RegisterValidator {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static validate(data: { [key: string]: any }): RegisterDto {
+  static validate(data: TRawJson): RegisterDto {
     try {
       const validatedData = registerSchema.parse(data);
 

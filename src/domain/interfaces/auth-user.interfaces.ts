@@ -1,9 +1,9 @@
 import type { UserEntity } from "../entities/user.entity";
+import { TRawJson } from "./general.interfaces";
 
 export interface IAuthUserEntityFromRaw {
   user: UserEntity;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: { [key: string]: any };
+  data: TRawJson;
 }
 
 export interface IAuthUserEntity {
