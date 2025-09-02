@@ -5,11 +5,10 @@ import {
   NAME_LASTNAME_REGEX,
   SECURE_PASSWORD_REGEX,
 } from "@/config/regex/validations.regex";
-import { ValidationError } from "@/domain/errors/validation-error";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { TRawJson } from "@/domain/interfaces/general.interfaces";
+import { processValidationError } from "./utils/processError.validator";
 
-const { DATA_VALIDATION } = globalStrings.ERRORS;
 const { VALIDATION } = globalStrings.ERRORS.AUTH.REGISTER;
 
 const registerSchema = z.object({
@@ -50,29 +49,7 @@ export class RegisterValidator {
 
       return registerDto!;
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        // launch the first error from zod validation
-        const firstError = error.issues[0];
-        if (firstError) {
-          const field = firstError.path.join(".");
-          throw new ValidationError(
-            firstError.message,
-            field,
-            "VALIDATION_ERROR",
-          );
-        }
-        throw new BadRequestError(DATA_VALIDATION.UNKNOWN_VALIDATION_ERROR);
-      }
-
-      // if not is a zod error, relaunch the error
-      if (
-        error instanceof ValidationError ||
-        error instanceof BadRequestError
-      ) {
-        throw error;
-      }
-
-      throw new BadRequestError(DATA_VALIDATION.UNKNOWN_VALIDATION_ERROR);
+      return processValidationError(error);
     }
   }
 }
