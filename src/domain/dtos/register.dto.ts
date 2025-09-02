@@ -1,4 +1,5 @@
 import { ERRORS } from "@/config/strings/global.strings.json";
+import { TRawJson } from "../interfaces/general.interfaces";
 
 interface IRegisterDto {
   name: string;
@@ -20,8 +21,8 @@ export class RegisterDto {
 
     return new RegisterDto(name, lastname, email, password);
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static createFrom(props: { [key: string]: any }): [string?, RegisterDto?] {
+
+  static createFrom(props: TRawJson): [string?, RegisterDto?] {
     const { name, lastname, email, password } = props;
 
     if (!name || !lastname || !email || !password)
