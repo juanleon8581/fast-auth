@@ -17,8 +17,8 @@ describe("Global Strings Configuration", () => {
       const { ERRORS } = globalStrings;
       expect(ERRORS).toHaveProperty("DATA_VALIDATION");
       expect(ERRORS).toHaveProperty("AUTH");
-      expect(ERRORS).toHaveProperty("LOGIN");
-      expect(ERRORS).toHaveProperty("LOGOUT");
+      expect(ERRORS.AUTH).toHaveProperty("LOGIN");
+      expect(ERRORS.AUTH).toHaveProperty("LOGOUT");
     });
   });
 
@@ -167,7 +167,7 @@ describe("Global Strings Configuration", () => {
   });
 
   describe("LOGIN Error Messages", () => {
-    const { LOGIN } = globalStrings.ERRORS;
+    const { LOGIN } = globalStrings.ERRORS.AUTH;
 
     it("should have all login error messages", () => {
       expect(LOGIN).toHaveProperty("INVALID_DATA_RECEIVED");
@@ -225,7 +225,7 @@ describe("Global Strings Configuration", () => {
   });
 
   describe("LOGOUT Error Messages", () => {
-    const { LOGOUT } = globalStrings.ERRORS;
+    const { LOGOUT } = globalStrings.ERRORS.AUTH;
 
     it("should have logout error message", () => {
       expect(LOGOUT).toHaveProperty("USER_NOT_LOGGED_OUT");
@@ -359,8 +359,8 @@ describe("Global Strings Configuration", () => {
       // Verify that similar sections have similar depth
       const authRegisterValidation =
         globalStrings.ERRORS.AUTH.REGISTER.VALIDATION;
-      const loginValidation = globalStrings.ERRORS.LOGIN.VALIDATION;
-      const logoutValidation = globalStrings.ERRORS.LOGOUT.VALIDATION;
+      const loginValidation = globalStrings.ERRORS.AUTH.LOGIN.VALIDATION;
+      const logoutValidation = globalStrings.ERRORS.AUTH.LOGOUT.VALIDATION;
 
       expect(typeof authRegisterValidation).toBe("object");
       expect(typeof loginValidation).toBe("object");
