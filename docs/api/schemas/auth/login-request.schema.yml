@@ -1,0 +1,21 @@
+components:
+  schemas:
+    LoginUserRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          description: User email
+          example: joe.doe@example.com
+          format: email
+          maxLength: 100
+        password:
+          type: string
+          description: User password
+          minLength: 8
+          maxLength: 128
+          example: "SecurePass123!"
+          format: password

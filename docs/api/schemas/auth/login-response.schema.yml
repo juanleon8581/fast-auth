@@ -1,0 +1,20 @@
+components:
+  schemas:
+    LoginUserResponse:
+      type: object
+      properties:
+        user:
+          type: object
+          $ref: "#/components/schemas/UserResponse"
+
+        accessToken:
+          type: string
+          description: Access token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+          format: jwt
+
+        refreshToken:
+          type: string
+          description: Refresh token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+          format: jwt

@@ -1,0 +1,28 @@
+paths:
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login user
+      description: Authenticate user and return access tokens
+      operationId: loginUser
+      requestBody:
+        description: User login credentials
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginUserRequest"
+        required: true
+      responses:
+        "200":
+          description: Usuario autenticado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginUserResponse"
+        "400":
+          description: Invalid credentials
+        "422":
+          description: Validation Error
+        "500":
+          description: Internal Server Error
