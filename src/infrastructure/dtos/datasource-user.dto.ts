@@ -15,7 +15,7 @@ export class DatasourceUserDto implements IDatasourceUserDto {
     public readonly email: string,
     public readonly name: string,
     public readonly email_verified: boolean,
-    public readonly phone?: string
+    public readonly phone?: string,
   ) {
     Object.freeze(this);
   }
@@ -30,7 +30,8 @@ export class DatasourceUserDto implements IDatasourceUserDto {
     const { id, email, email_confirmed_at, phone } = raw;
     const name = raw.user_metadata?.display_name;
 
-    if (!id || !email || !name) return [ERRORS.LOGIN.INVALID_DATA_RECEIVED];
+    if (!id || !email || !name)
+      return [ERRORS.AUTH.LOGIN.INVALID_DATA_RECEIVED];
 
     return [
       undefined,
