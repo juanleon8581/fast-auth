@@ -38,6 +38,7 @@ describe("AuthRoutes", () => {
     // Mock AuthController
     mockAuthController = {
       register: jest.fn(),
+      login: jest.fn(),
     } as unknown as jest.Mocked<AuthController>;
     (AuthController as jest.Mock).mockImplementation(() => mockAuthController);
   });
@@ -68,10 +69,17 @@ describe("AuthRoutes", () => {
 
     it("should register POST /register route", () => {
       AuthRoutes.routes;
-      expect(mockRouter.post).toHaveBeenCalledTimes(1);
       expect(mockRouter.post).toHaveBeenCalledWith(
         "/register",
         mockAuthController.register,
+      );
+    });
+
+    it("should register POST /login route", () => {
+      AuthRoutes.routes;
+      expect(mockRouter.post).toHaveBeenCalledWith(
+        "/login",
+        mockAuthController.login,
       );
     });
 
@@ -91,6 +99,10 @@ describe("AuthRoutes", () => {
         "/register",
         expect.any(Function),
       );
+      expect(mockRouter.post).toHaveBeenCalledWith(
+        "/login",
+        expect.any(Function),
+      );
     });
 
     it("should use controller methods as route handlers", () => {
@@ -99,6 +111,7 @@ describe("AuthRoutes", () => {
       // Verify that controller methods are used as handlers
       const postCalls = (mockRouter.post as jest.Mock).mock.calls;
       expect(postCalls[0][1]).toBe(mockAuthController.register);
+      expect(postCalls[1][1]).toBe(mockAuthController.login);
     });
   });
 
@@ -128,7 +141,7 @@ describe("AuthRoutes", () => {
       AuthRoutes.routes;
 
       // Verify only POST method is used
-      expect(mockRouter.post).toHaveBeenCalledTimes(1);
+      expect(mockRouter.post).toHaveBeenCalledTimes(2);
       expect(mockRouter.get).not.toHaveBeenCalled();
       expect(mockRouter.put).not.toHaveBeenCalled();
       expect(mockRouter.delete).not.toHaveBeenCalled();
@@ -143,6 +156,16 @@ describe("AuthRoutes", () => {
 
       expect(registerRoute).toBeDefined();
       expect(registerRoute[1]).toBe(mockAuthController.register);
+    });
+
+    it("should define login endpoint", () => {
+      AuthRoutes.routes;
+
+      const postCalls = (mockRouter.post as jest.Mock).mock.calls;
+      const loginRoute = postCalls.find((call) => call[0] === "/login");
+
+      expect(loginRoute).toBeDefined();
+      expect(loginRoute[1]).toBe(mockAuthController.login);
     });
   });
 
