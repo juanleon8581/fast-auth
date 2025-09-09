@@ -48,11 +48,14 @@ export class MockAuthRepository extends AuthRepository {
    * @param name - User name (optional)
    * @returns AuthUserEntity instance
    */
-  createMockAuthUser(
-    email: string,
-    name: string = "Test User",
-  ): AuthUserEntity {
-    const mockUser = new UserEntity("user-123", email, name, true, undefined);
+  createMockAuthUser(email: string, name: string = "Test User"): AuthUserEntity {
+    const mockUser = new UserEntity(
+      "user-123",
+      email,
+      name,
+      true,
+      undefined,
+    );
 
     const mockAuthData = {
       user: mockUser,
