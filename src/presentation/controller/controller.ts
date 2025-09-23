@@ -1,8 +1,10 @@
 import { AuthRepository } from "@/domain/repositories/auth.repository";
 import { LoginUser } from "@/domain/use-cases/login-user";
 import { RegisterUser } from "@/domain/use-cases/register-user";
+import { LogoutAuth } from "@/domain/use-cases/logout-user";
 import { LoginValidator } from "@/infrastructure/validators/login.validator";
 import { RegisterValidator } from "@/infrastructure/validators/register.validator";
+import { LogoutValidator } from "@/infrastructure/validators/logout.validator";
 import { ResponseHelper } from "@/presentation/utils/response-helper";
 
 import { Request, Response, NextFunction } from "express";
@@ -29,6 +31,19 @@ export class AuthController {
       new LoginUser(this.datasource)
         .execute(dto)
         .then((user) => ResponseHelper.success(res, user, req, 200))
+        .catch(next);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public logout = (req: Request, res: Response, next: NextFunction): void => {
+    try {
+      const dto = LogoutValidator.validate(req.body);
+
+      new LogoutAuth(this.datasource)
+        .execute(dto)
+        .then(() => ResponseHelper.success(res, { message: "Logout successful" }, req, 200))
         .catch(next);
     } catch (error) {
       next(error);

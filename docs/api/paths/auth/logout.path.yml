@@ -1,0 +1,28 @@
+paths:
+  /api/auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: Logout user
+      description: Logout user and invalidate session tokens
+      operationId: logoutUser
+      requestBody:
+        description: User logout tokens
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LogoutUserRequest"
+        required: true
+      responses:
+        "200":
+          description: Usuario deslogueado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LogoutUserResponse"
+        "400":
+          description: Invalid tokens or logout failed
+        "422":
+          description: Validation Error
+        "500":
+          description: Internal Server Error

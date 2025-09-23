@@ -8,6 +8,7 @@ import { DatasourceUserDto } from "../dtos/datasource-user.dto";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { ValidationError } from "@/domain/errors/validation-error";
 import { LoginDto } from "@/domain/dtos/login.dto";
+import { LogoutDto } from "@/domain/dtos/logout.dto";
 
 export class AuthDatasource implements AuthRepository {
   constructor(private readonly client: typeof AuthClient) {}
@@ -77,5 +78,37 @@ export class AuthDatasource implements AuthRepository {
       data: data.session,
     });
     return authUser;
+  }
+
+  async logout(dto: LogoutDto): Promise<void> {
+    //* Create a new and unique instance of AuthClient for this request
+    const authClient = new this.client().create();
+
+    // Validate that we have the required tokens
+    if (!dto.sessionToken || !dto.refreshToken) {
+      throw new BadRequestError(ERRORS.AUTH.LOGOUT.USER_NOT_LOGGED_OUT);
+    }
+
+    const { error: setSessionError } = await authClient.auth.setSession({
+      access_token: dto.sessionToken,
+      refresh_token: dto.refreshToken,
+    });
+    if (setSessionError) {
+      throw new BadRequestError(
+        setSessionError.message,
+        setSessionError.code,
+        setSessionError.status?.toString(),
+      );
+    }
+
+    const { error } = await authClient.auth.signOut({ scope: "local" });
+
+    if (error) {
+      throw new BadRequestError(
+        error.message,
+        error.code,
+        error.status?.toString(),
+      );
+    }
   }
 }

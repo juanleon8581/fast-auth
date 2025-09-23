@@ -39,6 +39,7 @@ describe("AuthRoutes", () => {
     mockAuthController = {
       register: jest.fn(),
       login: jest.fn(),
+      logout: jest.fn(),
     } as unknown as jest.Mocked<AuthController>;
     (AuthController as jest.Mock).mockImplementation(() => mockAuthController);
   });
@@ -141,7 +142,7 @@ describe("AuthRoutes", () => {
       AuthRoutes.routes;
 
       // Verify only POST method is used
-      expect(mockRouter.post).toHaveBeenCalledTimes(2);
+      expect(mockRouter.post).toHaveBeenCalledTimes(3);
       expect(mockRouter.get).not.toHaveBeenCalled();
       expect(mockRouter.put).not.toHaveBeenCalled();
       expect(mockRouter.delete).not.toHaveBeenCalled();
@@ -166,6 +167,16 @@ describe("AuthRoutes", () => {
 
       expect(loginRoute).toBeDefined();
       expect(loginRoute[1]).toBe(mockAuthController.login);
+    });
+
+    it("should define logout endpoint", () => {
+      AuthRoutes.routes;
+
+      const postCalls = (mockRouter.post as jest.Mock).mock.calls;
+      const logoutRoute = postCalls.find((call) => call[0] === "/logout");
+
+      expect(logoutRoute).toBeDefined();
+      expect(logoutRoute[1]).toBe(mockAuthController.logout);
     });
   });
 

@@ -1,0 +1,18 @@
+components:
+  schemas:
+    LogoutUserRequest:
+      type: object
+      required:
+        - sessionToken
+        - refreshToken
+      properties:
+        sessionToken:
+          type: string
+          description: User session token
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          format: jwt
+        refreshToken:
+          type: string
+          description: User refresh token
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          format: jwt

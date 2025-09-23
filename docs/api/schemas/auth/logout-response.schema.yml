@@ -1,0 +1,9 @@
+components:
+  schemas:
+    LogoutUserResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Logout success message
+          example: "Logout successful"
