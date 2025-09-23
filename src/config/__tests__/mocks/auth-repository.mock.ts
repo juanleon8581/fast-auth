@@ -1,4 +1,5 @@
 import { LoginDto } from "@/domain/dtos/login.dto";
+import { LogoutDto } from "@/domain/dtos/logout.dto";
 import { RegisterDto } from "@/domain/dtos/register.dto";
 import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
 import { UserEntity } from "@/domain/entities/user.entity";
@@ -48,14 +49,11 @@ export class MockAuthRepository extends AuthRepository {
    * @param name - User name (optional)
    * @returns AuthUserEntity instance
    */
-  createMockAuthUser(email: string, name: string = "Test User"): AuthUserEntity {
-    const mockUser = new UserEntity(
-      "user-123",
-      email,
-      name,
-      true,
-      undefined,
-    );
+  createMockAuthUser(
+    email: string,
+    name: string = "Test User",
+  ): AuthUserEntity {
+    const mockUser = new UserEntity("user-123", email, name, true, undefined);
 
     const mockAuthData = {
       user: mockUser,
@@ -93,5 +91,15 @@ export class MockAuthRepository extends AuthRepository {
 
     // Create a default mock result for login
     return this.createMockAuthUser(loginDto.email);
+  }
+
+  async logout(dto: LogoutDto): Promise<void> {
+    if (!dto) {
+      throw new Error("Invalid logout data: missing tokens");
+    }
+
+    if (this.shouldFail) {
+      throw new Error(this.errorMessage);
+    }
   }
 }
