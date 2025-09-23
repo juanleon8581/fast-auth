@@ -3,6 +3,7 @@ import { RegisterDto } from "../../dtos/register.dto";
 import { AuthUserEntity } from "../../entities/auth-user.entity";
 import { UserEntity } from "../../entities/user.entity";
 import { LoginDto } from "@/domain/dtos/login.dto";
+import { LogoutDto } from "@/domain/dtos/logout.dto";
 
 // Concrete implementation for testing
 class TestAuthRepository extends AuthRepository {
@@ -41,6 +42,14 @@ class TestAuthRepository extends AuthRepository {
         refresh_token: "mock-refresh-token",
       },
     });
+  }
+
+  async logout(logoutDto: LogoutDto): Promise<void> {
+    // Mock implementation for testing - validate tokens exist
+    if (!logoutDto.sessionToken || !logoutDto.refreshToken) {
+      throw new Error("Invalid logout data");
+    }
+    return Promise.resolve();
   }
 }
 
@@ -173,6 +182,58 @@ describe("AuthRepository", () => {
 
           const resolvedResult = await result;
           expect(resolvedResult).toBeInstanceOf(AuthUserEntity);
+        });
+      });
+    });
+
+    describe("logout method", () => {
+      it("should implement logout method that returns void", async () => {
+        const logoutDto = new LogoutDto("session-token-123", "refresh-token-123");
+
+        const result = await testRepository.logout(logoutDto);
+
+        expect(result).toBeUndefined();
+      });
+
+      it("should handle different LogoutDto instances", async () => {
+        const logoutDto = new LogoutDto("another-session-token", "another-refresh-token");
+
+        await expect(testRepository.logout(logoutDto)).resolves.toBeUndefined();
+      });
+
+      it("should throw error for invalid logout data", async () => {
+        const invalidLogoutDto = new LogoutDto("", "refresh-token-123");
+
+        await expect(testRepository.logout(invalidLogoutDto))
+          .rejects
+          .toThrow("Invalid logout data");
+      });
+
+      it("should throw error when refresh token is missing", async () => {
+        const invalidLogoutDto = new LogoutDto("session-token-123", "");
+
+        await expect(testRepository.logout(invalidLogoutDto))
+          .rejects
+          .toThrow("Invalid logout data");
+      });
+
+      describe("method signature validation", () => {
+        it("should accept LogoutDto parameter", () => {
+          const logoutDto = new LogoutDto("session-token-123", "refresh-token-123");
+
+          expect(() => {
+            testRepository.logout(logoutDto);
+          }).not.toThrow();
+        });
+
+        it("should return Promise<void>", async () => {
+          const logoutDto = new LogoutDto("session-token-123", "refresh-token-123");
+
+          const result = testRepository.logout(logoutDto);
+          expect(result).toBeInstanceOf(Promise);
+
+          const resolvedResult = await result;
+          expect(resolvedResult).toBeUndefined();
         });
       });
     });
