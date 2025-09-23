@@ -10,7 +10,7 @@ describe("LoginValidator", () => {
     it("should return LoginDto when data is valid", () => {
       const validData = {
         email: "test@example.com",
-        password: "ValidPass123!"
+        password: "ValidPass123!",
       };
 
       const result = LoginValidator.validate(validData);
@@ -23,69 +23,91 @@ describe("LoginValidator", () => {
     it("should throw ValidationError when email format is invalid", () => {
       const invalidData = {
         email: "invalid-email",
-        password: "ValidPass123!"
+        password: "ValidPass123!",
       };
 
-      expect(() => LoginValidator.validate(invalidData)).toThrow(ValidationError);
-      expect(() => LoginValidator.validate(invalidData)).toThrow(VALIDATION.EMAIL.INVALID_FORMAT);
+      expect(() => LoginValidator.validate(invalidData)).toThrow(
+        ValidationError,
+      );
+      expect(() => LoginValidator.validate(invalidData)).toThrow(
+        VALIDATION.EMAIL.INVALID_FORMAT,
+      );
     });
 
     it("should throw ValidationError when password is too short", () => {
       const invalidData = {
         email: "test@example.com",
-        password: "short"
+        password: "short",
       };
 
-      expect(() => LoginValidator.validate(invalidData)).toThrow(ValidationError);
-      expect(() => LoginValidator.validate(invalidData)).toThrow(VALIDATION.PASSWORD.MIN_LENGTH);
+      expect(() => LoginValidator.validate(invalidData)).toThrow(
+        ValidationError,
+      );
+      expect(() => LoginValidator.validate(invalidData)).toThrow(
+        VALIDATION.PASSWORD.MIN_LENGTH,
+      );
     });
 
     it("should throw ValidationError when password is too long", () => {
       const invalidData = {
         email: "test@example.com",
-        password: "a".repeat(129) // 129 characters
+        password: "a".repeat(129), // 129 characters
       };
 
-      expect(() => LoginValidator.validate(invalidData)).toThrow(ValidationError);
-      expect(() => LoginValidator.validate(invalidData)).toThrow(VALIDATION.PASSWORD.MAX_LENGTH);
+      expect(() => LoginValidator.validate(invalidData)).toThrow(
+        ValidationError,
+      );
+      expect(() => LoginValidator.validate(invalidData)).toThrow(
+        VALIDATION.PASSWORD.MAX_LENGTH,
+      );
     });
 
     it("should throw ValidationError when password doesn't match regex", () => {
       const invalidData = {
         email: "test@example.com",
-        password: "onlylowercase"
+        password: "onlylowercase",
       };
 
-      expect(() => LoginValidator.validate(invalidData)).toThrow(ValidationError);
-      expect(() => LoginValidator.validate(invalidData)).toThrow(VALIDATION.PASSWORD.INVALID_FORMAT);
+      expect(() => LoginValidator.validate(invalidData)).toThrow(
+        ValidationError,
+      );
+      expect(() => LoginValidator.validate(invalidData)).toThrow(
+        VALIDATION.PASSWORD.INVALID_FORMAT,
+      );
     });
 
     it("should throw ValidationError when email is missing", () => {
       const invalidData = {
-        password: "ValidPass123!"
+        password: "ValidPass123!",
       };
 
-      expect(() => LoginValidator.validate(invalidData)).toThrow(ValidationError);
+      expect(() => LoginValidator.validate(invalidData)).toThrow(
+        ValidationError,
+      );
     });
 
     it("should throw ValidationError when password is missing", () => {
       const invalidData = {
-        email: "test@example.com"
+        email: "test@example.com",
       };
 
-      expect(() => LoginValidator.validate(invalidData)).toThrow(ValidationError);
+      expect(() => LoginValidator.validate(invalidData)).toThrow(
+        ValidationError,
+      );
     });
 
     it("should throw ValidationError when both fields are missing", () => {
       const invalidData = {};
 
-      expect(() => LoginValidator.validate(invalidData)).toThrow(ValidationError);
+      expect(() => LoginValidator.validate(invalidData)).toThrow(
+        ValidationError,
+      );
     });
 
     it("should throw ValidationError with correct field when email is invalid", () => {
       const invalidData = {
         email: "invalid-email",
-        password: "ValidPass123!"
+        password: "ValidPass123!",
       };
 
       try {
@@ -100,7 +122,7 @@ describe("LoginValidator", () => {
     it("should throw ValidationError with correct field when password is invalid", () => {
       const invalidData = {
         email: "test@example.com",
-        password: "short"
+        password: "short",
       };
 
       try {
@@ -115,10 +137,12 @@ describe("LoginValidator", () => {
     it("should handle empty string values gracefully", () => {
       const invalidData = {
         email: "",
-        password: ""
+        password: "",
       };
 
-      expect(() => LoginValidator.validate(invalidData)).toThrow(ValidationError);
+      expect(() => LoginValidator.validate(invalidData)).toThrow(
+        ValidationError,
+      );
     });
   });
 });

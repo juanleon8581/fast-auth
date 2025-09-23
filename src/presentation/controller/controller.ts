@@ -43,7 +43,14 @@ export class AuthController {
 
       new LogoutAuth(this.datasource)
         .execute(dto)
-        .then(() => ResponseHelper.success(res, { message: "Logout successful" }, req, 200))
+        .then(() =>
+          ResponseHelper.success(
+            res,
+            { message: "Logout successful" },
+            req,
+            200,
+          ),
+        )
         .catch(next);
     } catch (error) {
       next(error);

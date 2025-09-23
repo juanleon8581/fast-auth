@@ -188,7 +188,10 @@ describe("AuthRepository", () => {
 
     describe("logout method", () => {
       it("should implement logout method that returns void", async () => {
-        const logoutDto = new LogoutDto("session-token-123", "refresh-token-123");
+        const logoutDto = new LogoutDto(
+          "session-token-123",
+          "refresh-token-123",
+        );
 
         const result = await testRepository.logout(logoutDto);
 
@@ -196,7 +199,10 @@ describe("AuthRepository", () => {
       });
 
       it("should handle different LogoutDto instances", async () => {
-        const logoutDto = new LogoutDto("another-session-token", "another-refresh-token");
+        const logoutDto = new LogoutDto(
+          "another-session-token",
+          "another-refresh-token",
+        );
 
         await expect(testRepository.logout(logoutDto)).resolves.toBeUndefined();
       });
@@ -204,22 +210,25 @@ describe("AuthRepository", () => {
       it("should throw error for invalid logout data", async () => {
         const invalidLogoutDto = new LogoutDto("", "refresh-token-123");
 
-        await expect(testRepository.logout(invalidLogoutDto))
-          .rejects
-          .toThrow("Invalid logout data");
+        await expect(testRepository.logout(invalidLogoutDto)).rejects.toThrow(
+          "Invalid logout data",
+        );
       });
 
       it("should throw error when refresh token is missing", async () => {
         const invalidLogoutDto = new LogoutDto("session-token-123", "");
 
-        await expect(testRepository.logout(invalidLogoutDto))
-          .rejects
-          .toThrow("Invalid logout data");
+        await expect(testRepository.logout(invalidLogoutDto)).rejects.toThrow(
+          "Invalid logout data",
+        );
       });
 
       describe("method signature validation", () => {
         it("should accept LogoutDto parameter", () => {
-          const logoutDto = new LogoutDto("session-token-123", "refresh-token-123");
+          const logoutDto = new LogoutDto(
+            "session-token-123",
+            "refresh-token-123",
+          );
 
           expect(() => {
             testRepository.logout(logoutDto);
@@ -227,7 +236,10 @@ describe("AuthRepository", () => {
         });
 
         it("should return Promise<void>", async () => {
-          const logoutDto = new LogoutDto("session-token-123", "refresh-token-123");
+          const logoutDto = new LogoutDto(
+            "session-token-123",
+            "refresh-token-123",
+          );
 
           const result = testRepository.logout(logoutDto);
           expect(result).toBeInstanceOf(Promise);

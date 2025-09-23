@@ -1,73 +1,80 @@
-import { RegisterDto } from '@/domain/dtos/register.dto';
-import { LoginDto } from '@/domain/dtos/login.dto';
-import { LogoutDto } from '@/domain/dtos/logout.dto';
-import { UserEntity } from '@/domain/entities/user.entity';
-import { AuthUserEntity } from '@/domain/entities/auth-user.entity';
+import { RegisterDto } from "@/domain/dtos/register.dto";
+import { LoginDto } from "@/domain/dtos/login.dto";
+import { LogoutDto } from "@/domain/dtos/logout.dto";
+import { UserEntity } from "@/domain/entities/user.entity";
+import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
 
 // Mock types will be defined in individual test files
 
 // Mock data factories
-export const createMockRegisterDto = (): RegisterDto => ({
-  name: 'John',
-  lastname: 'Doe',
-  email: 'john.doe@example.com',
-  password: 'SecurePass123!'
-} as RegisterDto);
+export const createMockRegisterDto = (): RegisterDto =>
+  ({
+    name: "John",
+    lastname: "Doe",
+    email: "john.doe@example.com",
+    password: "SecurePass123!",
+  }) as RegisterDto;
 
-export const createMockLoginDto = (): LoginDto => ({
-  email: 'john.doe@example.com',
-  password: 'SecurePass123!'
-} as LoginDto);
+export const createMockLoginDto = (): LoginDto =>
+  ({
+    email: "john.doe@example.com",
+    password: "SecurePass123!",
+  }) as LoginDto;
 
-export const createMockLogoutDto = (): LogoutDto => ({
-  sessionToken: 'session-token-123',
-  refreshToken: 'refresh-token-123'
-} as LogoutDto);
+export const createMockLogoutDto = (): LogoutDto =>
+  ({
+    sessionToken: "session-token-123",
+    refreshToken: "refresh-token-123",
+  }) as LogoutDto;
 
 export const createMockUser = () => ({
-  id: 'user-123',
-  email: 'john.doe@example.com',
+  id: "user-123",
+  email: "john.doe@example.com",
   user_metadata: {
-    display_name: 'John Doe'
+    display_name: "John Doe",
   },
-  email_confirmed_at: '2024-01-01T00:00:00Z',
-  created_at: '2024-01-01T00:00:00Z'
+  email_confirmed_at: "2024-01-01T00:00:00Z",
+  created_at: "2024-01-01T00:00:00Z",
 });
 
 export const createMockSession = () => ({
-  access_token: 'access-token-123',
-  refresh_token: 'refresh-token-123'
+  access_token: "access-token-123",
+  refresh_token: "refresh-token-123",
 });
 
 export const createMockDatasourceUserDto = () => ({
-  id: 'user-123',
-  email: 'john.doe@example.com',
-  name: 'John Doe',
-  email_verified: true
+  id: "user-123",
+  email: "john.doe@example.com",
+  name: "John Doe",
+  email_verified: true,
 });
 
-export const createMockUserEntity = (): UserEntity => ({
-  id: 'user-123',
-  email: 'john.doe@example.com',
-  name: 'John Doe'
-} as UserEntity);
+export const createMockUserEntity = (): UserEntity =>
+  ({
+    id: "user-123",
+    email: "john.doe@example.com",
+    name: "John Doe",
+  }) as UserEntity;
 
-export const createMockAuthUserEntity = (): AuthUserEntity => ({
-  user: createMockUserEntity(),
-  accessToken: 'access-token-123',
-  refreshToken: 'refresh-token-123'
-} as AuthUserEntity);
+export const createMockAuthUserEntity = (): AuthUserEntity =>
+  ({
+    user: createMockUserEntity(),
+    accessToken: "access-token-123",
+    refreshToken: "refresh-token-123",
+  }) as AuthUserEntity;
 
 // Test data variations
 export const createMockUserWithoutSession = () => ({
   ...createMockUser(),
-  user_metadata: { display_name: 'John Doe' }
+  user_metadata: { display_name: "John Doe" },
 });
 
-export const createMockSupabaseError = (message: string = 'Supabase error') => ({
+export const createMockSupabaseError = (
+  message: string = "Supabase error",
+) => ({
   message,
-  code: 'auth_error',
-  status: 400
+  code: "auth_error",
+  status: 400,
 });
 
 // Common test scenarios data
@@ -77,33 +84,33 @@ export const TEST_SCENARIOS = {
     session: createMockSession(),
     datasourceUserDto: createMockDatasourceUserDto(),
     userEntity: createMockUserEntity(),
-    authUserEntity: createMockAuthUserEntity()
+    authUserEntity: createMockAuthUserEntity(),
   },
   REGISTRATION_WITHOUT_SESSION: {
     user: createMockUserWithoutSession(),
     session: null,
     datasourceUserDto: createMockDatasourceUserDto(),
-    userEntity: createMockUserEntity()
+    userEntity: createMockUserEntity(),
   },
   SUCCESSFUL_LOGIN: {
     user: createMockUser(),
     session: createMockSession(),
     datasourceUserDto: createMockDatasourceUserDto(),
     userEntity: createMockUserEntity(),
-    authUserEntity: createMockAuthUserEntity()
+    authUserEntity: createMockAuthUserEntity(),
   },
   SUCCESSFUL_LOGOUT: {
     setSessionResponse: { error: null },
-    signOutResponse: { error: null }
-  }
+    signOutResponse: { error: null },
+  },
 };
 
 // Error scenarios
 export const ERROR_SCENARIOS = {
-  SUPABASE_ERROR: createMockSupabaseError('User already registered'),
-  USER_NOT_CREATED: createMockSupabaseError('User not created'),
-  CLIENT_CREATION_ERROR: new Error('Failed to create Supabase client'),
-  INVALID_USER_DATA: new Error('Invalid user data'),
-  LOGIN_ERROR: createMockSupabaseError('Invalid credentials'),
-  LOGOUT_ERROR: createMockSupabaseError('Failed to logout')
+  SUPABASE_ERROR: createMockSupabaseError("User already registered"),
+  USER_NOT_CREATED: createMockSupabaseError("User not created"),
+  CLIENT_CREATION_ERROR: new Error("Failed to create Supabase client"),
+  INVALID_USER_DATA: new Error("Invalid user data"),
+  LOGIN_ERROR: createMockSupabaseError("Invalid credentials"),
+  LOGOUT_ERROR: createMockSupabaseError("Failed to logout"),
 };

@@ -1,16 +1,14 @@
-import { AuthDatasource } from '../auth.datasource';
-import { AuthClient } from '@/infrastructure/config/auth.client';
-import { LogoutDto } from '@/domain/dtos/logout.dto';
-import {
-  createMockLogoutDto
-} from '@/config/__tests__/__helpers__/auth-datasource.helpers';
+import { AuthDatasource } from "../auth.datasource";
+import { AuthClient } from "@/infrastructure/config/auth.client";
+import { LogoutDto } from "@/domain/dtos/logout.dto";
+import { createMockLogoutDto } from "@/config/__tests__/__helpers__/auth-datasource.helpers";
 
 // Mock dependencies
-jest.mock('@/infrastructure/config/auth.client');
+jest.mock("@/infrastructure/config/auth.client");
 
 const MockedAuthClient = AuthClient as jest.MockedClass<typeof AuthClient>;
 
-describe('AuthDatasource - Logout Functionality', () => {
+describe("AuthDatasource - Logout Functionality", () => {
   let authDatasource: AuthDatasource;
   let mockSupabaseClient: any;
   let mockAuthClient: any;
@@ -25,13 +23,13 @@ describe('AuthDatasource - Logout Functionality', () => {
         signUp: jest.fn(),
         signInWithPassword: jest.fn(),
         setSession: jest.fn(),
-        signOut: jest.fn()
-      }
+        signOut: jest.fn(),
+      },
     };
 
     // Create mock AuthClient
     mockAuthClient = {
-      create: jest.fn().mockReturnValue(mockSupabaseClient)
+      create: jest.fn().mockReturnValue(mockSupabaseClient),
     };
 
     MockedAuthClient.mockImplementation(() => mockAuthClient);
@@ -43,49 +41,49 @@ describe('AuthDatasource - Logout Functionality', () => {
     authDatasource = new AuthDatasource(MockedAuthClient);
   });
 
-  describe('logout method', () => {
-    describe('successful logout', () => {
+  describe("logout method", () => {
+    describe("successful logout", () => {
       beforeEach(() => {
         mockSupabaseClient.auth.setSession.mockResolvedValue({
-          error: null
+          error: null,
         });
 
         mockSupabaseClient.auth.signOut.mockResolvedValue({
-          error: null
+          error: null,
         });
       });
 
-      it('should call Supabase setSession with correct parameters', async () => {
+      it("should call Supabase setSession with correct parameters", async () => {
         await authDatasource.logout(mockLogoutDto);
 
         expect(mockSupabaseClient.auth.setSession).toHaveBeenCalledWith({
           access_token: mockLogoutDto.sessionToken,
-          refresh_token: mockLogoutDto.refreshToken
+          refresh_token: mockLogoutDto.refreshToken,
         });
       });
 
-      it('should call Supabase signOut with local scope', async () => {
+      it("should call Supabase signOut with local scope", async () => {
         await authDatasource.logout(mockLogoutDto);
 
         expect(mockSupabaseClient.auth.signOut).toHaveBeenCalledWith({
-          scope: 'local'
+          scope: "local",
         });
       });
 
-      it('should create AuthClient and call create method', async () => {
+      it("should create AuthClient and call create method", async () => {
         await authDatasource.logout(mockLogoutDto);
 
         expect(MockedAuthClient).toHaveBeenCalledTimes(1);
         expect(mockAuthClient.create).toHaveBeenCalledTimes(1);
       });
 
-      it('should complete successfully without returning value', async () => {
+      it("should complete successfully without returning value", async () => {
         const result = await authDatasource.logout(mockLogoutDto);
 
         expect(result).toBeUndefined();
       });
 
-      it('should call setSession and signOut in correct order', async () => {
+      it("should call setSession and signOut in correct order", async () => {
         await authDatasource.logout(mockLogoutDto);
 
         // Verify both methods were called
@@ -94,106 +92,106 @@ describe('AuthDatasource - Logout Functionality', () => {
       });
     });
 
-    describe('error handling', () => {
-      it('should throw error when sessionToken is missing', async () => {
+    describe("error handling", () => {
+      it("should throw error when sessionToken is missing", async () => {
         const invalidLogoutDto = {
-          sessionToken: '',
-          refreshToken: 'refresh-token-123'
+          sessionToken: "",
+          refreshToken: "refresh-token-123",
         } as LogoutDto;
 
-        await expect(authDatasource.logout(invalidLogoutDto))
-          .rejects
-          .toThrow('User not logged out');
+        await expect(authDatasource.logout(invalidLogoutDto)).rejects.toThrow(
+          "User not logged out",
+        );
       });
 
-      it('should throw error when refreshToken is missing', async () => {
+      it("should throw error when refreshToken is missing", async () => {
         const invalidLogoutDto = {
-          sessionToken: 'session-token-123',
-          refreshToken: ''
+          sessionToken: "session-token-123",
+          refreshToken: "",
         } as LogoutDto;
 
-        await expect(authDatasource.logout(invalidLogoutDto))
-          .rejects
-          .toThrow('User not logged out');
+        await expect(authDatasource.logout(invalidLogoutDto)).rejects.toThrow(
+          "User not logged out",
+        );
       });
 
-      it('should throw error when both tokens are missing', async () => {
+      it("should throw error when both tokens are missing", async () => {
         const invalidLogoutDto = {
-          sessionToken: '',
-          refreshToken: ''
+          sessionToken: "",
+          refreshToken: "",
         } as LogoutDto;
 
-        await expect(authDatasource.logout(invalidLogoutDto))
-          .rejects
-          .toThrow('User not logged out');
+        await expect(authDatasource.logout(invalidLogoutDto)).rejects.toThrow(
+          "User not logged out",
+        );
       });
 
-      it('should throw error when setSession fails', async () => {
+      it("should throw error when setSession fails", async () => {
         const setSessionError = {
-          message: 'Invalid session',
-          code: 'invalid_session',
-          status: 400
+          message: "Invalid session",
+          code: "invalid_session",
+          status: 400,
         };
 
         mockSupabaseClient.auth.setSession.mockResolvedValue({
-          error: setSessionError
+          error: setSessionError,
         });
 
-        await expect(authDatasource.logout(mockLogoutDto))
-          .rejects
-          .toThrow('Invalid session');
+        await expect(authDatasource.logout(mockLogoutDto)).rejects.toThrow(
+          "Invalid session",
+        );
       });
 
-      it('should throw error when signOut fails', async () => {
+      it("should throw error when signOut fails", async () => {
         mockSupabaseClient.auth.setSession.mockResolvedValue({
-          error: null
+          error: null,
         });
 
         const signOutError = {
-          message: 'Failed to sign out',
-          code: 'signout_error',
-          status: 500
+          message: "Failed to sign out",
+          code: "signout_error",
+          status: 500,
         };
 
         mockSupabaseClient.auth.signOut.mockResolvedValue({
-          error: signOutError
+          error: signOutError,
         });
 
-        await expect(authDatasource.logout(mockLogoutDto))
-          .rejects
-          .toThrow('Failed to sign out');
+        await expect(authDatasource.logout(mockLogoutDto)).rejects.toThrow(
+          "Failed to sign out",
+        );
       });
 
-      it('should handle Supabase client creation failure', async () => {
+      it("should handle Supabase client creation failure", async () => {
         mockAuthClient.create.mockImplementation(() => {
-          throw new Error('Failed to create Supabase client');
+          throw new Error("Failed to create Supabase client");
         });
 
-        await expect(authDatasource.logout(mockLogoutDto))
-          .rejects
-          .toThrow('Failed to create Supabase client');
+        await expect(authDatasource.logout(mockLogoutDto)).rejects.toThrow(
+          "Failed to create Supabase client",
+        );
       });
     });
 
-    describe('method signature and return type', () => {
-      it('should accept LogoutDto parameter', () => {
-        expect(typeof authDatasource.logout).toBe('function');
+    describe("method signature and return type", () => {
+      it("should accept LogoutDto parameter", () => {
+        expect(typeof authDatasource.logout).toBe("function");
         expect(authDatasource.logout.length).toBe(1);
       });
 
-      it('should return Promise<void>', async () => {
+      it("should return Promise<void>", async () => {
         mockSupabaseClient.auth.setSession.mockResolvedValue({ error: null });
         mockSupabaseClient.auth.signOut.mockResolvedValue({ error: null });
 
         const result = await authDatasource.logout(mockLogoutDto);
-        
+
         expect(result).toBeUndefined();
       });
     });
   });
 
-  describe('integration with dependencies', () => {
-    it('should properly integrate with all dependencies', async () => {
+  describe("integration with dependencies", () => {
+    it("should properly integrate with all dependencies", async () => {
       mockSupabaseClient.auth.setSession.mockResolvedValue({ error: null });
       mockSupabaseClient.auth.signOut.mockResolvedValue({ error: null });
 
@@ -205,12 +203,12 @@ describe('AuthDatasource - Logout Functionality', () => {
       expect(mockSupabaseClient.auth.signOut).toHaveBeenCalled();
     });
 
-    it('should validate tokens before attempting logout', async () => {
+    it("should validate tokens before attempting logout", async () => {
       const invalidDto = { sessionToken: null, refreshToken: null } as any;
 
-      await expect(authDatasource.logout(invalidDto))
-        .rejects
-        .toThrow('User not logged out');
+      await expect(authDatasource.logout(invalidDto)).rejects.toThrow(
+        "User not logged out",
+      );
 
       // Should not call Supabase methods if validation fails
       expect(mockSupabaseClient.auth.setSession).not.toHaveBeenCalled();

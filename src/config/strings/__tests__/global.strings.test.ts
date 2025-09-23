@@ -39,7 +39,7 @@ describe("Global Strings Configuration", () => {
       expect(DATA_VALIDATION.INVALID_FIELDS.length).toBeGreaterThan(0);
       expect(typeof DATA_VALIDATION.UNKNOWN_VALIDATION_ERROR).toBe("string");
       expect(DATA_VALIDATION.UNKNOWN_VALIDATION_ERROR.length).toBeGreaterThan(
-        0
+        0,
       );
       expect(typeof DATA_VALIDATION.INVALID_DATA).toBe("string");
       expect(DATA_VALIDATION.INVALID_DATA.length).toBeGreaterThan(0);
@@ -47,11 +47,11 @@ describe("Global Strings Configuration", () => {
 
     it("should have meaningful error messages", () => {
       expect(DATA_VALIDATION.MISSING_FIELDS).toBe(
-        "Required fields are missing"
+        "Required fields are missing",
       );
       expect(DATA_VALIDATION.INVALID_FIELDS).toBe("Invalid fields");
       expect(DATA_VALIDATION.UNKNOWN_VALIDATION_ERROR).toBe(
-        "Unknown validation error"
+        "Unknown validation error",
       );
       expect(DATA_VALIDATION.INVALID_DATA).toBe("Invalid data");
     });
@@ -97,11 +97,11 @@ describe("Global Strings Configuration", () => {
 
         it("should have correct name validation messages", () => {
           expect(NAME.MIN_LENGTH).toBe(
-            "Name must be at least 2 characters long"
+            "Name must be at least 2 characters long",
           );
           expect(NAME.MAX_LENGTH).toBe("Name cannot exceed 50 characters");
           expect(NAME.INVALID_FORMAT).toBe(
-            "Name can only contain letters and spaces"
+            "Name can only contain letters and spaces",
           );
         });
       });
@@ -117,13 +117,13 @@ describe("Global Strings Configuration", () => {
 
         it("should have correct lastname validation messages", () => {
           expect(LASTNAME.MIN_LENGTH).toBe(
-            "Last name must be at least 2 characters long"
+            "Last name must be at least 2 characters long",
           );
           expect(LASTNAME.MAX_LENGTH).toBe(
-            "Last name cannot exceed 50 characters"
+            "Last name cannot exceed 50 characters",
           );
           expect(LASTNAME.INVALID_FORMAT).toBe(
-            "Last name can only contain letters and spaces"
+            "Last name can only contain letters and spaces",
           );
         });
       });
@@ -153,13 +153,13 @@ describe("Global Strings Configuration", () => {
 
         it("should have correct password validation messages", () => {
           expect(PASSWORD.MIN_LENGTH).toBe(
-            "Password must be at least 8 characters long"
+            "Password must be at least 8 characters long",
           );
           expect(PASSWORD.MAX_LENGTH).toBe(
-            "Password cannot exceed 128 characters"
+            "Password cannot exceed 128 characters",
           );
           expect(PASSWORD.INVALID_FORMAT).toBe(
-            "Password must contain at least: 1 lowercase, 1 uppercase, 1 number and 1 special character"
+            "Password must contain at least: 1 lowercase, 1 uppercase, 1 number and 1 special character",
           );
         });
       });
@@ -217,7 +217,7 @@ describe("Global Strings Configuration", () => {
         it("should have correct login password validation messages", () => {
           expect(PASSWORD.REQUIRED).toBe("Password is required");
           expect(PASSWORD.MIN_LENGTH).toBe(
-            "Password must be at least 1 character long"
+            "Password must be at least 1 character long",
           );
         });
       });
@@ -268,7 +268,7 @@ describe("Global Strings Configuration", () => {
   describe("Message Quality Validation", () => {
     const getAllMessages = (
       obj: any,
-      path = ""
+      path = "",
     ): Array<{ path: string; message: string }> => {
       const messages: Array<{ path: string; message: string }> = [];
 
@@ -288,7 +288,7 @@ describe("Global Strings Configuration", () => {
     it("should have no empty string messages", () => {
       const allMessages = getAllMessages(globalStrings);
       const emptyMessages = allMessages.filter(
-        ({ message }) => message.trim() === ""
+        ({ message }) => message.trim() === "",
       );
 
       expect(emptyMessages).toHaveLength(0);
@@ -297,7 +297,7 @@ describe("Global Strings Configuration", () => {
     it("should have meaningful message lengths", () => {
       const allMessages = getAllMessages(globalStrings);
       const shortMessages = allMessages.filter(
-        ({ message }) => message.length < 5
+        ({ message }) => message.length < 5,
       );
 
       expect(shortMessages).toHaveLength(0);
@@ -313,7 +313,7 @@ describe("Global Strings Configuration", () => {
           firstChar !== firstChar.toUpperCase() &&
           firstWord &&
           !["a", "an", "the", "of", "in", "on", "at"].includes(
-            firstWord.toLowerCase()
+            firstWord.toLowerCase(),
           )
         );
       });
@@ -378,14 +378,14 @@ describe("Global Strings Configuration", () => {
           if (typeof value === "object" && value !== null) {
             if (!/^[A-Z][A-Z0-9_]*$/.test(key)) {
               violations.push(
-                `Key '${key}' at path '${currentPath}' doesn't follow UPPER_SNAKE_CASE convention`
+                `Key '${key}' at path '${currentPath}' doesn't follow UPPER_SNAKE_CASE convention`,
               );
             }
             violations.push(...checkNamingConvention(value, currentPath));
           } else if (typeof value === "string") {
             if (!/^[A-Z][A-Z0-9_]*$/.test(key)) {
               violations.push(
-                `Key '${key}' at path '${currentPath}' doesn't follow UPPER_SNAKE_CASE convention`
+                `Key '${key}' at path '${currentPath}' doesn't follow UPPER_SNAKE_CASE convention`,
               );
             }
           }

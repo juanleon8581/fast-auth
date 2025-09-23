@@ -41,7 +41,9 @@ describe("LogoutAuth", () => {
 
       mockRepository.setShouldFail(true, "Logout failed");
 
-      await expect(logoutAuth.execute(logoutDto)).rejects.toThrow("Logout failed");
+      await expect(logoutAuth.execute(logoutDto)).rejects.toThrow(
+        "Logout failed",
+      );
     });
 
     it("should handle different LogoutDto instances", async () => {
@@ -57,13 +59,15 @@ describe("LogoutAuth", () => {
 
       mockRepository.setShouldFail(true, "Session expired");
 
-      await expect(logoutAuth.execute(logoutDto)).rejects.toThrow("Session expired");
+      await expect(logoutAuth.execute(logoutDto)).rejects.toThrow(
+        "Session expired",
+      );
     });
 
     it("should work with valid session and refresh tokens", async () => {
       const logoutDto = new LogoutDto(
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.session",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.refresh"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.refresh",
       );
 
       const repositorySpy = jest.spyOn(mockRepository, "logout");

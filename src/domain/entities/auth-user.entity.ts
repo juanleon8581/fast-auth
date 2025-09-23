@@ -8,7 +8,7 @@ export class AuthUserEntity {
   private constructor(
     public readonly user: UserEntity,
     public readonly accessToken: string,
-    public readonly refreshToken: string
+    public readonly refreshToken: string,
   ) {
     Object.freeze(this);
   }
@@ -17,7 +17,7 @@ export class AuthUserEntity {
     return new AuthUserEntity(
       props.user,
       props.accessToken,
-      props.refreshToken
+      props.refreshToken,
     );
   }
 
