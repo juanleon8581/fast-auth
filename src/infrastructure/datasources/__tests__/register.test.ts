@@ -4,15 +4,19 @@ import { RegisterDto } from '@/domain/dtos/register.dto';
 import { UserEntity } from '@/domain/entities/user.entity';
 import { AuthUserEntity } from '@/domain/entities/auth-user.entity';
 import { DatasourceUserDto } from '@/infrastructure/dtos/datasource-user.dto';
+import {
+  createMockRegisterDto,
+  createMockUser,
+  createMockSession,
+  createMockDatasourceUserDto,
+  createMockUserEntity,
+  createMockAuthUserEntity
+} from '@/config/__tests__/__helpers__/auth-datasource.helpers';
 
-// Mock AuthClient
+// Mock dependencies
 jest.mock('@/infrastructure/config/auth.client');
-
-// Mock entities
 jest.mock('@/domain/entities/user.entity');
 jest.mock('@/domain/entities/auth-user.entity');
-
-// Mock DatasourceUserDto
 jest.mock('@/infrastructure/dtos/datasource-user.dto');
 
 const MockedAuthClient = AuthClient as jest.MockedClass<typeof AuthClient>;
@@ -20,36 +24,34 @@ const MockedUserEntity = UserEntity as jest.MockedClass<typeof UserEntity>;
 const MockedAuthUserEntity = AuthUserEntity as jest.MockedClass<any>;
 const MockedDatasourceUserDto = DatasourceUserDto as jest.MockedClass<typeof DatasourceUserDto>;
 
-describe('AuthDatasource', () => {
+describe('AuthDatasource - Register Functionality', () => {
   let authDatasource: AuthDatasource;
-  let mockAuthClient: jest.Mocked<AuthClient>;
   let mockSupabaseClient: any;
+  let mockAuthClient: any;
   let mockRegisterDto: RegisterDto;
 
   beforeEach(() => {
-    // Reset mocks
     jest.clearAllMocks();
 
-    // Setup mock Supabase client
+    // Create mock Supabase client
     mockSupabaseClient = {
       auth: {
-        signUp: jest.fn()
+        signUp: jest.fn(),
+        signInWithPassword: jest.fn(),
+        setSession: jest.fn(),
+        signOut: jest.fn()
       }
     };
 
-    // Setup mock AuthClient
+    // Create mock AuthClient
     mockAuthClient = {
       create: jest.fn().mockReturnValue(mockSupabaseClient)
-    } as any;
+    };
+
     MockedAuthClient.mockImplementation(() => mockAuthClient);
 
-    // Setup mock RegisterDto
-    mockRegisterDto = {
-      name: 'John',
-      lastname: 'Doe',
-      email: 'john.doe@example.com',
-      password: 'SecurePass123!'
-    } as RegisterDto;
+    // Create test data
+    mockRegisterDto = createMockRegisterDto();
 
     // Create instance after mocks are set up
     authDatasource = new AuthDatasource(MockedAuthClient);
@@ -68,48 +70,26 @@ describe('AuthDatasource', () => {
   describe('register method', () => {
     describe('successful registration', () => {
       beforeEach(() => {
-        const mockUser = {
-          id: 'user-123',
-          email: 'john.doe@example.com',
-          user_metadata: {
-            display_name: 'John Doe'
-          },
-          email_confirmed_at: '2024-01-01T00:00:00Z',
-          created_at: '2024-01-01T00:00:00Z'
-        };
-
-        const mockSession = {
-          access_token: 'access-token-123',
-          refresh_token: 'refresh-token-123'
-        };
+        const mockUser = createMockUser();
+        const mockSession = createMockSession();
 
         mockSupabaseClient.auth.signUp.mockResolvedValue({
           data: { user: mockUser, session: mockSession },
           error: null
         });
 
-        const mockDatasourceUserDto = {
-          id: 'user-123',
-          email: 'john.doe@example.com',
-          name: 'John Doe',
-          email_verified: true
-        };
-
+        const mockDatasourceUserDto = createMockDatasourceUserDto();
         (MockedDatasourceUserDto.createFrom as jest.Mock).mockReturnValue([undefined, mockDatasourceUserDto]);
 
-        const mockUserEntity = { id: 'user-123', email: 'john.doe@example.com', name: 'John Doe' } as UserEntity;
-         const mockAuthUserEntity = { 
-           user: mockUserEntity, 
-           accessToken: 'access-token-123', 
-           refreshToken: 'refresh-token-123' 
-         } as AuthUserEntity;
-         
-         (MockedUserEntity.createFrom as jest.Mock).mockReturnValue(mockUserEntity);
-         (MockedAuthUserEntity.createFrom as jest.Mock).mockReturnValue(mockAuthUserEntity);
-         
-         // Mock the static methods to be called during execution
-         MockedUserEntity.createFrom = jest.fn().mockReturnValue(mockUserEntity);
-         MockedAuthUserEntity.createFrom = jest.fn().mockReturnValue(mockAuthUserEntity);
+        const mockUserEntity = createMockUserEntity();
+        const mockAuthUserEntity = createMockAuthUserEntity();
+        
+        (MockedUserEntity.createFrom as jest.Mock).mockReturnValue(mockUserEntity);
+        (MockedAuthUserEntity.createFrom as jest.Mock).mockReturnValue(mockAuthUserEntity);
+        
+        // Mock the static methods to be called during execution
+        MockedUserEntity.createFrom = jest.fn().mockReturnValue(mockUserEntity);
+        MockedAuthUserEntity.createFrom = jest.fn().mockReturnValue(mockAuthUserEntity);
       });
 
       it('should call Supabase signUp with correct parameters', async () => {
@@ -230,47 +210,27 @@ describe('AuthDatasource', () => {
       });
 
       it('should return Promise<AuthUserEntity>', async () => {
-        const mockUser = {
-          id: 'user-123',
-          email: 'john.doe@example.com',
-          user_metadata: { display_name: 'John Doe' },
-          email_confirmed_at: '2024-01-01T00:00:00Z',
-          created_at: '2024-01-01T00:00:00Z'
-        };
+        const mockUser = createMockUser();
+        const mockSession = createMockSession();
 
         mockSupabaseClient.auth.signUp.mockResolvedValue({
           data: { 
             user: mockUser,
-            session: {
-              access_token: 'access-token-123',
-              refresh_token: 'refresh-token-123'
-            }
+            session: mockSession
           },
           error: null
         });
 
-        const mockDatasourceUserDto = {
-          id: 'user-123',
-          email: 'john.doe@example.com',
-          name: 'John Doe'
-        };
-        
+        const mockDatasourceUserDto = createMockDatasourceUserDto();
         (MockedDatasourceUserDto.createFrom as jest.Mock).mockReturnValue([undefined, mockDatasourceUserDto]);
         
         const result = await authDatasource.register(mockRegisterDto);
         expect(result).toBeDefined();
-        // Just verify the method completes successfully
         expect(typeof result).toBe('object');
       });
 
       it('should return UserEntity when session is null', async () => {
-        const mockUser = {
-          id: 'user-123',
-          email: 'john.doe@example.com',
-          user_metadata: { display_name: 'John Doe' },
-          email_confirmed_at: '2024-01-01T00:00:00Z',
-          created_at: '2024-01-01T00:00:00Z'
-        };
+        const mockUser = createMockUser();
 
         mockSupabaseClient.auth.signUp.mockResolvedValue({
           data: { 
@@ -280,13 +240,8 @@ describe('AuthDatasource', () => {
           error: null
         });
 
-        const mockDatasourceUserDto = {
-          id: 'user-123',
-          email: 'john.doe@example.com',
-          name: 'John Doe'
-        };
-        
-        const mockUserEntity = { id: 'user-123', email: 'john.doe@example.com', name: 'John Doe' } as UserEntity;
+        const mockDatasourceUserDto = createMockDatasourceUserDto();
+        const mockUserEntity = createMockUserEntity();
         
         (MockedDatasourceUserDto.createFrom as jest.Mock).mockReturnValue([undefined, mockDatasourceUserDto]);
         (MockedUserEntity.createFrom as jest.Mock).mockReturnValue(mockUserEntity);
@@ -335,8 +290,6 @@ describe('AuthDatasource', () => {
       expect(mockSupabaseClient.auth.signUp).toHaveBeenCalled();
       expect(MockedDatasourceUserDto.createFrom).toHaveBeenCalled();
       expect(MockedUserEntity.createFrom).toHaveBeenCalled();
-      // AuthUserEntity.createFrom may or may not be called depending on session data
-      // expect(MockedAuthUserEntity.createFrom).toHaveBeenCalled();
     });
   });
 });
