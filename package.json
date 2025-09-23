@@ -12,8 +12,8 @@
     "test:coverage": "jest --coverage",
     "lint": "eslint 'src/**/*.ts'",
     "lint:fix": "eslint 'src/**/*.ts' --fix",
-    "format": "prettier --write src/**/*.ts",
-    "format:check": "prettier --check src/**/*.ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
     "code:check": "pnpm lint && pnpm format:check",
     "code:fix": "pnpm lint:fix && pnpm format"
   },
