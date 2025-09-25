@@ -11,6 +11,7 @@ import { LoginDto } from "@/domain/dtos/login.dto";
 import { LogoutDto } from "@/domain/dtos/logout.dto";
 import { UpdateUserDto } from "@/domain/dtos/update-user.dto";
 import { SupabaseClient } from "@supabase/supabase-js";
+import { TRawJson } from "@/domain/interfaces/general.interfaces";
 
 export class AuthDatasource implements AuthRepository {
   constructor(private readonly client: typeof AuthClient) {
@@ -133,7 +134,7 @@ export class AuthDatasource implements AuthRepository {
     const authClient = new this.client().create();
 
     if (!dto.sessionToken || !dto.refreshToken || dto.newPassword) {
-      throw new BadRequestError(ERRORS.AUTH.LOGOUT.USER_NOT_LOGGED_OUT);
+      throw new BadRequestError(ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED);
     }
 
     await AuthDatasource.setSession(
@@ -142,11 +143,11 @@ export class AuthDatasource implements AuthRepository {
       dto.refreshToken,
     );
 
-    const { data, error } = await authClient.auth.updateUser({
-      email: dto.email,
-      password: dto.newPassword,
-      phone: dto.phone,
-    });
+    const updateData: TRawJson = {};
+    if (dto.email) updateData.email = dto.email;
+    if (dto.phone) updateData.phone = dto.phone;
+
+    const { data, error } = await authClient.auth.updateUser(updateData);
 
     if (error) {
       throw new BadRequestError(
@@ -173,7 +174,7 @@ export class AuthDatasource implements AuthRepository {
     const authClient = new this.client().create();
 
     if (!dto.sessionToken || !dto.refreshToken || !dto.newPassword) {
-      throw new BadRequestError(ERRORS.AUTH.LOGOUT.USER_NOT_LOGGED_OUT);
+      throw new BadRequestError(ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED);
     }
 
     await AuthDatasource.setSession(
