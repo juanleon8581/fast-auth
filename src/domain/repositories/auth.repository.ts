@@ -10,4 +10,5 @@ export abstract class AuthRepository {
   abstract login(dto: LoginDto): Promise<AuthUserEntity>;
   abstract logout(dto: LogoutDto): Promise<void>;
   abstract updateUser(dto: UpdateUserDto): Promise<UserEntity | AuthUserEntity>;
+  abstract updateUserPassword(dto: UpdateUserDto): Promise<AuthUserEntity>;
 }

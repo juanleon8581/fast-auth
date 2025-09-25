@@ -10,6 +10,7 @@ import { ResponseHelper } from "@/presentation/utils/response-helper";
 import { Request, Response, NextFunction } from "express";
 import { UpdateUserValidator } from "@/infrastructure/validators/update-user.validator";
 import { UpdateUser } from "@/domain/use-cases/update-user";
+import { UpdateUserPassword } from "@/domain/use-cases/update-user-password";
 
 export class AuthController {
   constructor(private readonly datasource: AuthRepository) {}
@@ -68,6 +69,23 @@ export class AuthController {
       const dto = UpdateUserValidator.validate(req.body);
 
       new UpdateUser(this.datasource)
+        .execute(dto)
+        .then((user) => ResponseHelper.success(res, user, req, 200))
+        .catch(next);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public updateUserPassword = (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): void => {
+    try {
+      const dto = UpdateUserValidator.validate(req.body);
+
+      new UpdateUserPassword(this.datasource)
         .execute(dto)
         .then((user) => ResponseHelper.success(res, user, req, 200))
         .catch(next);

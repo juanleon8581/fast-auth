@@ -132,7 +132,7 @@ export class AuthDatasource implements AuthRepository {
   async updateUser(dto: UpdateUserDto): Promise<UserEntity | AuthUserEntity> {
     const authClient = new this.client().create();
 
-    if (!dto.sessionToken || !dto.refreshToken) {
+    if (!dto.sessionToken || !dto.refreshToken || dto.newPassword) {
       throw new BadRequestError(ERRORS.AUTH.LOGOUT.USER_NOT_LOGGED_OUT);
     }
 
@@ -167,5 +167,49 @@ export class AuthDatasource implements AuthRepository {
     const user = UserEntity.createFrom(datasourceUserDto!);
 
     return user;
+  }
+
+  async updateUserPassword(dto: UpdateUserDto): Promise<AuthUserEntity> {
+    const authClient = new this.client().create();
+
+    if (!dto.sessionToken || !dto.refreshToken || !dto.newPassword) {
+      throw new BadRequestError(ERRORS.AUTH.LOGOUT.USER_NOT_LOGGED_OUT);
+    }
+
+    await AuthDatasource.setSession(
+      authClient,
+      dto.sessionToken,
+      dto.refreshToken,
+    );
+
+    const { data, error } = await authClient.auth.updateUser({
+      password: dto.newPassword,
+    });
+
+    if (error) {
+      throw new BadRequestError(
+        error.message,
+        error.code,
+        error.status?.toString(),
+      );
+    }
+    if (!data.user) {
+      throw new BadRequestError(ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED);
+    }
+
+    const [errorDto, datasourceUserDto] = DatasourceUserDto.createFrom(
+      data.user,
+    );
+
+    if (errorDto) throw new ValidationError(errorDto);
+    const user = UserEntity.createFrom(datasourceUserDto!);
+
+    return AuthUserEntity.createFrom({
+      user,
+      data: {
+        access_token: dto.sessionToken,
+        refresh_token: dto.refreshToken,
+      },
+    });
   }
 }
