@@ -4,6 +4,7 @@ import { AuthUserEntity } from "../../entities/auth-user.entity";
 import { UserEntity } from "../../entities/user.entity";
 import { LoginDto } from "@/domain/dtos/login.dto";
 import { LogoutDto } from "@/domain/dtos/logout.dto";
+import { UpdateUserDto } from "@/domain/dtos/update-user.dto";
 
 // Concrete implementation for testing
 class TestAuthRepository extends AuthRepository {
@@ -50,6 +51,19 @@ class TestAuthRepository extends AuthRepository {
       throw new Error("Invalid logout data");
     }
     return Promise.resolve();
+  }
+
+  async updateUser(dto: UpdateUserDto): Promise<UserEntity | AuthUserEntity> {
+    // Mock implementation for testing
+    const mockUser = new UserEntity(
+      "user-123",
+      dto.email || "test@example.com",
+      "Updated User",
+      true,
+      dto.phone,
+    );
+
+    return mockUser;
   }
 }
 
