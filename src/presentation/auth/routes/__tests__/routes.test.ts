@@ -43,6 +43,7 @@ describe("AuthRoutes", () => {
       login: jest.fn(),
       logout: jest.fn(),
       updateUser: jest.fn(),
+      updateUserPassword: jest.fn(),
     } as unknown as jest.Mocked<AuthController>;
     (AuthController as unknown as jest.Mock).mockImplementation(
       () => mockAuthController,
@@ -105,6 +106,14 @@ describe("AuthRoutes", () => {
       );
     });
 
+    it("should register PUT /update-user-password route", () => {
+      AuthRoutes.routes;
+      expect(mockRouter.put).toHaveBeenCalledWith(
+        "/update-user-password",
+        mockAuthController.updateUserPassword,
+      );
+    });
+
     it("should return the configured router", () => {
       const result = AuthRoutes.routes;
       expect(result).toBe(mockRouter);
@@ -133,6 +142,10 @@ describe("AuthRoutes", () => {
         "/update-user",
         expect.any(Function),
       );
+      expect(mockRouter.put).toHaveBeenCalledWith(
+        "/update-user-password",
+        expect.any(Function),
+      );
     });
 
     it("should use controller methods as route handlers", () => {
@@ -146,6 +159,7 @@ describe("AuthRoutes", () => {
       expect(postCalls[1][1]).toBe(mockAuthController.login);
       expect(postCalls[2][1]).toBe(mockAuthController.logout);
       expect(putCalls[0][1]).toBe(mockAuthController.updateUser);
+      expect(putCalls[1][1]).toBe(mockAuthController.updateUserPassword);
     });
   });
 
@@ -176,7 +190,7 @@ describe("AuthRoutes", () => {
 
       // Verify POST and PUT methods are used
       expect(mockRouter.post).toHaveBeenCalledTimes(3);
-      expect(mockRouter.put).toHaveBeenCalledTimes(1);
+      expect(mockRouter.put).toHaveBeenCalledTimes(2); // Updated to 2 for both PUT routes
       expect(mockRouter.get).not.toHaveBeenCalled();
       expect(mockRouter.delete).not.toHaveBeenCalled();
       expect(mockRouter.patch).not.toHaveBeenCalled();
@@ -220,6 +234,16 @@ describe("AuthRoutes", () => {
 
       expect(updateRoute).toBeDefined();
       expect(updateRoute[1]).toBe(mockAuthController.updateUser);
+    });
+
+    it("should define updateUserPassword endpoint", () => {
+      AuthRoutes.routes;
+
+      const putCalls = (mockRouter.put as jest.Mock).mock.calls;
+      const updatePasswordRoute = putCalls.find((call) => call[0] === "/update-user-password");
+
+      expect(updatePasswordRoute).toBeDefined();
+      expect(updatePasswordRoute[1]).toBe(mockAuthController.updateUserPassword);
     });
   });
 

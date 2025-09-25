@@ -7,7 +7,6 @@ import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { ValidationError } from "@/domain/errors/validation-error";
 import { ERRORS } from "@/config/strings/global.strings.json";
 import {
-  createMockUpdateUserDto,
   createMockUser,
   createMockDatasourceUserDto,
   createMockUserEntity,
@@ -52,7 +51,12 @@ describe("AuthDatasource - UpdateUser Functionality", () => {
     MockedAuthClient.mockImplementation(() => mockAuthClient);
 
     // Create test data
-    mockUpdateUserDto = createMockUpdateUserDto();
+    mockUpdateUserDto = {
+      sessionToken: "session-token-123",
+      refreshToken: "refresh-token-123",
+      email: "john.doe@example.com",
+      phone: "+1234567890",
+    } as UpdateUserDto;
 
     // Create instance after mocks are set up
     authDatasource = new AuthDatasource(MockedAuthClient);
@@ -94,7 +98,6 @@ describe("AuthDatasource - UpdateUser Functionality", () => {
 
         expect(mockSupabaseClient.auth.updateUser).toHaveBeenCalledWith({
           email: mockUpdateUserDto.email,
-          password: mockUpdateUserDto.newPassword,
           phone: mockUpdateUserDto.phone,
         });
 
@@ -113,25 +116,21 @@ describe("AuthDatasource - UpdateUser Functionality", () => {
 
         expect(mockSupabaseClient.auth.updateUser).toHaveBeenCalledWith({
           email: updateDto.email,
-          password: undefined,
-          phone: undefined,
         });
       });
 
-      it("should successfully update user with only password", async () => {
+      it("should reject requests with password and throw error", async () => {
         const updateDto = {
           ...mockUpdateUserDto,
-          email: undefined,
-          phone: undefined,
+          newPassword: "NewPassword123!",
         } as UpdateUserDto;
 
-        await authDatasource.updateUser(updateDto);
-
-        expect(mockSupabaseClient.auth.updateUser).toHaveBeenCalledWith({
-          email: undefined,
-          password: updateDto.newPassword,
-          phone: undefined,
-        });
+        await expect(authDatasource.updateUser(updateDto)).rejects.toThrow(
+          BadRequestError,
+        );
+        await expect(authDatasource.updateUser(updateDto)).rejects.toThrow(
+          ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED,
+        );
       });
 
       it("should successfully update user with only phone", async () => {
@@ -144,8 +143,6 @@ describe("AuthDatasource - UpdateUser Functionality", () => {
         await authDatasource.updateUser(updateDto);
 
         expect(mockSupabaseClient.auth.updateUser).toHaveBeenCalledWith({
-          email: undefined,
-          password: undefined,
           phone: updateDto.phone,
         });
       });
@@ -207,7 +204,7 @@ describe("AuthDatasource - UpdateUser Functionality", () => {
           BadRequestError,
         );
         await expect(authDatasource.updateUser(invalidDto)).rejects.toThrow(
-          ERRORS.AUTH.LOGOUT.USER_NOT_LOGGED_OUT,
+          ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED,
         );
       });
 
@@ -221,7 +218,7 @@ describe("AuthDatasource - UpdateUser Functionality", () => {
           BadRequestError,
         );
         await expect(authDatasource.updateUser(invalidDto)).rejects.toThrow(
-          ERRORS.AUTH.LOGOUT.USER_NOT_LOGGED_OUT,
+          ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED,
         );
       });
 
@@ -250,12 +247,12 @@ describe("AuthDatasource - UpdateUser Functionality", () => {
           error: sessionError,
         });
 
-        await expect(authDatasource.updateUser(mockUpdateUserDto)).rejects.toThrow(
-          BadRequestError,
-        );
-        await expect(authDatasource.updateUser(mockUpdateUserDto)).rejects.toThrow(
-          "Invalid session",
-        );
+        await expect(
+          authDatasource.updateUser(mockUpdateUserDto),
+        ).rejects.toThrow(BadRequestError);
+        await expect(
+          authDatasource.updateUser(mockUpdateUserDto),
+        ).rejects.toThrow("Invalid session");
       });
 
       it("should throw error when updateUser fails", async () => {
@@ -274,12 +271,12 @@ describe("AuthDatasource - UpdateUser Functionality", () => {
           error: updateError,
         });
 
-        await expect(authDatasource.updateUser(mockUpdateUserDto)).rejects.toThrow(
-          BadRequestError,
-        );
-        await expect(authDatasource.updateUser(mockUpdateUserDto)).rejects.toThrow(
-          "Update failed",
-        );
+        await expect(
+          authDatasource.updateUser(mockUpdateUserDto),
+        ).rejects.toThrow(BadRequestError);
+        await expect(
+          authDatasource.updateUser(mockUpdateUserDto),
+        ).rejects.toThrow("Update failed");
       });
 
       it("should throw error when user is null after update", async () => {
@@ -292,12 +289,12 @@ describe("AuthDatasource - UpdateUser Functionality", () => {
           error: null,
         });
 
-        await expect(authDatasource.updateUser(mockUpdateUserDto)).rejects.toThrow(
-          BadRequestError,
-        );
-        await expect(authDatasource.updateUser(mockUpdateUserDto)).rejects.toThrow(
-          ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED,
-        );
+        await expect(
+          authDatasource.updateUser(mockUpdateUserDto),
+        ).rejects.toThrow(BadRequestError);
+        await expect(
+          authDatasource.updateUser(mockUpdateUserDto),
+        ).rejects.toThrow(ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED);
       });
 
       it("should handle Supabase client creation failure", async () => {
@@ -305,9 +302,9 @@ describe("AuthDatasource - UpdateUser Functionality", () => {
           throw new Error("Failed to create Supabase client");
         });
 
-        await expect(authDatasource.updateUser(mockUpdateUserDto)).rejects.toThrow(
-          "Failed to create Supabase client",
-        );
+        await expect(
+          authDatasource.updateUser(mockUpdateUserDto),
+        ).rejects.toThrow("Failed to create Supabase client");
       });
 
       it("should handle DatasourceUserDto creation failure", async () => {
@@ -327,12 +324,12 @@ describe("AuthDatasource - UpdateUser Functionality", () => {
           undefined,
         ]);
 
-        await expect(authDatasource.updateUser(mockUpdateUserDto)).rejects.toThrow(
-          ValidationError,
-        );
-        await expect(authDatasource.updateUser(mockUpdateUserDto)).rejects.toThrow(
-          "Invalid user data",
-        );
+        await expect(
+          authDatasource.updateUser(mockUpdateUserDto),
+        ).rejects.toThrow(ValidationError);
+        await expect(
+          authDatasource.updateUser(mockUpdateUserDto),
+        ).rejects.toThrow("Invalid user data");
       });
 
       it("should handle DatasourceUserDto creation exception", async () => {
@@ -353,9 +350,9 @@ describe("AuthDatasource - UpdateUser Functionality", () => {
           },
         );
 
-        await expect(authDatasource.updateUser(mockUpdateUserDto)).rejects.toThrow(
-          "DTO creation failed",
-        );
+        await expect(
+          authDatasource.updateUser(mockUpdateUserDto),
+        ).rejects.toThrow("DTO creation failed");
       });
     });
 
@@ -467,11 +464,7 @@ describe("AuthDatasource - UpdateUser Functionality", () => {
 
         await authDatasource.updateUser(nullUpdateDto);
 
-        expect(mockSupabaseClient.auth.updateUser).toHaveBeenCalledWith({
-          email: null,
-          password: null,
-          phone: null,
-        });
+        expect(mockSupabaseClient.auth.updateUser).toHaveBeenCalledWith({});
       });
     });
   });
@@ -526,9 +519,9 @@ describe("AuthDatasource - UpdateUser Functionality", () => {
         error: { message: "Session error", code: "session_error", status: 401 },
       });
 
-      await expect(authDatasource.updateUser(mockUpdateUserDto)).rejects.toThrow(
-        BadRequestError,
-      );
+      await expect(
+        authDatasource.updateUser(mockUpdateUserDto),
+      ).rejects.toThrow(BadRequestError);
 
       // Reset and test error propagation from updateUser
       mockSupabaseClient.auth.setSession.mockResolvedValue({ error: null });
@@ -537,9 +530,9 @@ describe("AuthDatasource - UpdateUser Functionality", () => {
         error: { message: "Update error", code: "update_error", status: 400 },
       });
 
-      await expect(authDatasource.updateUser(mockUpdateUserDto)).rejects.toThrow(
-        BadRequestError,
-      );
+      await expect(
+        authDatasource.updateUser(mockUpdateUserDto),
+      ).rejects.toThrow(BadRequestError);
     });
   });
 });

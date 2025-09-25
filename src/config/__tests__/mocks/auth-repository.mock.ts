@@ -125,4 +125,18 @@ export class MockAuthRepository extends AuthRepository {
 
     return mockUser;
   }
+
+  async updateUserPassword(dto: UpdateUserDto): Promise<AuthUserEntity> {
+    if (this.shouldFail) {
+      throw new Error(this.errorMessage);
+    }
+
+    if (this.mockResult) {
+      return this.mockResult;
+    }
+
+    // Create a default mock result for updateUserPassword
+    // Return an AuthUserEntity with updated password
+    return this.createMockAuthUser(dto.email || "test@example.com", "Updated User");
+  }
 }

@@ -7,6 +7,7 @@ import { AuthRepository } from "@/domain/repositories/auth.repository";
 import { RegisterUser } from "@/domain/use-cases/register-user";
 import { LoginUser } from "@/domain/use-cases/login-user";
 import { UpdateUser } from "@/domain/use-cases/update-user";
+import { UpdateUserPassword } from "@/domain/use-cases/update-user-password";
 import { RegisterValidator } from "@/infrastructure/validators/register.validator";
 import { LoginValidator } from "@/infrastructure/validators/login.validator";
 import { UpdateUserValidator } from "@/infrastructure/validators/update-user.validator";
@@ -17,6 +18,7 @@ import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
 jest.mock("@/domain/use-cases/register-user");
 jest.mock("@/domain/use-cases/login-user");
 jest.mock("@/domain/use-cases/update-user");
+jest.mock("@/domain/use-cases/update-user-password");
 jest.mock("@/infrastructure/validators/register.validator");
 jest.mock("@/infrastructure/validators/login.validator");
 jest.mock("@/infrastructure/validators/update-user.validator");
@@ -30,6 +32,7 @@ describe("AuthController", () => {
   let mockRegisterUser: jest.Mocked<RegisterUser>;
   let mockLoginUser: jest.Mocked<LoginUser>;
   let mockUpdateUser: jest.Mocked<UpdateUser>;
+  let mockUpdateUserPassword: jest.Mocked<UpdateUserPassword>;
 
   beforeEach(() => {
     // Reset all mocks
@@ -75,6 +78,12 @@ describe("AuthController", () => {
     } as unknown as jest.Mocked<UpdateUser>;
     (UpdateUser as jest.Mock).mockImplementation(() => mockUpdateUser);
 
+    // Mock UpdateUserPassword
+    mockUpdateUserPassword = {
+      execute: jest.fn(),
+    } as unknown as jest.Mocked<UpdateUserPassword>;
+    (UpdateUserPassword as jest.Mock).mockImplementation(() => mockUpdateUserPassword);
+
     // Create controller instance
     authController = new AuthController(mockDatasource);
   });
@@ -98,6 +107,11 @@ describe("AuthController", () => {
     it("should have updateUser method bound to instance", () => {
       expect(typeof authController.updateUser).toBe("function");
       expect(authController.updateUser).toBeDefined();
+    });
+
+    it("should have updateUserPassword method bound to instance", () => {
+      expect(typeof authController.updateUserPassword).toBe("function");
+      expect(authController.updateUserPassword).toBeDefined();
     });
   });
 
@@ -948,6 +962,291 @@ describe("AuthController", () => {
         updateUser(mockRequest as Request, mockResponse as Response, mockNext),
       ).not.toThrow();
       expect(UpdateUser).toHaveBeenCalledWith(mockDatasource);
+    });
+  });
+
+  describe("updateUserPassword method", () => {
+    beforeEach(() => {
+      // Mock updateUserPassword request
+      mockRequest = {
+        body: {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          newPassword: "NewSecurePass123!",
+          newPasswordConfirmation: "NewSecurePass123!",
+        },
+      };
+    });
+
+    describe("Successful password update", () => {
+      beforeEach(() => {
+        const mockDto = new UpdateUserDto(
+          "session-token-123",
+          "refresh-token-456",
+          undefined,
+          "NewSecurePass123!",
+          "NewSecurePass123!",
+        );
+        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto);
+      });
+
+      it("should validate request body", () => {
+        const mockUser = new UserEntity(
+          "1",
+          "john.doe@example.com",
+          "John Doe",
+          true,
+          "+1234567890",
+        );
+        const mockAuthUser = AuthUserEntity.createFrom({
+          user: mockUser,
+          data: {
+            access_token: "session-token-123",
+            refresh_token: "refresh-token-456",
+          },
+        });
+        mockUpdateUserPassword.execute.mockResolvedValue(mockAuthUser);
+
+        authController.updateUserPassword(
+          mockRequest as Request,
+          mockResponse as Response,
+          mockNext,
+        );
+
+        expect(UpdateUserValidator.validate).toHaveBeenCalledTimes(1);
+        expect(UpdateUserValidator.validate).toHaveBeenCalledWith(mockRequest.body);
+      });
+
+      it("should create UpdateUserPassword use case with datasource", () => {
+        const mockUser = new UserEntity(
+          "1",
+          "john.doe@example.com",
+          "John Doe",
+          true,
+          "+1234567890",
+        );
+        const mockAuthUser = AuthUserEntity.createFrom({
+          user: mockUser,
+          data: {
+            access_token: "session-token-123",
+            refresh_token: "refresh-token-456",
+          },
+        });
+        mockUpdateUserPassword.execute.mockResolvedValue(mockAuthUser);
+
+        authController.updateUserPassword(
+          mockRequest as Request,
+          mockResponse as Response,
+          mockNext,
+        );
+
+        expect(UpdateUserPassword).toHaveBeenCalledTimes(1);
+        expect(UpdateUserPassword).toHaveBeenCalledWith(mockDatasource);
+      });
+
+      it("should execute use case with validated DTO", async () => {
+        const mockDto = new UpdateUserDto(
+          "session-token-123",
+          "refresh-token-456",
+          undefined,
+          "NewSecurePass123!",
+          "NewSecurePass123!",
+        );
+        const mockUser = new UserEntity(
+          "1",
+          "john.doe@example.com",
+          "John Doe",
+          true,
+          "+1234567890",
+        );
+        const mockAuthUser = AuthUserEntity.createFrom({
+          user: mockUser,
+          data: {
+            access_token: "session-token-123",
+            refresh_token: "refresh-token-456",
+          },
+        });
+
+        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto);
+        mockUpdateUserPassword.execute.mockResolvedValue(mockAuthUser);
+
+        authController.updateUserPassword(
+          mockRequest as Request,
+          mockResponse as Response,
+          mockNext,
+        );
+
+        expect(mockUpdateUserPassword.execute).toHaveBeenCalledTimes(1);
+        expect(mockUpdateUserPassword.execute).toHaveBeenCalledWith(mockDto);
+      });
+
+      it("should return auth user data on successful password update", async () => {
+        const mockDto = new UpdateUserDto(
+          "session-token-123",
+          "refresh-token-456",
+          undefined,
+          "NewSecurePass123!",
+          "NewSecurePass123!",
+        );
+        const mockUser = new UserEntity(
+          "1",
+          "john.doe@example.com",
+          "John Doe",
+          true,
+          "+1234567890",
+        );
+        const mockAuthUser = AuthUserEntity.createFrom({
+          user: mockUser,
+          data: {
+            access_token: "session-token-123",
+            refresh_token: "refresh-token-456",
+          },
+        });
+
+        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto);
+        mockUpdateUserPassword.execute.mockResolvedValue(mockAuthUser);
+
+        authController.updateUserPassword(
+          mockRequest as Request,
+          mockResponse as Response,
+          mockNext,
+        );
+
+        // Wait for promise to resolve
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        expect(mockResponse.json).toHaveBeenCalledTimes(1);
+        expect(mockResponse.json).toHaveBeenCalledWith({
+          status: "success",
+          data: mockAuthUser,
+          meta: {
+            requestId: expect.any(String),
+            timestamp: expect.any(String),
+            version: "1.0.0",
+          },
+        });
+      });
+    });
+
+    describe("Validation errors", () => {
+      it("should call next with validation error when validation fails", () => {
+        const validationError = new Error("Password is required");
+        (UpdateUserValidator.validate as jest.Mock).mockImplementation(() => {
+          throw validationError;
+        });
+
+        authController.updateUserPassword(
+          mockRequest as Request,
+          mockResponse as Response,
+          mockNext,
+        );
+
+        expect(mockNext).toHaveBeenCalledTimes(1);
+        expect(mockNext).toHaveBeenCalledWith(validationError);
+        expect(mockResponse.status).not.toHaveBeenCalled();
+        expect(mockResponse.json).not.toHaveBeenCalled();
+      });
+
+      it("should not execute use case when validation fails", () => {
+        const validationError = new Error("Invalid password format");
+        (UpdateUserValidator.validate as jest.Mock).mockImplementation(() => {
+          throw validationError;
+        });
+
+        authController.updateUserPassword(
+          mockRequest as Request,
+          mockResponse as Response,
+          mockNext,
+        );
+
+        expect(UpdateUserPassword).not.toHaveBeenCalled();
+        expect(mockUpdateUserPassword.execute).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("Use case execution errors", () => {
+      beforeEach(() => {
+        const mockDto = new UpdateUserDto(
+          "session-token-123",
+          "refresh-token-456",
+          undefined,
+          "NewSecurePass123!",
+          "NewSecurePass123!",
+        );
+        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto);
+      });
+
+      it("should call next with use case error", async () => {
+        const error = new Error("Password update failed");
+        mockUpdateUserPassword.execute.mockRejectedValue(error);
+
+        authController.updateUserPassword(
+          mockRequest as Request,
+          mockResponse as Response,
+          mockNext,
+        );
+
+        // Wait for promise to reject
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        expect(mockNext).toHaveBeenCalledTimes(1);
+        expect(mockNext).toHaveBeenCalledWith(error);
+        expect(mockResponse.status).not.toHaveBeenCalled();
+        expect(mockResponse.json).not.toHaveBeenCalled();
+      });
+
+      it("should handle authentication errors", async () => {
+        const error = new Error("Invalid session token");
+        mockUpdateUserPassword.execute.mockRejectedValue(error);
+
+        authController.updateUserPassword(
+          mockRequest as Request,
+          mockResponse as Response,
+          mockNext,
+        );
+
+        // Wait for promise to reject
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        expect(mockNext).toHaveBeenCalledTimes(1);
+        expect(mockNext).toHaveBeenCalledWith(error);
+      });
+    });
+
+    describe("Method binding", () => {
+      it("should maintain correct context when updateUserPassword method is extracted", () => {
+        const { updateUserPassword } = authController;
+        const mockDto = new UpdateUserDto(
+          "session-token-123",
+          "refresh-token-456",
+          undefined,
+          "NewSecurePass123!",
+          "NewSecurePass123!",
+        );
+        const mockUser = new UserEntity(
+          "1",
+          "john.doe@example.com",
+          "John Doe",
+          true,
+          "+1234567890",
+        );
+        const mockAuthUser = AuthUserEntity.createFrom({
+          user: mockUser,
+          data: {
+            access_token: "session-token-123",
+            refresh_token: "refresh-token-456",
+          },
+        });
+
+        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto);
+        mockUpdateUserPassword.execute.mockResolvedValue(mockAuthUser);
+
+        // Should work even when method is extracted from instance
+        expect(() =>
+          updateUserPassword(mockRequest as Request, mockResponse as Response, mockNext),
+        ).not.toThrow();
+        expect(UpdateUserPassword).toHaveBeenCalledWith(mockDatasource);
+      });
     });
   });
 });

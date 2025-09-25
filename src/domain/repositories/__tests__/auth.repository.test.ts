@@ -65,6 +65,25 @@ class TestAuthRepository extends AuthRepository {
 
     return mockUser;
   }
+
+  async updateUserPassword(dto: UpdateUserDto): Promise<AuthUserEntity> {
+    // Mock implementation for testing
+    const mockUser = new UserEntity(
+      "user-123",
+      dto.email || "test@example.com",
+      "Updated User",
+      true,
+      dto.phone,
+    );
+
+    return AuthUserEntity.createFrom({
+      user: mockUser,
+      data: {
+        access_token: "mock-access-token",
+        refresh_token: "mock-refresh-token",
+      },
+    });
+  }
 }
 
 describe("AuthRepository", () => {
