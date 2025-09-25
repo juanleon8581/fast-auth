@@ -57,6 +57,38 @@
             "REQUIRED": "Refresh token is required"
           }
         }
+      },
+      "UPDATE_USER": {
+        "USER_NOT_UPDATED": "User not updated",
+        "VALIDATION": {
+          "SESSION_TOKEN": {
+            "REQUIRED": "Session token is required",
+            "INVALID_FORMAT": "Session token must be a valid string"
+          },
+          "REFRESH_TOKEN": {
+            "REQUIRED": "Refresh token is required",
+            "INVALID_FORMAT": "Refresh token must be a valid string"
+          },
+          "EMAIL": {
+            "INVALID_FORMAT": "Must be a valid email",
+            "MAX_LENGTH": "Email cannot exceed 100 characters"
+          },
+          "NEW_PASSWORD": {
+            "MIN_LENGTH": "New password must be at least 8 characters long",
+            "MAX_LENGTH": "New password cannot exceed 128 characters",
+            "INVALID_FORMAT": "New password must contain at least: 1 lowercase, 1 uppercase, 1 number and 1 special character"
+          },
+          "NEW_PASSWORD_CONFIRMATION": {
+            "REQUIRED_WITH_PASSWORD": "Password confirmation is required when setting a new password",
+            "MUST_MATCH": "Password confirmation must match the new password"
+          },
+          "PHONE": {
+            "INVALID_FORMAT": "Phone number must be in a valid format"
+          },
+          "REDIRECTION_LINK": {
+            "INVALID_FORMAT": "Redirection link must be a valid URL"
+          }
+        }
       }
     }
   }
