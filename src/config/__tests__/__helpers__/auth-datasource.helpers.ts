@@ -1,6 +1,7 @@
 import { RegisterDto } from "@/domain/dtos/register.dto";
 import { LoginDto } from "@/domain/dtos/login.dto";
 import { LogoutDto } from "@/domain/dtos/logout.dto";
+import { UpdateUserDto } from "@/domain/dtos/update-user.dto";
 import { UserEntity } from "@/domain/entities/user.entity";
 import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
 
@@ -20,6 +21,15 @@ export const createMockLoginDto = (): LoginDto =>
     email: "john.doe@example.com",
     password: "SecurePass123!",
   }) as LoginDto;
+
+export const createMockUpdateUserDto = (): UpdateUserDto =>
+  ({
+    sessionToken: "session-token-123",
+    refreshToken: "refresh-token-123",
+    email: "john.doe@example.com",
+    newPassword: "NewSecurePass123!",
+    phone: "+1234567890",
+  }) as UpdateUserDto;
 
 export const createMockLogoutDto = (): LogoutDto =>
   ({
@@ -47,6 +57,7 @@ export const createMockDatasourceUserDto = () => ({
   email: "john.doe@example.com",
   name: "John Doe",
   email_verified: true,
+  created_at: new Date(),
 });
 
 export const createMockUserEntity = (): UserEntity =>
