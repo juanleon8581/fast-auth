@@ -33,7 +33,9 @@ describe("AuthRoutes", () => {
 
     // Mock AuthDatasource
     mockAuthDatasource = {} as jest.Mocked<AuthDatasource>;
-    (AuthDatasource as unknown as jest.Mock).mockImplementation(() => mockAuthDatasource);
+    (AuthDatasource as unknown as jest.Mock).mockImplementation(
+      () => mockAuthDatasource,
+    );
 
     // Mock AuthController
     mockAuthController = {
@@ -42,7 +44,9 @@ describe("AuthRoutes", () => {
       logout: jest.fn(),
       updateUser: jest.fn(),
     } as unknown as jest.Mocked<AuthController>;
-    (AuthController as unknown as jest.Mock).mockImplementation(() => mockAuthController);
+    (AuthController as unknown as jest.Mock).mockImplementation(
+      () => mockAuthController,
+    );
   });
 
   describe("routes getter", () => {
@@ -96,7 +100,7 @@ describe("AuthRoutes", () => {
     it("should register PUT /update route", () => {
       AuthRoutes.routes;
       expect(mockRouter.put).toHaveBeenCalledWith(
-        "/update",
+        "/update-user",
         mockAuthController.updateUser,
       );
     });
@@ -126,7 +130,7 @@ describe("AuthRoutes", () => {
         expect.any(Function),
       );
       expect(mockRouter.put).toHaveBeenCalledWith(
-        "/update",
+        "/update-user",
         expect.any(Function),
       );
     });
@@ -137,7 +141,7 @@ describe("AuthRoutes", () => {
       // Verify that controller methods are used as handlers
       const postCalls = (mockRouter.post as jest.Mock).mock.calls;
       const putCalls = (mockRouter.put as jest.Mock).mock.calls;
-      
+
       expect(postCalls[0][1]).toBe(mockAuthController.register);
       expect(postCalls[1][1]).toBe(mockAuthController.login);
       expect(postCalls[2][1]).toBe(mockAuthController.logout);
@@ -212,7 +216,7 @@ describe("AuthRoutes", () => {
       AuthRoutes.routes;
 
       const putCalls = (mockRouter.put as jest.Mock).mock.calls;
-      const updateRoute = putCalls.find((call) => call[0] === "/update");
+      const updateRoute = putCalls.find((call) => call[0] === "/update-user");
 
       expect(updateRoute).toBeDefined();
       expect(updateRoute[1]).toBe(mockAuthController.updateUser);
