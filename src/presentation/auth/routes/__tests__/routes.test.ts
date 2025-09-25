@@ -33,15 +33,16 @@ describe("AuthRoutes", () => {
 
     // Mock AuthDatasource
     mockAuthDatasource = {} as jest.Mocked<AuthDatasource>;
-    (AuthDatasource as jest.Mock).mockImplementation(() => mockAuthDatasource);
+    (AuthDatasource as unknown as jest.Mock).mockImplementation(() => mockAuthDatasource);
 
     // Mock AuthController
     mockAuthController = {
       register: jest.fn(),
       login: jest.fn(),
       logout: jest.fn(),
+      updateUser: jest.fn(),
     } as unknown as jest.Mocked<AuthController>;
-    (AuthController as jest.Mock).mockImplementation(() => mockAuthController);
+    (AuthController as unknown as jest.Mock).mockImplementation(() => mockAuthController);
   });
 
   describe("routes getter", () => {
@@ -84,6 +85,22 @@ describe("AuthRoutes", () => {
       );
     });
 
+    it("should register POST /logout route", () => {
+      AuthRoutes.routes;
+      expect(mockRouter.post).toHaveBeenCalledWith(
+        "/logout",
+        mockAuthController.logout,
+      );
+    });
+
+    it("should register PUT /update route", () => {
+      AuthRoutes.routes;
+      expect(mockRouter.put).toHaveBeenCalledWith(
+        "/update",
+        mockAuthController.updateUser,
+      );
+    });
+
     it("should return the configured router", () => {
       const result = AuthRoutes.routes;
       expect(result).toBe(mockRouter);
@@ -104,6 +121,14 @@ describe("AuthRoutes", () => {
         "/login",
         expect.any(Function),
       );
+      expect(mockRouter.post).toHaveBeenCalledWith(
+        "/logout",
+        expect.any(Function),
+      );
+      expect(mockRouter.put).toHaveBeenCalledWith(
+        "/update",
+        expect.any(Function),
+      );
     });
 
     it("should use controller methods as route handlers", () => {
@@ -111,8 +136,12 @@ describe("AuthRoutes", () => {
 
       // Verify that controller methods are used as handlers
       const postCalls = (mockRouter.post as jest.Mock).mock.calls;
+      const putCalls = (mockRouter.put as jest.Mock).mock.calls;
+      
       expect(postCalls[0][1]).toBe(mockAuthController.register);
       expect(postCalls[1][1]).toBe(mockAuthController.login);
+      expect(postCalls[2][1]).toBe(mockAuthController.logout);
+      expect(putCalls[0][1]).toBe(mockAuthController.updateUser);
     });
   });
 
@@ -138,13 +167,13 @@ describe("AuthRoutes", () => {
   });
 
   describe("Route Methods", () => {
-    it("should only define POST routes", () => {
+    it("should define POST and PUT routes", () => {
       AuthRoutes.routes;
 
-      // Verify only POST method is used
+      // Verify POST and PUT methods are used
       expect(mockRouter.post).toHaveBeenCalledTimes(3);
+      expect(mockRouter.put).toHaveBeenCalledTimes(1);
       expect(mockRouter.get).not.toHaveBeenCalled();
-      expect(mockRouter.put).not.toHaveBeenCalled();
       expect(mockRouter.delete).not.toHaveBeenCalled();
       expect(mockRouter.patch).not.toHaveBeenCalled();
     });
@@ -178,6 +207,16 @@ describe("AuthRoutes", () => {
       expect(logoutRoute).toBeDefined();
       expect(logoutRoute[1]).toBe(mockAuthController.logout);
     });
+
+    it("should define updateUser endpoint", () => {
+      AuthRoutes.routes;
+
+      const putCalls = (mockRouter.put as jest.Mock).mock.calls;
+      const updateRoute = putCalls.find((call) => call[0] === "/update");
+
+      expect(updateRoute).toBeDefined();
+      expect(updateRoute[1]).toBe(mockAuthController.updateUser);
+    });
   });
 
   describe("Class Structure", () => {
@@ -199,7 +238,7 @@ describe("AuthRoutes", () => {
 
   describe("Error Handling", () => {
     it("should handle AuthDatasource creation errors gracefully", () => {
-      (AuthDatasource as jest.Mock).mockImplementation(() => {
+      (AuthDatasource as unknown as jest.Mock).mockImplementation(() => {
         throw new Error("Datasource creation failed");
       });
 
@@ -207,7 +246,7 @@ describe("AuthRoutes", () => {
     });
 
     it("should handle AuthController creation errors gracefully", () => {
-      (AuthController as jest.Mock).mockImplementation(() => {
+      (AuthController as unknown as jest.Mock).mockImplementation(() => {
         throw new Error("Controller creation failed");
       });
 

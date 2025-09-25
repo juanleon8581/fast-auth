@@ -12,6 +12,7 @@ export class AuthRoutes {
     router.post("/register", controller.register);
     router.post("/login", controller.login);
     router.post("/logout", controller.logout);
+    router.put("/update", controller.updateUser);
 
     return router;
   }
