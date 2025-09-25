@@ -249,12 +249,16 @@ describe("UpdateUser", () => {
       await updateUser.execute(updateDto);
 
       expect(repositorySpy).toHaveBeenCalledWith(updateDto);
-      expect(updateDto.redirectionLink).toBe("https://myapp.com/profile-updated");
+      expect(updateDto.redirectionLink).toBe(
+        "https://myapp.com/profile-updated",
+      );
     });
 
     it("should handle JWT-like tokens correctly", async () => {
-      const jwtLikeSessionToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-      const jwtLikeRefreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.different_signature_here";
+      const jwtLikeSessionToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+      const jwtLikeRefreshToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.different_signature_here";
 
       const updateDto = new UpdateUserDto(
         jwtLikeSessionToken,

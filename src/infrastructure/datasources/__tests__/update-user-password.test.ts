@@ -97,7 +97,8 @@ describe("AuthDatasource - UpdateUserPassword Functionality", () => {
       });
 
       it("should successfully update user password", async () => {
-        const result = await authDatasource.updateUserPassword(mockUpdateUserDto);
+        const result =
+          await authDatasource.updateUserPassword(mockUpdateUserDto);
 
         expect(mockSupabaseClient.auth.setSession).toHaveBeenCalledWith({
           access_token: mockUpdateUserDto.sessionToken,
@@ -125,7 +126,8 @@ describe("AuthDatasource - UpdateUserPassword Functionality", () => {
       });
 
       it("should return AuthUserEntity", async () => {
-        const result = await authDatasource.updateUserPassword(mockUpdateUserDto);
+        const result =
+          await authDatasource.updateUserPassword(mockUpdateUserDto);
 
         expect(result).toBeDefined();
         expect(typeof result).toBe("object");
@@ -216,7 +218,11 @@ describe("AuthDatasource - UpdateUserPassword Functionality", () => {
     describe("error handling", () => {
       it("should throw error when setSession fails", async () => {
         mockSupabaseClient.auth.setSession.mockResolvedValue({
-          error: { message: "Invalid session", code: "invalid_session", status: 401 },
+          error: {
+            message: "Invalid session",
+            code: "invalid_session",
+            status: 401,
+          },
         });
 
         await expect(
@@ -234,7 +240,11 @@ describe("AuthDatasource - UpdateUserPassword Functionality", () => {
 
         mockSupabaseClient.auth.updateUser.mockResolvedValue({
           data: { user: null },
-          error: { message: "Update failed", code: "update_error", status: 400 },
+          error: {
+            message: "Update failed",
+            code: "update_error",
+            status: 400,
+          },
         });
 
         await expect(
@@ -323,7 +333,11 @@ describe("AuthDatasource - UpdateUserPassword Functionality", () => {
       it("should maintain proper error propagation through the dependency chain", async () => {
         // Test error propagation from setSession
         mockSupabaseClient.auth.setSession.mockResolvedValue({
-          error: { message: "Session error", code: "session_error", status: 401 },
+          error: {
+            message: "Session error",
+            code: "session_error",
+            status: 401,
+          },
         });
 
         await expect(

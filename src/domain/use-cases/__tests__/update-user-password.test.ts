@@ -118,7 +118,10 @@ describe("UpdateUserPassword", () => {
       expect(result1).toBeInstanceOf(AuthUserEntity);
       expect(result2).toBeInstanceOf(AuthUserEntity);
 
-      if (result1 instanceof AuthUserEntity && result2 instanceof AuthUserEntity) {
+      if (
+        result1 instanceof AuthUserEntity &&
+        result2 instanceof AuthUserEntity
+      ) {
         expect(result1.user.email).toBe("test@example.com");
         expect(result2.user.email).toBe("test@example.com");
         expect(result1.user.name).toBe("Updated User");
@@ -215,8 +218,10 @@ describe("UpdateUserPassword", () => {
     });
 
     it("should handle JWT-like tokens correctly", async () => {
-      const jwtLikeSessionToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-      const jwtLikeRefreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.different_signature_here";
+      const jwtLikeSessionToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+      const jwtLikeRefreshToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.different_signature_here";
 
       const updateDto = new UpdateUserDto(
         jwtLikeSessionToken,

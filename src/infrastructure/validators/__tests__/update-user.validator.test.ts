@@ -7,7 +7,9 @@ import { BadRequestError } from "@/domain/errors/bad-request-error";
 // Mock UpdateUserDto
 jest.mock("@/domain/dtos/update-user.dto");
 
-const MockedUpdateUserDto = UpdateUserDto as jest.MockedClass<typeof UpdateUserDto>;
+const MockedUpdateUserDto = UpdateUserDto as jest.MockedClass<
+  typeof UpdateUserDto
+>;
 const { VALIDATION } = globalStrings.ERRORS.AUTH.UPDATE_USER;
 
 describe("UpdateUserValidator", () => {
@@ -389,9 +391,7 @@ describe("UpdateUserValidator", () => {
       });
 
       it("should handle empty object", () => {
-        expect(() => UpdateUserValidator.validate({})).toThrow(
-          ValidationError,
-        );
+        expect(() => UpdateUserValidator.validate({})).toThrow(ValidationError);
       });
 
       it("should handle data with extra properties", () => {
@@ -460,7 +460,8 @@ describe("UpdateUserValidator", () => {
         const validData = {
           sessionToken: "session-token-123",
           refreshToken: "refresh-token-456",
-          redirectionLink: "https://app.example.com:8080/path/to/resource?param=value&other=123#section",
+          redirectionLink:
+            "https://app.example.com:8080/path/to/resource?param=value&other=123#section",
         };
 
         const dto = UpdateUserValidator.validate(validData);

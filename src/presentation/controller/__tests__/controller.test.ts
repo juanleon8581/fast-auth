@@ -82,7 +82,9 @@ describe("AuthController", () => {
     mockUpdateUserPassword = {
       execute: jest.fn(),
     } as unknown as jest.Mocked<UpdateUserPassword>;
-    (UpdateUserPassword as jest.Mock).mockImplementation(() => mockUpdateUserPassword);
+    (UpdateUserPassword as jest.Mock).mockImplementation(
+      () => mockUpdateUserPassword,
+    );
 
     // Create controller instance
     authController = new AuthController(mockDatasource);
@@ -1014,7 +1016,9 @@ describe("AuthController", () => {
         );
 
         expect(UpdateUserValidator.validate).toHaveBeenCalledTimes(1);
-        expect(UpdateUserValidator.validate).toHaveBeenCalledWith(mockRequest.body);
+        expect(UpdateUserValidator.validate).toHaveBeenCalledWith(
+          mockRequest.body,
+        );
       });
 
       it("should create UpdateUserPassword use case with datasource", () => {
@@ -1243,7 +1247,11 @@ describe("AuthController", () => {
 
         // Should work even when method is extracted from instance
         expect(() =>
-          updateUserPassword(mockRequest as Request, mockResponse as Response, mockNext),
+          updateUserPassword(
+            mockRequest as Request,
+            mockResponse as Response,
+            mockNext,
+          ),
         ).not.toThrow();
         expect(UpdateUserPassword).toHaveBeenCalledWith(mockDatasource);
       });

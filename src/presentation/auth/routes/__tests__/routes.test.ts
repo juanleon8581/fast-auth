@@ -240,10 +240,14 @@ describe("AuthRoutes", () => {
       AuthRoutes.routes;
 
       const putCalls = (mockRouter.put as jest.Mock).mock.calls;
-      const updatePasswordRoute = putCalls.find((call) => call[0] === "/update-user-password");
+      const updatePasswordRoute = putCalls.find(
+        (call) => call[0] === "/update-user-password",
+      );
 
       expect(updatePasswordRoute).toBeDefined();
-      expect(updatePasswordRoute[1]).toBe(mockAuthController.updateUserPassword);
+      expect(updatePasswordRoute[1]).toBe(
+        mockAuthController.updateUserPassword,
+      );
     });
   });
 

@@ -116,11 +116,11 @@ export class MockAuthRepository extends AuthRepository {
     // Create a default mock result for updateUser
     // Return a UserEntity with updated information
     const mockUser = new UserEntity(
-      "user-123", 
-      dto.email || "test@example.com", 
-      "Updated User", 
-      true, 
-      dto.phone
+      "user-123",
+      dto.email || "test@example.com",
+      "Updated User",
+      true,
+      dto.phone,
     );
 
     return mockUser;
@@ -137,6 +137,9 @@ export class MockAuthRepository extends AuthRepository {
 
     // Create a default mock result for updateUserPassword
     // Return an AuthUserEntity with updated password
-    return this.createMockAuthUser(dto.email || "test@example.com", "Updated User");
+    return this.createMockAuthUser(
+      dto.email || "test@example.com",
+      "Updated User",
+    );
   }
 }

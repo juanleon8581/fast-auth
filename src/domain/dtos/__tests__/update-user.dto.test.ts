@@ -252,8 +252,10 @@ describe("UpdateUserDto", () => {
 
     it("should handle JWT-like tokens", () => {
       const validData = {
-        sessionToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.session-payload.signature",
-        refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.refresh-payload.signature",
+        sessionToken:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.session-payload.signature",
+        refreshToken:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.refresh-payload.signature",
         email: "user@example.com",
       };
 
@@ -261,8 +263,12 @@ describe("UpdateUserDto", () => {
 
       expect(error).toBeUndefined();
       expect(dto).toBeInstanceOf(UpdateUserDto);
-      expect(dto?.sessionToken).toBe("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.session-payload.signature");
-      expect(dto?.refreshToken).toBe("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.refresh-payload.signature");
+      expect(dto?.sessionToken).toBe(
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.session-payload.signature",
+      );
+      expect(dto?.refreshToken).toBe(
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.refresh-payload.signature",
+      );
       expect(dto?.email).toBe("user@example.com");
     });
 
@@ -340,7 +346,7 @@ describe("UpdateUserDto", () => {
         "NewPassword123!",
         "NewPassword123!",
         "+1234567890",
-        "https://example.com/redirect"
+        "https://example.com/redirect",
       );
 
       expect(dto.sessionToken).toBe("session-token-123");
@@ -353,10 +359,7 @@ describe("UpdateUserDto", () => {
     });
 
     it("should create UpdateUserDto instance with only required fields", () => {
-      const dto = new UpdateUserDto(
-        "session-token-123",
-        "refresh-token-456"
-      );
+      const dto = new UpdateUserDto("session-token-123", "refresh-token-456");
 
       expect(dto.sessionToken).toBe("session-token-123");
       expect(dto.refreshToken).toBe("refresh-token-456");
@@ -374,7 +377,7 @@ describe("UpdateUserDto", () => {
         "new.email@example.com",
         undefined,
         undefined,
-        "+1234567890"
+        "+1234567890",
       );
 
       expect(dto.sessionToken).toBe("session-token-123");
@@ -390,7 +393,7 @@ describe("UpdateUserDto", () => {
       const dto = new UpdateUserDto(
         "session-token-123",
         "refresh-token-456",
-        "email@example.com"
+        "email@example.com",
       );
 
       expect(Object.isFrozen(dto)).toBe(true);
@@ -404,10 +407,7 @@ describe("UpdateUserDto", () => {
 
   describe("interface compliance", () => {
     it("should have all required properties defined", () => {
-      const dto = new UpdateUserDto(
-        "session-token-123",
-        "refresh-token-456"
-      );
+      const dto = new UpdateUserDto("session-token-123", "refresh-token-456");
 
       expect(dto).toHaveProperty("sessionToken");
       expect(dto).toHaveProperty("refreshToken");
@@ -422,7 +422,7 @@ describe("UpdateUserDto", () => {
       const dto = new UpdateUserDto(
         "session-token-123",
         "refresh-token-456",
-        "email@example.com"
+        "email@example.com",
       );
 
       // TypeScript readonly properties should be accessible
@@ -454,7 +454,8 @@ describe("UpdateUserDto", () => {
         refreshToken: "refresh-token-456",
         email: "user+test@example.com",
         phone: "+1 (555) 123-4567 ext. 890",
-        redirectionLink: "https://example.com/path?param=value&other=123#section",
+        redirectionLink:
+          "https://example.com/path?param=value&other=123#section",
       };
 
       const [error, dto] = UpdateUserDto.createFrom(validData);
@@ -463,7 +464,9 @@ describe("UpdateUserDto", () => {
       expect(dto).toBeInstanceOf(UpdateUserDto);
       expect(dto?.email).toBe("user+test@example.com");
       expect(dto?.phone).toBe("+1 (555) 123-4567 ext. 890");
-      expect(dto?.redirectionLink).toBe("https://example.com/path?param=value&other=123#section");
+      expect(dto?.redirectionLink).toBe(
+        "https://example.com/path?param=value&other=123#section",
+      );
     });
 
     it("should handle unicode characters in optional fields", () => {
