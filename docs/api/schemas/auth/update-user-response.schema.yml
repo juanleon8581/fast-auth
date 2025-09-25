@@ -1,0 +1,30 @@
+components:
+  schemas:
+    UpdateUserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: User unique identifier
+          example: 21efcacd-250e-4305-80fd-53f050a051df
+
+        email:
+          type: string
+          description: User email address
+          example: testuser@example.com
+          format: email
+
+        name:
+          type: string
+          description: User display name
+          example: Test User
+
+        email_verified:
+          type: boolean
+          description: Whether the user's email is verified
+          example: true
+
+        phone:
+          type: string
+          description: User phone number
+          example: ""

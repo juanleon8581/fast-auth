@@ -1,0 +1,32 @@
+components:
+  schemas:
+    UpdateUserRequest:
+      type: object
+      required:
+        - sessionToken
+        - refreshToken
+      properties:
+        name:
+          type: string
+          description: User name
+          minLength: 2
+          maxLength: 50
+          example: Updated Name
+
+        lastname:
+          type: string
+          description: User lastname
+          minLength: 2
+          maxLength: 50
+          example: Updated Lastname
+
+        sessionToken:
+          type: string
+          description: Session token (JWT access token)
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+          format: jwt
+
+        refreshToken:
+          type: string
+          description: Refresh token for session validation
+          example: pcpohllradzp
