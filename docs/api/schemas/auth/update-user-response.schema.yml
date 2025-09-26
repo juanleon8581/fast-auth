@@ -16,8 +16,13 @@ components:
 
         name:
           type: string
-          description: User display name
-          example: Test User
+          description: User's first name
+          example: "John"
+
+        lastname:
+          type: string
+          description: User's last name
+          example: "Doe"
 
         email_verified:
           type: boolean

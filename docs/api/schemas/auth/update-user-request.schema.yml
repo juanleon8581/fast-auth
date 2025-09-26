@@ -28,11 +28,21 @@ components:
           description: New phone number (optional)
           example: "+1234567890"
 
-        redirectionLink:
+        name:
           type: string
-          format: uri
-          description: Redirection link after update (optional)
-          example: "https://example.com/redirect"
+          description: User's first name (optional, but if provided, lastname is also required)
+          example: "John"
+          minLength: 2
+          maxLength: 50
+          pattern: "^[a-zA-ZÀ-ÿ\\s]+$"
+
+        lastname:
+          type: string
+          description: User's last name (optional, but if provided, name is also required)
+          example: "Doe"
+          minLength: 2
+          maxLength: 50
+          pattern: "^[a-zA-ZÀ-ÿ\\s]+$"
 
         newPassword:
           type: string
