@@ -2,6 +2,7 @@ import { z } from "zod";
 import { RegisterDto } from "@/domain/dtos/register.dto";
 import globalStrings from "@/config/strings/global.strings.json";
 import {
+  EMAIL_BASIC_REGEX,
   NAME_LASTNAME_REGEX,
   SECURE_PASSWORD_REGEX,
 } from "@/config/regex/validations.regex";
@@ -26,6 +27,7 @@ const registerSchema = z.object({
 
   email: z
     .email(VALIDATION.EMAIL.INVALID_FORMAT)
+    .regex(EMAIL_BASIC_REGEX, VALIDATION.EMAIL.INVALID_FORMAT)
     .max(100, VALIDATION.EMAIL.MAX_LENGTH)
     .toLowerCase(),
 
