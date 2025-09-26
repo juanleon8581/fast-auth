@@ -3,8 +3,8 @@ import { ERRORS } from "@/config/strings/global.strings.json";
 
 export class LogoutDto {
   constructor(
-    public sessionToken: string,
-    public refreshToken: string,
+    public readonly sessionToken: string,
+    public readonly refreshToken: string,
   ) {
     Object.freeze(this);
   }

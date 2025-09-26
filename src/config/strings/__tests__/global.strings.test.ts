@@ -342,10 +342,10 @@ describe("Global Strings Configuration", () => {
         console.log("Duplicate messages found:", duplicates);
       }
 
-      // Currently there are 2 duplicate messages, this test documents the current state
-      expect(messageTexts.length).toBe(27);
-      expect(uniqueMessages.length).toBe(25);
-      expect(duplicates.length).toBe(2);
+      // Currently there are 3 duplicate messages, this test documents the current state
+      expect(messageTexts.length).toBe(41);
+      expect(uniqueMessages.length).toBe(36);
+      expect(duplicates.length).toBe(3);
     });
   });
 

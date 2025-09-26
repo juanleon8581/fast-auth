@@ -1,6 +1,7 @@
 import { LoginDto } from "@/domain/dtos/login.dto";
 import { LogoutDto } from "@/domain/dtos/logout.dto";
 import { RegisterDto } from "@/domain/dtos/register.dto";
+import { UpdateUserDto } from "@/domain/dtos/update-user.dto";
 import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
 import { UserEntity } from "@/domain/entities/user.entity";
 import { AuthRepository } from "@/domain/repositories/auth.repository";
@@ -101,5 +102,44 @@ export class MockAuthRepository extends AuthRepository {
     if (this.shouldFail) {
       throw new Error(this.errorMessage);
     }
+  }
+
+  async updateUser(dto: UpdateUserDto): Promise<UserEntity | AuthUserEntity> {
+    if (this.shouldFail) {
+      throw new Error(this.errorMessage);
+    }
+
+    if (this.mockResult) {
+      return this.mockResult;
+    }
+
+    // Create a default mock result for updateUser
+    // Return a UserEntity with updated information
+    const mockUser = new UserEntity(
+      "user-123",
+      dto.email || "test@example.com",
+      "Updated User",
+      true,
+      dto.phone,
+    );
+
+    return mockUser;
+  }
+
+  async updateUserPassword(dto: UpdateUserDto): Promise<AuthUserEntity> {
+    if (this.shouldFail) {
+      throw new Error(this.errorMessage);
+    }
+
+    if (this.mockResult) {
+      return this.mockResult;
+    }
+
+    // Create a default mock result for updateUserPassword
+    // Return an AuthUserEntity with updated password
+    return this.createMockAuthUser(
+      dto.email || "test@example.com",
+      "Updated User",
+    );
   }
 }

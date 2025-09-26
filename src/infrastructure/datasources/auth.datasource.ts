@@ -9,9 +9,33 @@ import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { ValidationError } from "@/domain/errors/validation-error";
 import { LoginDto } from "@/domain/dtos/login.dto";
 import { LogoutDto } from "@/domain/dtos/logout.dto";
+import { UpdateUserDto } from "@/domain/dtos/update-user.dto";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { TRawJson } from "@/domain/interfaces/general.interfaces";
 
 export class AuthDatasource implements AuthRepository {
-  constructor(private readonly client: typeof AuthClient) {}
+  constructor(private readonly client: typeof AuthClient) {
+    Object.freeze(this);
+  }
+
+  private static async setSession(
+    authClient: SupabaseClient,
+    sessionToken: string,
+    refreshToken: string,
+  ): Promise<void> {
+    const { error } = await authClient.auth.setSession({
+      access_token: sessionToken,
+      refresh_token: refreshToken,
+    });
+    if (error) {
+      throw new BadRequestError(
+        error.message,
+        error.code,
+        error.status?.toString(),
+      );
+    }
+  }
+
   async register(dto: RegisterDto): Promise<UserEntity | AuthUserEntity> {
     //* Create a new and unique instance of AuthClient for this request
     const authClient = new this.client().create();
@@ -89,17 +113,11 @@ export class AuthDatasource implements AuthRepository {
       throw new BadRequestError(ERRORS.AUTH.LOGOUT.USER_NOT_LOGGED_OUT);
     }
 
-    const { error: setSessionError } = await authClient.auth.setSession({
-      access_token: dto.sessionToken,
-      refresh_token: dto.refreshToken,
-    });
-    if (setSessionError) {
-      throw new BadRequestError(
-        setSessionError.message,
-        setSessionError.code,
-        setSessionError.status?.toString(),
-      );
-    }
+    await AuthDatasource.setSession(
+      authClient,
+      dto.sessionToken,
+      dto.refreshToken,
+    );
 
     const { error } = await authClient.auth.signOut({ scope: "local" });
 
@@ -110,5 +128,93 @@ export class AuthDatasource implements AuthRepository {
         error.status?.toString(),
       );
     }
+  }
+
+  async updateUser(dto: UpdateUserDto): Promise<UserEntity | AuthUserEntity> {
+    const authClient = new this.client().create();
+
+    if (!dto.sessionToken || !dto.refreshToken || dto.newPassword) {
+      throw new BadRequestError(ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED);
+    }
+
+    await AuthDatasource.setSession(
+      authClient,
+      dto.sessionToken,
+      dto.refreshToken,
+    );
+
+    const updateData: TRawJson = {};
+    if (dto.email) updateData.email = dto.email;
+    if (dto.phone) updateData.phone = dto.phone;
+    if (dto.name && dto.lastname)
+      updateData.data = {
+        display_name: `${dto.name} ${dto.lastname}`,
+      };
+
+    const { data, error } = await authClient.auth.updateUser(updateData);
+
+    if (error) {
+      throw new BadRequestError(
+        error.message,
+        error.code,
+        error.status?.toString(),
+      );
+    }
+    if (!data.user) {
+      throw new BadRequestError(ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED);
+    }
+
+    const [errorDto, datasourceUserDto] = DatasourceUserDto.createFrom(
+      data.user,
+    );
+
+    if (errorDto) throw new ValidationError(errorDto);
+    const user = UserEntity.createFrom(datasourceUserDto!);
+
+    return user;
+  }
+
+  async updateUserPassword(dto: UpdateUserDto): Promise<AuthUserEntity> {
+    const authClient = new this.client().create();
+
+    if (!dto.sessionToken || !dto.refreshToken || !dto.newPassword) {
+      throw new BadRequestError(ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED);
+    }
+
+    await AuthDatasource.setSession(
+      authClient,
+      dto.sessionToken,
+      dto.refreshToken,
+    );
+
+    const { data, error } = await authClient.auth.updateUser({
+      password: dto.newPassword,
+    });
+
+    if (error) {
+      throw new BadRequestError(
+        error.message,
+        error.code,
+        error.status?.toString(),
+      );
+    }
+    if (!data.user) {
+      throw new BadRequestError(ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED);
+    }
+
+    const [errorDto, datasourceUserDto] = DatasourceUserDto.createFrom(
+      data.user,
+    );
+
+    if (errorDto) throw new ValidationError(errorDto);
+    const user = UserEntity.createFrom(datasourceUserDto!);
+
+    return AuthUserEntity.createFrom({
+      user,
+      data: {
+        access_token: dto.sessionToken,
+        refresh_token: dto.refreshToken,
+      },
+    });
   }
 }

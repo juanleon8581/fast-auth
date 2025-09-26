@@ -1,0 +1,32 @@
+paths:
+  /api/auth/update-user:
+    put:
+      tags:
+        - Auth
+      summary: Update user information
+      description: Update user profile information with authentication tokens. Note - Password updates are not allowed in this endpoint, use update-user-password instead.
+      operationId: updateUser
+      requestBody:
+        description: User update data
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserRequest"
+        required: true
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateUserResponse"
+        "400":
+          description: Invalid JWT structure or authentication failed
+        "422":
+          description: Validation Error - Missing required fields or password confirmation required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        "500":
+          description: Internal Server Error

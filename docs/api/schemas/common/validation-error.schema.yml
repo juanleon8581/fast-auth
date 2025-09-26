@@ -1,0 +1,48 @@
+components:
+  schemas:
+    ValidationError:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "error"
+          description: Status of the response
+        code:
+          type: integer
+          example: 422
+          description: HTTP status code
+        errors:
+          type: array
+          description: Array of validation errors
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Error message describing the validation issue
+                example: "Session token is required"
+              field:
+                type: string
+                description: Field that caused the validation error
+                example: "sessionToken"
+              code:
+                type: string
+                description: Error code for programmatic handling
+                example: "VALIDATION_ERROR"
+        meta:
+          type: object
+          description: Additional metadata about the request
+          properties:
+            requestId:
+              type: string
+              description: Unique identifier for the request
+              example: "ae5744b0-6f26-4d8f-bdf5-a6a473375ab6"
+            timestamp:
+              type: string
+              format: date-time
+              description: Timestamp when the error occurred
+              example: "2025-09-26T01:13:27.346Z"
+            version:
+              type: string
+              description: API version
+              example: "1.0.0"
