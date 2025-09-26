@@ -11,6 +11,7 @@ const MockedUpdateUserDto = UpdateUserDto as jest.MockedClass<
   typeof UpdateUserDto
 >;
 const { VALIDATION } = globalStrings.ERRORS.AUTH.UPDATE_USER;
+const { VALIDATION: REGISTER_VALIDATION } = globalStrings.ERRORS.AUTH.REGISTER;
 
 describe("UpdateUserValidator", () => {
   beforeEach(() => {
@@ -24,7 +25,6 @@ describe("UpdateUserValidator", () => {
       newPassword: "NewSecurePass123!",
       newPasswordConfirmation: "NewSecurePass123!",
       phone: "+1234567890",
-      redirectionLink: "https://example.com/redirect",
     } as UpdateUserDto;
 
     (MockedUpdateUserDto.createFrom as jest.Mock).mockReturnValue([
@@ -43,7 +43,6 @@ describe("UpdateUserValidator", () => {
           newPassword: "NewSecurePass123!",
           newPasswordConfirmation: "NewSecurePass123!",
           phone: "+1234567890",
-          redirectionLink: "https://example.com/redirect",
         };
 
         const dto = UpdateUserValidator.validate(validData);
@@ -72,7 +71,6 @@ describe("UpdateUserValidator", () => {
           newPassword: "",
           newPasswordConfirmation: "",
           phone: "",
-          redirectionLink: "",
         };
 
         const dto = UpdateUserValidator.validate(validData);
@@ -323,38 +321,6 @@ describe("UpdateUserValidator", () => {
       });
     });
 
-    describe("validation errors - redirection link", () => {
-      it("should throw ValidationError when redirectionLink is not a valid URL", () => {
-        const invalidData = {
-          sessionToken: "session-token-123",
-          refreshToken: "refresh-token-456",
-          redirectionLink: "not-a-url",
-        };
-
-        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
-          ValidationError,
-        );
-        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
-          VALIDATION.REDIRECTION_LINK.INVALID_FORMAT,
-        );
-      });
-
-      it("should throw ValidationError when redirectionLink has wrong protocol", () => {
-        const invalidData = {
-          sessionToken: "session-token-123",
-          refreshToken: "refresh-token-456",
-          redirectionLink: "ftp://example.com",
-        };
-
-        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
-          ValidationError,
-        );
-        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
-          VALIDATION.REDIRECTION_LINK.INVALID_FORMAT,
-        );
-      });
-    });
-
     describe("DTO creation errors", () => {
       it("should throw BadRequestError when DTO creation fails", () => {
         const validData = {
@@ -420,7 +386,6 @@ describe("UpdateUserValidator", () => {
           newPassword: "NewSecurePass123!",
           newPasswordConfirmation: "NewSecurePass123!",
           phone: "+1987654321",
-          redirectionLink: "https://myapp.com/profile-updated",
         };
 
         const dto = UpdateUserValidator.validate(validData);
@@ -456,18 +421,208 @@ describe("UpdateUserValidator", () => {
         expect(MockedUpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
       });
 
-      it("should validate update with complex URL formats", () => {
+      it("should validate update with name and lastname", () => {
         const validData = {
           sessionToken: "session-token-123",
           refreshToken: "refresh-token-456",
-          redirectionLink:
-            "https://app.example.com:8080/path/to/resource?param=value&other=123#section",
+          name: "John",
+          lastname: "Doe",
         };
 
         const dto = UpdateUserValidator.validate(validData);
 
         expect(dto).toBeDefined();
         expect(MockedUpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+      });
+
+      it("should validate update with name, lastname and other fields", () => {
+        const validData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          email: "john.doe@example.com",
+          name: "John",
+          lastname: "Doe",
+          phone: "+1234567890",
+        };
+
+        const dto = UpdateUserValidator.validate(validData);
+
+        expect(dto).toBeDefined();
+        expect(MockedUpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+      });
+
+      it("should validate update with complex names containing spaces", () => {
+        const validData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          name: "María José",
+          lastname: "García López",
+        };
+
+        const dto = UpdateUserValidator.validate(validData);
+
+        expect(dto).toBeDefined();
+        expect(MockedUpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+      });
+    });
+
+    describe("validation errors - name and lastname", () => {
+      it("should throw ValidationError when only name is provided", () => {
+        const invalidData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          name: "John",
+        };
+
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          ValidationError,
+        );
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          VALIDATION.NAME_LASTNAME.BOTH_REQUIRED,
+        );
+      });
+
+      it("should throw ValidationError when only lastname is provided", () => {
+        const invalidData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          lastname: "Doe",
+        };
+
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          ValidationError,
+        );
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          VALIDATION.NAME_LASTNAME.BOTH_REQUIRED,
+        );
+      });
+
+      it("should throw ValidationError when name is too short", () => {
+        const invalidData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          name: "J",
+          lastname: "Doe",
+        };
+
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          ValidationError,
+        );
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          REGISTER_VALIDATION.NAME.MIN_LENGTH,
+        );
+      });
+
+      it("should throw ValidationError when lastname is too short", () => {
+        const invalidData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          name: "John",
+          lastname: "D",
+        };
+
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          ValidationError,
+        );
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          REGISTER_VALIDATION.LASTNAME.MIN_LENGTH,
+        );
+      });
+
+      it("should throw ValidationError when name is too long", () => {
+        const invalidData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          name: "A".repeat(51), // 51 characters
+          lastname: "Doe",
+        };
+
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          ValidationError,
+        );
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          REGISTER_VALIDATION.NAME.MAX_LENGTH,
+        );
+      });
+
+      it("should throw ValidationError when lastname is too long", () => {
+        const invalidData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          name: "John",
+          lastname: "B".repeat(51), // 51 characters
+        };
+
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          ValidationError,
+        );
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          REGISTER_VALIDATION.LASTNAME.MAX_LENGTH,
+        );
+      });
+
+      it("should throw ValidationError when name contains invalid characters", () => {
+        const invalidData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          name: "John123",
+          lastname: "Doe",
+        };
+
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          ValidationError,
+        );
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          REGISTER_VALIDATION.NAME.INVALID_FORMAT,
+        );
+      });
+
+      it("should throw ValidationError when lastname contains invalid characters", () => {
+        const invalidData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          name: "John",
+          lastname: "Doe@123",
+        };
+
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          ValidationError,
+        );
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          REGISTER_VALIDATION.LASTNAME.INVALID_FORMAT,
+        );
+      });
+
+      it("should throw ValidationError when name contains special characters", () => {
+        const invalidData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          name: "John-Paul",
+          lastname: "Doe",
+        };
+
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          ValidationError,
+        );
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          REGISTER_VALIDATION.NAME.INVALID_FORMAT,
+        );
+      });
+
+      it("should throw ValidationError when lastname contains special characters", () => {
+        const invalidData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          name: "John",
+          lastname: "O'Connor",
+        };
+
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          ValidationError,
+        );
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          REGISTER_VALIDATION.LASTNAME.INVALID_FORMAT,
+        );
       });
     });
   });

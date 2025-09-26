@@ -23,7 +23,6 @@ describe("UpdateUserDto", () => {
       expect(dto?.newPassword).toBeUndefined();
       expect(dto?.newPasswordConfirmation).toBeUndefined();
       expect(dto?.phone).toBeUndefined();
-      expect(dto?.redirectionLink).toBeUndefined();
     });
 
     it("should create UpdateUserDto successfully with all optional fields", () => {
@@ -34,7 +33,6 @@ describe("UpdateUserDto", () => {
         newPassword: "NewSecurePass123!",
         newPasswordConfirmation: "NewSecurePass123!",
         phone: "+1234567890",
-        redirectionLink: "https://example.com/redirect",
       };
 
       const [error, dto] = UpdateUserDto.createFrom(validData);
@@ -47,7 +45,6 @@ describe("UpdateUserDto", () => {
       expect(dto?.newPassword).toBe("NewSecurePass123!");
       expect(dto?.newPasswordConfirmation).toBe("NewSecurePass123!");
       expect(dto?.phone).toBe("+1234567890");
-      expect(dto?.redirectionLink).toBe("https://example.com/redirect");
     });
 
     it("should create UpdateUserDto with partial optional fields", () => {
@@ -68,7 +65,6 @@ describe("UpdateUserDto", () => {
       expect(dto?.phone).toBe("+1234567890");
       expect(dto?.newPassword).toBeUndefined();
       expect(dto?.newPasswordConfirmation).toBeUndefined();
-      expect(dto?.redirectionLink).toBeUndefined();
     });
 
     it("should return error when sessionToken is missing", () => {
@@ -302,20 +298,6 @@ describe("UpdateUserDto", () => {
       expect(dto?.phone).toBe("+1-555-123-4567");
     });
 
-    it("should handle redirection link", () => {
-      const validData = {
-        sessionToken: "session-token-123",
-        refreshToken: "refresh-token-456",
-        redirectionLink: "https://myapp.com/profile-updated",
-      };
-
-      const [error, dto] = UpdateUserDto.createFrom(validData);
-
-      expect(error).toBeUndefined();
-      expect(dto).toBeInstanceOf(UpdateUserDto);
-      expect(dto?.redirectionLink).toBe("https://myapp.com/profile-updated");
-    });
-
     it("should handle empty optional fields gracefully", () => {
       const validData = {
         sessionToken: "session-token-123",
@@ -323,7 +305,6 @@ describe("UpdateUserDto", () => {
         email: "",
         newPassword: "",
         phone: "",
-        redirectionLink: "",
       };
 
       const [error, dto] = UpdateUserDto.createFrom(validData);
@@ -333,7 +314,6 @@ describe("UpdateUserDto", () => {
       expect(dto?.email).toBe("");
       expect(dto?.newPassword).toBe("");
       expect(dto?.phone).toBe("");
-      expect(dto?.redirectionLink).toBe("");
     });
   });
 
@@ -346,7 +326,6 @@ describe("UpdateUserDto", () => {
         "NewPassword123!",
         "NewPassword123!",
         "+1234567890",
-        "https://example.com/redirect",
       );
 
       expect(dto.sessionToken).toBe("session-token-123");
@@ -355,7 +334,6 @@ describe("UpdateUserDto", () => {
       expect(dto.newPassword).toBe("NewPassword123!");
       expect(dto.newPasswordConfirmation).toBe("NewPassword123!");
       expect(dto.phone).toBe("+1234567890");
-      expect(dto.redirectionLink).toBe("https://example.com/redirect");
     });
 
     it("should create UpdateUserDto instance with only required fields", () => {
@@ -367,7 +345,6 @@ describe("UpdateUserDto", () => {
       expect(dto.newPassword).toBeUndefined();
       expect(dto.newPasswordConfirmation).toBeUndefined();
       expect(dto.phone).toBeUndefined();
-      expect(dto.redirectionLink).toBeUndefined();
     });
 
     it("should create UpdateUserDto instance with partial optional fields", () => {
@@ -386,7 +363,6 @@ describe("UpdateUserDto", () => {
       expect(dto.newPassword).toBeUndefined();
       expect(dto.newPasswordConfirmation).toBeUndefined();
       expect(dto.phone).toBe("+1234567890");
-      expect(dto.redirectionLink).toBeUndefined();
     });
 
     it("should freeze the instance to prevent modifications", () => {
@@ -415,7 +391,6 @@ describe("UpdateUserDto", () => {
       expect(dto).toHaveProperty("newPassword");
       expect(dto).toHaveProperty("newPasswordConfirmation");
       expect(dto).toHaveProperty("phone");
-      expect(dto).toHaveProperty("redirectionLink");
     });
 
     it("should implement readonly properties correctly", () => {
@@ -454,8 +429,6 @@ describe("UpdateUserDto", () => {
         refreshToken: "refresh-token-456",
         email: "user+test@example.com",
         phone: "+1 (555) 123-4567 ext. 890",
-        redirectionLink:
-          "https://example.com/path?param=value&other=123#section",
       };
 
       const [error, dto] = UpdateUserDto.createFrom(validData);
@@ -464,9 +437,6 @@ describe("UpdateUserDto", () => {
       expect(dto).toBeInstanceOf(UpdateUserDto);
       expect(dto?.email).toBe("user+test@example.com");
       expect(dto?.phone).toBe("+1 (555) 123-4567 ext. 890");
-      expect(dto?.redirectionLink).toBe(
-        "https://example.com/path?param=value&other=123#section",
-      );
     });
 
     it("should handle unicode characters in optional fields", () => {

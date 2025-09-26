@@ -272,7 +272,6 @@ describe("UpdateUserPassword", () => {
       expect(repositorySpy).toHaveBeenCalledWith(updateDto);
       expect(updateDto.email).toBeUndefined();
       expect(updateDto.phone).toBeUndefined();
-      expect(updateDto.redirectionLink).toBeUndefined();
       expect(updateDto.newPassword).toBe("onlyPasswordUpdate123");
       expect(updateDto.newPasswordConfirmation).toBe("onlyPasswordUpdate123");
     });

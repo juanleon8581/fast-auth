@@ -233,27 +233,6 @@ describe("UpdateUser", () => {
       }
     });
 
-    it("should handle redirection link correctly", async () => {
-      const updateDto = new UpdateUserDto(
-        "redirect-session-token",
-        "redirect-refresh-token",
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        "https://myapp.com/profile-updated",
-      );
-
-      const repositorySpy = jest.spyOn(mockRepository, "updateUser");
-
-      await updateUser.execute(updateDto);
-
-      expect(repositorySpy).toHaveBeenCalledWith(updateDto);
-      expect(updateDto.redirectionLink).toBe(
-        "https://myapp.com/profile-updated",
-      );
-    });
-
     it("should handle JWT-like tokens correctly", async () => {
       const jwtLikeSessionToken =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
