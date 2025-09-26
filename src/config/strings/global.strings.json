@@ -85,8 +85,8 @@
           "PHONE": {
             "INVALID_FORMAT": "Phone number must be in a valid format"
           },
-          "REDIRECTION_LINK": {
-            "INVALID_FORMAT": "Redirection link must be a valid URL"
+          "NAME_LASTNAME": {
+            "BOTH_REQUIRED": "Name and last name must be provided together"
           }
         }
       }

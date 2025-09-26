@@ -146,6 +146,10 @@ export class AuthDatasource implements AuthRepository {
     const updateData: TRawJson = {};
     if (dto.email) updateData.email = dto.email;
     if (dto.phone) updateData.phone = dto.phone;
+    if (dto.name && dto.lastname)
+      updateData.data = {
+        display_name: `${dto.name} ${dto.lastname}`,
+      };
 
     const { data, error } = await authClient.auth.updateUser(updateData);
 

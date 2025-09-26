@@ -5,13 +5,14 @@ import {
   SECURE_PASSWORD_REGEX,
   EMAIL_BASIC_REGEX,
   PHONE_INTERNATIONAL_REGEX,
-  URL_REGEX,
+  NAME_LASTNAME_REGEX,
 } from "@/config/regex/validations.regex";
 import { processValidationError } from "./utils/processError.validator";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { TRawJson } from "@/domain/interfaces/general.interfaces";
 
 const { VALIDATION } = globalStrings.ERRORS.AUTH.UPDATE_USER;
+const { VALIDATION: VALIDATION_GENERAL } = globalStrings.ERRORS.AUTH.REGISTER;
 
 const updateUserSchema = z
   .object({
@@ -28,9 +29,9 @@ const updateUserSchema = z
       .min(1, VALIDATION.REFRESH_TOKEN.REQUIRED),
 
     email: z
-
       .email(VALIDATION.EMAIL.INVALID_FORMAT)
       .regex(EMAIL_BASIC_REGEX, VALIDATION.EMAIL.INVALID_FORMAT)
+      .max(100, VALIDATION_GENERAL.EMAIL.MAX_LENGTH)
       .optional()
       .or(z.literal("")),
 
@@ -50,12 +51,34 @@ const updateUserSchema = z
       .optional()
       .or(z.literal("")),
 
-    redirectionLink: z
-      .url(VALIDATION.REDIRECTION_LINK.INVALID_FORMAT)
-      .regex(URL_REGEX, VALIDATION.REDIRECTION_LINK.INVALID_FORMAT)
-      .optional()
-      .or(z.literal("")),
+    name: z
+      .string()
+      .min(2, VALIDATION_GENERAL.NAME.MIN_LENGTH)
+      .max(50, VALIDATION_GENERAL.NAME.MAX_LENGTH)
+      .regex(NAME_LASTNAME_REGEX, VALIDATION_GENERAL.NAME.INVALID_FORMAT)
+      .optional(),
+
+    lastname: z
+      .string()
+      .min(2, VALIDATION_GENERAL.LASTNAME.MIN_LENGTH)
+      .max(50, VALIDATION_GENERAL.LASTNAME.MAX_LENGTH)
+      .regex(NAME_LASTNAME_REGEX, VALIDATION_GENERAL.LASTNAME.INVALID_FORMAT)
+      .optional(),
   })
+
+  .refine(
+    (data) => {
+      // If name or lastname is provided, both must be provided
+      if ((data.name || data.lastname) && (!data.name || !data.lastname)) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: VALIDATION.NAME_LASTNAME.BOTH_REQUIRED,
+      path: ["name"],
+    },
+  )
   .refine(
     (data) => {
       // If newPassword is provided, newPasswordConfirmation is required
@@ -82,6 +105,7 @@ const updateUserSchema = z
       ) {
         return data.newPassword === data.newPasswordConfirmation;
       }
+
       return true;
     },
     {

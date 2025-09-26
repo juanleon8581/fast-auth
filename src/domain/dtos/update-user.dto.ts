@@ -8,7 +8,8 @@ interface IUpdateUserDto {
   newPassword?: string;
   newPasswordConfirmation?: string;
   phone?: string;
-  redirectionLink?: string;
+  name?: string;
+  lastname?: string;
 }
 
 export class UpdateUserDto {
@@ -19,7 +20,8 @@ export class UpdateUserDto {
     public readonly newPassword?: string,
     public readonly newPasswordConfirmation?: string,
     public readonly phone?: string,
-    public readonly redirectionLink?: string,
+    public readonly name?: string,
+    public readonly lastname?: string,
   ) {
     Object.freeze(this);
   }
@@ -32,7 +34,8 @@ export class UpdateUserDto {
       newPassword,
       newPasswordConfirmation,
       phone,
-      redirectionLink,
+      name,
+      lastname,
     } = props;
 
     return new UpdateUserDto(
@@ -42,11 +45,12 @@ export class UpdateUserDto {
       newPassword,
       newPasswordConfirmation,
       phone,
-      redirectionLink,
+      name,
+      lastname,
     );
   }
 
-  static createFrom(data: TRawJson): [string?, UpdateUserDto?] {
+  static createFrom(json: TRawJson): [string?, UpdateUserDto?] {
     const {
       sessionToken,
       refreshToken,
@@ -54,8 +58,9 @@ export class UpdateUserDto {
       newPassword,
       newPasswordConfirmation,
       phone,
-      redirectionLink,
-    } = data;
+      name,
+      lastname,
+    } = json;
 
     if (!sessionToken || !refreshToken)
       return [ERRORS.DATA_VALIDATION.INVALID_DATA];
@@ -69,7 +74,8 @@ export class UpdateUserDto {
         newPassword,
         newPasswordConfirmation,
         phone,
-        redirectionLink,
+        name,
+        lastname,
       }),
     ];
   }
