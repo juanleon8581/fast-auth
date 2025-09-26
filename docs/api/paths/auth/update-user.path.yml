@@ -15,7 +15,7 @@ paths:
         required: true
       responses:
         "200":
-          description: Usuario actualizado exitosamente
+          description: User updated successfully
           content:
             application/json:
               schema:
