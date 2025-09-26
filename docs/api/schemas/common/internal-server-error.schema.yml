@@ -1,0 +1,40 @@
+components:
+  schemas:
+    InternalServerError:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "error"
+          description: Status of the response
+        code:
+          type: integer
+          example: 500
+          description: HTTP status code
+        errors:
+          type: array
+          description: Array of error details
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Generic error message for security reasons
+                example: "Internal Server Error"
+        meta:
+          type: object
+          description: Additional metadata about the request
+          properties:
+            requestId:
+              type: string
+              description: Unique identifier for the request
+              example: "ae5744b0-6f26-4d8f-bdf5-a6a473375ab6"
+            timestamp:
+              type: string
+              format: date-time
+              description: Timestamp when the error occurred
+              example: "2025-09-26T01:13:27.346Z"
+            version:
+              type: string
+              description: API version
+              example: "1.0.0"
