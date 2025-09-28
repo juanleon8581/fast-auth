@@ -14,6 +14,7 @@ export class AuthRoutes {
     router.post("/logout", controller.logout);
     router.put("/update-user", controller.updateUser);
     router.put("/update-user-password", controller.updateUserPassword);
+    router.post("/request-reset-password-email", controller.requestResetPasswordEmail);
 
     return router;
   }

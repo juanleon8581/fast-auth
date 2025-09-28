@@ -3,14 +3,17 @@ import { AuthController } from "../controller";
 import { RegisterDto } from "@/domain/dtos/register.dto";
 import { LoginDto } from "@/domain/dtos/login.dto";
 import { UpdateUserDto } from "@/domain/dtos/update-user.dto";
+import { RequestResetPasswordEmailDto } from "@/domain/dtos/request-reset-password-email.dto";
 import { AuthRepository } from "@/domain/repositories/auth.repository";
 import { RegisterUser } from "@/domain/use-cases/register-user";
 import { LoginUser } from "@/domain/use-cases/login-user";
 import { UpdateUser } from "@/domain/use-cases/update-user";
 import { UpdateUserPassword } from "@/domain/use-cases/update-user-password";
+import { RequestResetPasswordEmail } from "@/domain/use-cases/request-reset-password-email";
 import { RegisterValidator } from "@/infrastructure/validators/register.validator";
 import { LoginValidator } from "@/infrastructure/validators/login.validator";
 import { UpdateUserValidator } from "@/infrastructure/validators/update-user.validator";
+import { RequestResetPasswordEmailValidator } from "@/infrastructure/validators/request-reset-password-email.validator";
 import { UserEntity } from "@/domain/entities/user.entity";
 import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
 
@@ -19,9 +22,11 @@ jest.mock("@/domain/use-cases/register-user");
 jest.mock("@/domain/use-cases/login-user");
 jest.mock("@/domain/use-cases/update-user");
 jest.mock("@/domain/use-cases/update-user-password");
+jest.mock("@/domain/use-cases/request-reset-password-email");
 jest.mock("@/infrastructure/validators/register.validator");
 jest.mock("@/infrastructure/validators/login.validator");
 jest.mock("@/infrastructure/validators/update-user.validator");
+jest.mock("@/infrastructure/validators/request-reset-password-email.validator");
 
 describe("AuthController", () => {
   let authController: AuthController;
@@ -33,6 +38,7 @@ describe("AuthController", () => {
   let mockLoginUser: jest.Mocked<LoginUser>;
   let mockUpdateUser: jest.Mocked<UpdateUser>;
   let mockUpdateUserPassword: jest.Mocked<UpdateUserPassword>;
+  let mockRequestResetPasswordEmail: jest.Mocked<RequestResetPasswordEmail>;
 
   beforeEach(() => {
     // Reset all mocks
@@ -86,6 +92,14 @@ describe("AuthController", () => {
       () => mockUpdateUserPassword,
     );
 
+    // Mock RequestResetPasswordEmail
+    mockRequestResetPasswordEmail = {
+      execute: jest.fn(),
+    } as unknown as jest.Mocked<RequestResetPasswordEmail>;
+    (RequestResetPasswordEmail as jest.Mock).mockImplementation(
+      () => mockRequestResetPasswordEmail,
+    );
+
     // Create controller instance
     authController = new AuthController(mockDatasource);
   });
@@ -114,6 +128,11 @@ describe("AuthController", () => {
     it("should have updateUserPassword method bound to instance", () => {
       expect(typeof authController.updateUserPassword).toBe("function");
       expect(authController.updateUserPassword).toBeDefined();
+    });
+
+    it("should have requestResetPasswordEmail method bound to instance", () => {
+      expect(typeof authController.requestResetPasswordEmail).toBe("function");
+      expect(authController.requestResetPasswordEmail).toBeDefined();
     });
   });
 
@@ -1254,6 +1273,136 @@ describe("AuthController", () => {
           ),
         ).not.toThrow();
         expect(UpdateUserPassword).toHaveBeenCalledWith(mockDatasource);
+      });
+    });
+  });
+
+  describe("requestResetPasswordEmail method", () => {
+    beforeEach(() => {
+      // Mock requestResetPasswordEmail request
+      mockRequest = {
+        body: {
+          email: "john.doe@example.com",
+          redirectTo: "https://example.com/reset-password",
+        },
+      };
+    });
+
+    describe("Successful password reset email request", () => {
+      beforeEach(() => {
+        const mockDto = new RequestResetPasswordEmailDto(
+          "john.doe@example.com",
+          "https://example.com/reset-password",
+        );
+        (RequestResetPasswordEmailValidator.validate as jest.Mock).mockReturnValue(mockDto);
+      });
+
+      it("should validate request body", () => {
+        mockRequestResetPasswordEmail.execute.mockResolvedValue(undefined);
+
+        authController.requestResetPasswordEmail(
+          mockRequest as Request,
+          mockResponse as Response,
+          mockNext,
+        );
+
+        expect(RequestResetPasswordEmailValidator.validate).toHaveBeenCalledTimes(1);
+        expect(RequestResetPasswordEmailValidator.validate).toHaveBeenCalledWith(
+          mockRequest.body,
+        );
+      });
+
+      it("should call RequestResetPasswordEmail use case with correct DTO", async () => {
+        mockRequestResetPasswordEmail.execute.mockResolvedValue(undefined);
+
+        await authController.requestResetPasswordEmail(
+          mockRequest as Request,
+          mockResponse as Response,
+          mockNext,
+        );
+
+        expect(RequestResetPasswordEmail).toHaveBeenCalledWith(mockDatasource);
+        expect(mockRequestResetPasswordEmail.execute).toHaveBeenCalledTimes(1);
+      });
+
+      it("should return success response", async () => {
+        mockRequestResetPasswordEmail.execute.mockResolvedValue(undefined);
+
+        await authController.requestResetPasswordEmail(
+          mockRequest as Request,
+          mockResponse as Response,
+          mockNext,
+        );
+
+        expect(mockResponse.status).toHaveBeenCalledWith(200);
+        expect(mockResponse.json).toHaveBeenCalledWith({
+          status: "success",
+          data: { message: "Reset password email sent successfully" },
+          meta: expect.objectContaining({
+            requestId: "",
+            timestamp: expect.any(String),
+            version: "1.0.0",
+          }),
+        });
+      });
+    });
+
+    describe("Error scenarios", () => {
+      it("should handle validation errors", async () => {
+        const error = new Error("Invalid email format");
+        mockRequestResetPasswordEmail.execute.mockRejectedValue(error);
+
+        authController.requestResetPasswordEmail(
+          mockRequest as Request,
+          mockResponse as Response,
+          mockNext,
+        );
+
+        // Wait for promise to reject
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        expect(mockNext).toHaveBeenCalledTimes(1);
+        expect(mockNext).toHaveBeenCalledWith(error);
+      });
+
+      it("should handle use case execution errors", async () => {
+        const error = new Error("Email not sent");
+        mockRequestResetPasswordEmail.execute.mockRejectedValue(error);
+
+        authController.requestResetPasswordEmail(
+          mockRequest as Request,
+          mockResponse as Response,
+          mockNext,
+        );
+
+        // Wait for promise to reject
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        expect(mockNext).toHaveBeenCalledTimes(1);
+        expect(mockNext).toHaveBeenCalledWith(error);
+      });
+    });
+
+    describe("Method binding", () => {
+      it("should maintain correct context when requestResetPasswordEmail method is extracted", () => {
+        const { requestResetPasswordEmail } = authController;
+        const mockDto = new RequestResetPasswordEmailDto(
+          "john.doe@example.com",
+          "https://example.com/reset-password",
+        );
+
+        (RequestResetPasswordEmailValidator.validate as jest.Mock).mockReturnValue(mockDto);
+        mockRequestResetPasswordEmail.execute.mockResolvedValue(undefined);
+
+        // Should work even when method is extracted from instance
+        expect(() =>
+          requestResetPasswordEmail(
+            mockRequest as Request,
+            mockResponse as Response,
+            mockNext,
+          ),
+        ).not.toThrow();
+        expect(RequestResetPasswordEmail).toHaveBeenCalledWith(mockDatasource);
       });
     });
   });
