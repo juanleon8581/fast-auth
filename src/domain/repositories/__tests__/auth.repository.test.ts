@@ -4,6 +4,7 @@ import { AuthUserEntity } from "../../entities/auth-user.entity";
 import { UserEntity } from "../../entities/user.entity";
 import { LoginDto } from "@/domain/dtos/login.dto";
 import { LogoutDto } from "@/domain/dtos/logout.dto";
+import { RequestResetPasswordEmailDto } from "@/domain/dtos/request-reset-password-email.dto";
 import { UpdateUserDto } from "@/domain/dtos/update-user.dto";
 
 // Concrete implementation for testing
@@ -83,6 +84,14 @@ class TestAuthRepository extends AuthRepository {
         refresh_token: "mock-refresh-token",
       },
     });
+  }
+
+  async requestResetPasswordEmail(dto: RequestResetPasswordEmailDto): Promise<void> {
+    // Mock implementation for testing - validate email exists
+    if (!dto.email) {
+      throw new Error("Email is required");
+    }
+    return Promise.resolve();
   }
 }
 
