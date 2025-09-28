@@ -89,6 +89,20 @@
             "BOTH_REQUIRED": "Name and last name must be provided together"
           }
         }
+      },
+      "REQUEST_RESET_PASSWORD_EMAIL": {
+        "EMAIL_NOT_SENT": "Reset password email not sent",
+        "VALIDATION": {
+          "EMAIL": {
+            "REQUIRED": "Email is required",
+            "INVALID_FORMAT": "Must be a valid email",
+            "MAX_LENGTH": "Email cannot exceed 100 characters"
+          },
+          "REDIRECT_TO": {
+            "INVALID_FORMAT": "Redirect URL must be a valid URL",
+            "MAX_LENGTH": "Redirect URL cannot exceed 500 characters"
+          }
+        }
       }
     }
   }
