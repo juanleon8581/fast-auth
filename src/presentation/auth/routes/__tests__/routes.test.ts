@@ -189,7 +189,7 @@ describe("AuthRoutes", () => {
       AuthRoutes.routes;
 
       // Verify POST and PUT methods are used
-      expect(mockRouter.post).toHaveBeenCalledTimes(3);
+      expect(mockRouter.post).toHaveBeenCalledTimes(4); // Updated to 4 for register, login, logout, and request-reset-password-email
       expect(mockRouter.put).toHaveBeenCalledTimes(2); // Updated to 2 for both PUT routes
       expect(mockRouter.get).not.toHaveBeenCalled();
       expect(mockRouter.delete).not.toHaveBeenCalled();

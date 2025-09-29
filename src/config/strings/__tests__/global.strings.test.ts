@@ -19,6 +19,7 @@ describe("Global Strings Configuration", () => {
       expect(ERRORS).toHaveProperty("AUTH");
       expect(ERRORS.AUTH).toHaveProperty("LOGIN");
       expect(ERRORS.AUTH).toHaveProperty("LOGOUT");
+      expect(ERRORS.AUTH).toHaveProperty("REQUEST_RESET_PASSWORD_EMAIL");
     });
   });
 
@@ -265,6 +266,59 @@ describe("Global Strings Configuration", () => {
     });
   });
 
+  describe("REQUEST_RESET_PASSWORD_EMAIL Error Messages", () => {
+    const { REQUEST_RESET_PASSWORD_EMAIL } = globalStrings.ERRORS.AUTH;
+
+    it("should have request reset password email error message", () => {
+      expect(REQUEST_RESET_PASSWORD_EMAIL).toHaveProperty("EMAIL_NOT_SENT");
+      expect(REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT).toBe("Reset password email not sent");
+    });
+
+    it("should have VALIDATION section", () => {
+      expect(REQUEST_RESET_PASSWORD_EMAIL).toHaveProperty("VALIDATION");
+      expect(typeof REQUEST_RESET_PASSWORD_EMAIL.VALIDATION).toBe("object");
+    });
+
+    describe("REQUEST_RESET_PASSWORD_EMAIL Validation Messages", () => {
+      const { VALIDATION } = REQUEST_RESET_PASSWORD_EMAIL;
+
+      it("should have email and redirectTo validation sections", () => {
+        expect(VALIDATION).toHaveProperty("EMAIL");
+        expect(VALIDATION).toHaveProperty("REDIRECT_TO");
+      });
+
+      describe("EMAIL validation messages", () => {
+        const { EMAIL } = VALIDATION;
+
+        it("should have all email validation messages", () => {
+          expect(EMAIL).toHaveProperty("REQUIRED");
+          expect(EMAIL).toHaveProperty("INVALID_FORMAT");
+          expect(EMAIL).toHaveProperty("MAX_LENGTH");
+        });
+
+        it("should have correct email validation messages", () => {
+          expect(EMAIL.REQUIRED).toBe("Email is required");
+          expect(EMAIL.INVALID_FORMAT).toBe("Must be a valid email");
+          expect(EMAIL.MAX_LENGTH).toBe("Email cannot exceed 100 characters");
+        });
+      });
+
+      describe("REDIRECT_TO validation messages", () => {
+        const { REDIRECT_TO } = VALIDATION;
+
+        it("should have all redirectTo validation messages", () => {
+          expect(REDIRECT_TO).toHaveProperty("INVALID_FORMAT");
+          expect(REDIRECT_TO).toHaveProperty("MAX_LENGTH");
+        });
+
+        it("should have correct redirectTo validation messages", () => {
+          expect(REDIRECT_TO.INVALID_FORMAT).toBe("Redirect URL must be a valid URL");
+          expect(REDIRECT_TO.MAX_LENGTH).toBe("Redirect URL cannot exceed 500 characters");
+        });
+      });
+    });
+  });
+
   describe("Message Quality Validation", () => {
     const getAllMessages = (
       obj: any,
@@ -343,9 +397,10 @@ describe("Global Strings Configuration", () => {
       }
 
       // Currently there are 3 duplicate messages, this test documents the current state
-      expect(messageTexts.length).toBe(41);
-      expect(uniqueMessages.length).toBe(36);
-      expect(duplicates.length).toBe(3);
+      // Added 5 new messages for REQUEST_RESET_PASSWORD_EMAIL (1 error + 4 validation messages)
+      expect(messageTexts.length).toBe(47);
+      expect(uniqueMessages.length).toBe(39);
+      expect(duplicates.length).toBe(4);
     });
   });
 

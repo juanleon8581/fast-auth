@@ -1,6 +1,7 @@
 import { LoginDto } from "@/domain/dtos/login.dto";
 import { LogoutDto } from "@/domain/dtos/logout.dto";
 import { RegisterDto } from "@/domain/dtos/register.dto";
+import { RequestResetPasswordEmailDto } from "@/domain/dtos/request-reset-password-email.dto";
 import { UpdateUserDto } from "@/domain/dtos/update-user.dto";
 import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
 import { UserEntity } from "@/domain/entities/user.entity";
@@ -141,5 +142,18 @@ export class MockAuthRepository extends AuthRepository {
       dto.email || "test@example.com",
       "Updated User",
     );
+  }
+
+  async requestResetPasswordEmail(dto: RequestResetPasswordEmailDto): Promise<void> {
+    if (this.shouldFail) {
+      throw new Error(this.errorMessage);
+    }
+
+    // Mock implementation for testing - validate email exists
+    if (!dto.email) {
+      throw new Error("Email is required");
+    }
+    
+    return Promise.resolve();
   }
 }

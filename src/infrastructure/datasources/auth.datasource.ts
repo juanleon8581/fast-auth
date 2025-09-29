@@ -10,6 +10,7 @@ import { ValidationError } from "@/domain/errors/validation-error";
 import { LoginDto } from "@/domain/dtos/login.dto";
 import { LogoutDto } from "@/domain/dtos/logout.dto";
 import { UpdateUserDto } from "@/domain/dtos/update-user.dto";
+import { RequestResetPasswordEmailDto } from "@/domain/dtos/request-reset-password-email.dto";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { TRawJson } from "@/domain/interfaces/general.interfaces";
 
@@ -216,5 +217,31 @@ export class AuthDatasource implements AuthRepository {
         refresh_token: dto.refreshToken,
       },
     });
+  }
+
+  async requestResetPasswordEmail(dto: RequestResetPasswordEmailDto): Promise<void> {
+    try {
+      //* Create a new and unique instance of AuthClient for this request
+      const authClient = new this.client().create();
+
+      const { error } = await authClient.auth.resetPasswordForEmail(dto.email, {
+        redirectTo: dto.redirectTo,
+      });
+
+      if (error) {
+        throw new BadRequestError(
+          ERRORS.AUTH.REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT,
+          error.code,
+          error.status?.toString(),
+        );
+      }
+    } catch (error) {
+      if (error instanceof BadRequestError) {
+        throw error;
+      }
+      throw new BadRequestError(
+        ERRORS.AUTH.REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT,
+      );
+    }
   }
 }

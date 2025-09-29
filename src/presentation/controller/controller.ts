@@ -11,6 +11,8 @@ import { Request, Response, NextFunction } from "express";
 import { UpdateUserValidator } from "@/infrastructure/validators/update-user.validator";
 import { UpdateUser } from "@/domain/use-cases/update-user";
 import { UpdateUserPassword } from "@/domain/use-cases/update-user-password";
+import { RequestResetPasswordEmail } from "@/domain/use-cases/request-reset-password-email";
+import { RequestResetPasswordEmailValidator } from "@/infrastructure/validators/request-reset-password-email.validator";
 
 export class AuthController {
   constructor(private readonly datasource: AuthRepository) {}
@@ -88,6 +90,30 @@ export class AuthController {
       new UpdateUserPassword(this.datasource)
         .execute(dto)
         .then((user) => ResponseHelper.success(res, user, req, 200))
+        .catch(next);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public requestResetPasswordEmail = (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): void => {
+    try {
+      const dto = RequestResetPasswordEmailValidator.validate(req.body);
+
+      new RequestResetPasswordEmail(this.datasource)
+        .execute(dto)
+        .then(() =>
+          ResponseHelper.success(
+            res,
+            { message: "Reset password email sent successfully" },
+            req,
+            200,
+          ),
+        )
         .catch(next);
     } catch (error) {
       next(error);
