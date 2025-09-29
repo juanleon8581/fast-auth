@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
-import { jwtVerify } from 'jose';
-import { TextEncoder } from 'util';
-import envs from '../../config/envs';
+import { Request, Response, NextFunction } from "express";
+import { jwtVerify } from "jose";
+import { TextEncoder } from "util";
+import envs from "../../config/envs";
 
 /**
  * Authentication middleware that validates JWT Bearer tokens
@@ -10,7 +10,7 @@ import envs from '../../config/envs';
 export const authMiddleware = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     // Extract Authorization header
@@ -18,17 +18,17 @@ export const authMiddleware = async (
 
     if (!authHeader) {
       res.status(401).json({
-        error: 'Authorization header is required',
-        message: 'Please provide a valid Bearer token'
+        error: "Authorization header is required",
+        message: "Please provide a valid Bearer token",
       });
       return;
     }
 
     // Check if it's a Bearer token
-    if (!authHeader.startsWith('Bearer ')) {
+    if (!authHeader.startsWith("Bearer ")) {
       res.status(401).json({
-        error: 'Invalid authorization format',
-        message: 'Authorization header must start with "Bearer "'
+        error: "Invalid authorization format",
+        message: 'Authorization header must start with "Bearer "',
       });
       return;
     }
@@ -38,18 +38,18 @@ export const authMiddleware = async (
 
     if (!token) {
       res.status(401).json({
-        error: 'Token is required',
-        message: 'Bearer token cannot be empty'
+        error: "Token is required",
+        message: "Bearer token cannot be empty",
       });
       return;
     }
 
     // Verify the JWT token using jose
     const secret = new TextEncoder().encode(envs.JWT_SECRET);
-    
+
     try {
       await jwtVerify(token, secret, {
-        algorithms: ['HS256'], // Supabase uses HS256 for symmetric keys
+        algorithms: ["HS256"], // Supabase uses HS256 for symmetric keys
       });
 
       // Continue to the next middleware/route handler
@@ -57,35 +57,36 @@ export const authMiddleware = async (
     } catch (jwtError) {
       // Handle JWT verification errors
       if (jwtError instanceof Error) {
-        if (jwtError.message.includes('expired')) {
+        if (jwtError.message.includes("expired")) {
           res.status(401).json({
-            error: 'Token expired',
-            message: 'The provided token has expired. Please refresh your token.'
+            error: "Token expired",
+            message:
+              "The provided token has expired. Please refresh your token.",
           });
           return;
         }
-        
-        if (jwtError.message.includes('signature')) {
+
+        if (jwtError.message.includes("signature")) {
           res.status(401).json({
-            error: 'Invalid token signature',
-            message: 'The token signature is invalid'
+            error: "Invalid token signature",
+            message: "The token signature is invalid",
           });
           return;
         }
       }
 
       res.status(401).json({
-        error: 'Invalid token',
-        message: 'The provided token is invalid or malformed'
+        error: "Invalid token",
+        message: "The provided token is invalid or malformed",
       });
       return;
     }
   } catch (error) {
     // Handle unexpected errors
-    console.error('Auth middleware error:', error);
+    console.error("Auth middleware error:", error);
     res.status(500).json({
-      error: 'Internal server error',
-      message: 'An unexpected error occurred during authentication'
+      error: "Internal server error",
+      message: "An unexpected error occurred during authentication",
     });
     return;
   }
@@ -98,12 +99,12 @@ export const authMiddleware = async (
 export const optionalAuthMiddleware = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   const authHeader = req.headers.authorization;
 
   // If no auth header, continue without validation
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     next();
     return;
   }

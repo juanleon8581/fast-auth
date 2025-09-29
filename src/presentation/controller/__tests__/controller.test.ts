@@ -1294,7 +1294,9 @@ describe("AuthController", () => {
           "john.doe@example.com",
           "https://example.com/reset-password",
         );
-        (RequestResetPasswordEmailValidator.validate as jest.Mock).mockReturnValue(mockDto);
+        (
+          RequestResetPasswordEmailValidator.validate as jest.Mock
+        ).mockReturnValue(mockDto);
       });
 
       it("should validate request body", () => {
@@ -1306,10 +1308,12 @@ describe("AuthController", () => {
           mockNext,
         );
 
-        expect(RequestResetPasswordEmailValidator.validate).toHaveBeenCalledTimes(1);
-        expect(RequestResetPasswordEmailValidator.validate).toHaveBeenCalledWith(
-          mockRequest.body,
-        );
+        expect(
+          RequestResetPasswordEmailValidator.validate,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          RequestResetPasswordEmailValidator.validate,
+        ).toHaveBeenCalledWith(mockRequest.body);
       });
 
       it("should call RequestResetPasswordEmail use case with correct DTO", async () => {
@@ -1391,7 +1395,9 @@ describe("AuthController", () => {
           "https://example.com/reset-password",
         );
 
-        (RequestResetPasswordEmailValidator.validate as jest.Mock).mockReturnValue(mockDto);
+        (
+          RequestResetPasswordEmailValidator.validate as jest.Mock
+        ).mockReturnValue(mockDto);
         mockRequestResetPasswordEmail.execute.mockResolvedValue(undefined);
 
         // Should work even when method is extracted from instance

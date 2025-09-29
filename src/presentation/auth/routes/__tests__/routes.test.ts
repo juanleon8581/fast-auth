@@ -13,7 +13,9 @@ jest.mock("@/presentation/middlewares/auth.middleware", () => ({
 }));
 
 // Import the mocked authMiddleware
-const { authMiddleware } = require("@/presentation/middlewares/auth.middleware");
+const {
+  authMiddleware,
+} = require("@/presentation/middlewares/auth.middleware");
 
 describe("AuthRoutes", () => {
   let mockRouter: jest.Mocked<Router>;
@@ -197,7 +199,9 @@ describe("AuthRoutes", () => {
       expect(postCalls[0][1]).toBe(mockAuthController.register);
       expect(postCalls[1][1]).toBe(mockAuthController.login);
       expect(postCalls[2][2]).toBe(mockAuthController.logout); // Third parameter due to middleware
-      expect(postCalls[3][1]).toBe(mockAuthController.requestResetPasswordEmail);
+      expect(postCalls[3][1]).toBe(
+        mockAuthController.requestResetPasswordEmail,
+      );
       expect(putCalls[0][2]).toBe(mockAuthController.updateUser); // Third parameter due to middleware
       expect(putCalls[1][2]).toBe(mockAuthController.updateUserPassword); // Third parameter due to middleware
     });
@@ -306,7 +310,9 @@ describe("AuthRoutes", () => {
       expect(logoutCall[1]).toBe(authMiddleware);
 
       // Check that authMiddleware is applied to update-user route
-      const updateUserCall = putCalls.find((call) => call[0] === "/update-user");
+      const updateUserCall = putCalls.find(
+        (call) => call[0] === "/update-user",
+      );
       expect(updateUserCall[1]).toBe(authMiddleware);
 
       // Check that authMiddleware is applied to update-user-password route
@@ -354,7 +360,9 @@ describe("AuthRoutes", () => {
       expect(logoutCall[2]).toBe(mockAuthController.logout);
 
       // Verify middleware comes before controller for update-user
-      const updateUserCall = putCalls.find((call) => call[0] === "/update-user");
+      const updateUserCall = putCalls.find(
+        (call) => call[0] === "/update-user",
+      );
       expect(updateUserCall).toHaveLength(3); // path, middleware, controller
       expect(updateUserCall[1]).toBe(authMiddleware);
       expect(updateUserCall[2]).toBe(mockAuthController.updateUser);

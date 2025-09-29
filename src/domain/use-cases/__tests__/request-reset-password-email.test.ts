@@ -13,13 +13,17 @@ describe("RequestResetPasswordEmail", () => {
 
   describe("constructor", () => {
     it("should create RequestResetPasswordEmail instance with repository dependency", () => {
-      expect(requestResetPasswordEmail).toBeInstanceOf(RequestResetPasswordEmail);
+      expect(requestResetPasswordEmail).toBeInstanceOf(
+        RequestResetPasswordEmail,
+      );
       expect(requestResetPasswordEmail).toBeDefined();
     });
 
     it("should store repository reference", () => {
       // Access private property for testing
-      expect((requestResetPasswordEmail as any).repository).toBe(mockRepository);
+      expect((requestResetPasswordEmail as any).repository).toBe(
+        mockRepository,
+      );
     });
   });
 
@@ -49,7 +53,10 @@ describe("RequestResetPasswordEmail", () => {
         "https://app.example.com/reset",
       );
 
-      const repositorySpy = jest.spyOn(mockRepository, "requestResetPasswordEmail");
+      const repositorySpy = jest.spyOn(
+        mockRepository,
+        "requestResetPasswordEmail",
+      );
 
       await requestResetPasswordEmail.execute(requestDto);
 
@@ -63,11 +70,14 @@ describe("RequestResetPasswordEmail", () => {
         "https://example.com/reset",
       );
 
-      mockRepository.setShouldFail(true, "Repository reset password email failed");
-
-      await expect(requestResetPasswordEmail.execute(requestDto)).rejects.toThrow(
+      mockRepository.setShouldFail(
+        true,
         "Repository reset password email failed",
       );
+
+      await expect(
+        requestResetPasswordEmail.execute(requestDto),
+      ).rejects.toThrow("Repository reset password email failed");
     });
 
     it("should handle different RequestResetPasswordEmailDto instances", async () => {
@@ -85,7 +95,10 @@ describe("RequestResetPasswordEmail", () => {
     });
 
     it("should work with empty redirectTo", async () => {
-      const requestDto = new RequestResetPasswordEmailDto("test@example.com", "");
+      const requestDto = new RequestResetPasswordEmailDto(
+        "test@example.com",
+        "",
+      );
 
       const result = await requestResetPasswordEmail.execute(requestDto);
 
@@ -93,7 +106,10 @@ describe("RequestResetPasswordEmail", () => {
     });
 
     it("should work with null redirectTo", async () => {
-      const requestDto = new RequestResetPasswordEmailDto("test@example.com", null as any);
+      const requestDto = new RequestResetPasswordEmailDto(
+        "test@example.com",
+        null as any,
+      );
 
       const result = await requestResetPasswordEmail.execute(requestDto);
 
@@ -101,7 +117,10 @@ describe("RequestResetPasswordEmail", () => {
     });
 
     it("should work with undefined redirectTo", async () => {
-      const requestDto = new RequestResetPasswordEmailDto("test@example.com", undefined);
+      const requestDto = new RequestResetPasswordEmailDto(
+        "test@example.com",
+        undefined,
+      );
 
       const result = await requestResetPasswordEmail.execute(requestDto);
 
@@ -110,7 +129,10 @@ describe("RequestResetPasswordEmail", () => {
 
     it("should handle repository method being called multiple times", async () => {
       const requestDto = new RequestResetPasswordEmailDto("multi@example.com");
-      const repositorySpy = jest.spyOn(mockRepository, "requestResetPasswordEmail");
+      const repositorySpy = jest.spyOn(
+        mockRepository,
+        "requestResetPasswordEmail",
+      );
 
       await requestResetPasswordEmail.execute(requestDto);
       await requestResetPasswordEmail.execute(requestDto);
@@ -123,7 +145,10 @@ describe("RequestResetPasswordEmail", () => {
     it("should maintain immutability of DTO during execution", async () => {
       const originalEmail = "immutable@example.com";
       const originalRedirectTo = "https://immutable.com/reset";
-      const requestDto = new RequestResetPasswordEmailDto(originalEmail, originalRedirectTo);
+      const requestDto = new RequestResetPasswordEmailDto(
+        originalEmail,
+        originalRedirectTo,
+      );
 
       await requestResetPasswordEmail.execute(requestDto);
 

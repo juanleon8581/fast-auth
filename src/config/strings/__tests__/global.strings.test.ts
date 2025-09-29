@@ -271,7 +271,9 @@ describe("Global Strings Configuration", () => {
 
     it("should have request reset password email error message", () => {
       expect(REQUEST_RESET_PASSWORD_EMAIL).toHaveProperty("EMAIL_NOT_SENT");
-      expect(REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT).toBe("Reset password email not sent");
+      expect(REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT).toBe(
+        "Reset password email not sent",
+      );
     });
 
     it("should have VALIDATION section", () => {
@@ -312,8 +314,12 @@ describe("Global Strings Configuration", () => {
         });
 
         it("should have correct redirectTo validation messages", () => {
-          expect(REDIRECT_TO.INVALID_FORMAT).toBe("Redirect URL must be a valid URL");
-          expect(REDIRECT_TO.MAX_LENGTH).toBe("Redirect URL cannot exceed 500 characters");
+          expect(REDIRECT_TO.INVALID_FORMAT).toBe(
+            "Redirect URL must be a valid URL",
+          );
+          expect(REDIRECT_TO.MAX_LENGTH).toBe(
+            "Redirect URL cannot exceed 500 characters",
+          );
         });
       });
     });

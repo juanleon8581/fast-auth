@@ -5,7 +5,9 @@ interface IRequestResetPasswordEmailUseCase {
   execute(dto: RequestResetPasswordEmailDto): Promise<void>;
 }
 
-export class RequestResetPasswordEmail implements IRequestResetPasswordEmailUseCase {
+export class RequestResetPasswordEmail
+  implements IRequestResetPasswordEmailUseCase
+{
   constructor(private readonly repository: AuthRepository) {}
 
   async execute(dto: RequestResetPasswordEmailDto): Promise<void> {

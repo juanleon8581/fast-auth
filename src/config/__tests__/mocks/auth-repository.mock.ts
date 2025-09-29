@@ -144,7 +144,9 @@ export class MockAuthRepository extends AuthRepository {
     );
   }
 
-  async requestResetPasswordEmail(dto: RequestResetPasswordEmailDto): Promise<void> {
+  async requestResetPasswordEmail(
+    dto: RequestResetPasswordEmailDto,
+  ): Promise<void> {
     if (this.shouldFail) {
       throw new Error(this.errorMessage);
     }
@@ -153,7 +155,7 @@ export class MockAuthRepository extends AuthRepository {
     if (!dto.email) {
       throw new Error("Email is required");
     }
-    
+
     return Promise.resolve();
   }
 }

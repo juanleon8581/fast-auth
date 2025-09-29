@@ -219,7 +219,9 @@ export class AuthDatasource implements AuthRepository {
     });
   }
 
-  async requestResetPasswordEmail(dto: RequestResetPasswordEmailDto): Promise<void> {
+  async requestResetPasswordEmail(
+    dto: RequestResetPasswordEmailDto,
+  ): Promise<void> {
     try {
       //* Create a new and unique instance of AuthClient for this request
       const authClient = new this.client().create();
