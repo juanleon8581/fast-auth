@@ -86,7 +86,9 @@ class TestAuthRepository extends AuthRepository {
     });
   }
 
-  async requestResetPasswordEmail(dto: RequestResetPasswordEmailDto): Promise<void> {
+  async requestResetPasswordEmail(
+    dto: RequestResetPasswordEmailDto,
+  ): Promise<void> {
     // Mock implementation for testing - validate email exists
     if (!dto.email) {
       throw new Error("Email is required");

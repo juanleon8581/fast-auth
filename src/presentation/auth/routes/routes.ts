@@ -2,6 +2,7 @@ import { Router } from "express";
 import { AuthDatasource } from "@/infrastructure/datasources/auth.datasource";
 import { AuthClient } from "@/infrastructure/config/auth.client";
 import { AuthController } from "@/presentation/controller/controller";
+import { authMiddleware } from "@/presentation/middlewares/auth.middleware";
 
 export class AuthRoutes {
   static get routes(): Router {
@@ -11,10 +12,17 @@ export class AuthRoutes {
 
     router.post("/register", controller.register);
     router.post("/login", controller.login);
-    router.post("/logout", controller.logout);
-    router.put("/update-user", controller.updateUser);
-    router.put("/update-user-password", controller.updateUserPassword);
-    router.post("/request-reset-password-email", controller.requestResetPasswordEmail);
+    router.post("/logout", authMiddleware, controller.logout);
+    router.put("/update-user", authMiddleware, controller.updateUser);
+    router.put(
+      "/update-user-password",
+      authMiddleware,
+      controller.updateUserPassword,
+    );
+    router.post(
+      "/request-reset-password-email",
+      controller.requestResetPasswordEmail,
+    );
 
     return router;
   }

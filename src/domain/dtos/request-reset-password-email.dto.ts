@@ -14,7 +14,9 @@ export class RequestResetPasswordEmailDto {
     Object.freeze(this);
   }
 
-  private static create(props: IRequestResetPasswordEmailDto): RequestResetPasswordEmailDto {
+  private static create(
+    props: IRequestResetPasswordEmailDto,
+  ): RequestResetPasswordEmailDto {
     const { email, redirectTo } = props;
 
     return new RequestResetPasswordEmailDto(email, redirectTo);
@@ -25,6 +27,9 @@ export class RequestResetPasswordEmailDto {
 
     if (!email) return [ERRORS.DATA_VALIDATION.INVALID_DATA];
 
-    return [undefined, RequestResetPasswordEmailDto.create({ email, redirectTo })];
+    return [
+      undefined,
+      RequestResetPasswordEmailDto.create({ email, redirectTo }),
+    ];
   }
 }

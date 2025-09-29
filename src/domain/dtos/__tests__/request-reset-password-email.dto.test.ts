@@ -169,9 +169,9 @@ describe("RequestResetPasswordEmailDto", () => {
   describe("properties", () => {
     it("should have readonly email property", () => {
       const dto = new RequestResetPasswordEmailDto("test@example.com");
-      
+
       expect(dto.email).toBe("test@example.com");
-      
+
       // TypeScript should prevent this, but we test runtime behavior
       expect(() => {
         (dto as any).email = "new@example.com";
@@ -183,9 +183,9 @@ describe("RequestResetPasswordEmailDto", () => {
         "test@example.com",
         "https://example.com/reset",
       );
-      
+
       expect(dto.redirectTo).toBe("https://example.com/reset");
-      
+
       // TypeScript should prevent this, but we test runtime behavior
       expect(() => {
         (dto as any).redirectTo = "https://new.com";

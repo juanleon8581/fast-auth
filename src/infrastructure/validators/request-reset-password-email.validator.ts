@@ -27,7 +27,8 @@ export class RequestResetPasswordEmailValidator {
     try {
       const validatedData = requestResetPasswordEmailSchema.parse(data);
 
-      const [dtoError, requestResetPasswordEmailDto] = RequestResetPasswordEmailDto.createFrom(validatedData);
+      const [dtoError, requestResetPasswordEmailDto] =
+        RequestResetPasswordEmailDto.createFrom(validatedData);
 
       if (dtoError) {
         throw new BadRequestError(dtoError);

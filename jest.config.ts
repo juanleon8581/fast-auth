@@ -26,6 +26,9 @@ const config: Config = {
     ],
   },
   extensionsToTreatAsEsm: [".ts"],
+  transformIgnorePatterns: [
+    "node_modules/(?!(jose)/)"
+  ],
   collectCoverageFrom: [
     "src/**/*.ts",
     "!src/**/*.d.ts",

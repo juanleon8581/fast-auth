@@ -14,6 +14,9 @@ const envSchema = z.object({
   // Supabase Configuration
   SUPABASE_URL: z.string().url({ message: "Must be a valid URL" }),
   SUPABASE_ANON_KEY: z.string(),
+  JWT_SECRET: z
+    .string()
+    .min(32, { message: "JWT_SECRET must be at least 32 characters long" }),
 });
 
 type IEnv = z.infer<typeof envSchema>;

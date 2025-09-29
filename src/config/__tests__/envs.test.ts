@@ -32,6 +32,8 @@ describe("Environment Configuration", () => {
       process.env.PORT = "3000";
       process.env.SUPABASE_URL = "https://test.supabase.co";
       process.env.SUPABASE_ANON_KEY = "test-anon-key";
+      process.env.JWT_SECRET =
+        "test-jwt-secret-that-is-at-least-32-characters-long-for-testing";
 
       // Act & Assert - should not throw
       expect(() => {
@@ -41,6 +43,7 @@ describe("Environment Configuration", () => {
         expect(typeof envs.PORT).toBe("number");
         expect(typeof envs.SUPABASE_URL).toBe("string");
         expect(typeof envs.SUPABASE_ANON_KEY).toBe("string");
+        expect(typeof envs.JWT_SECRET).toBe("string");
       }).not.toThrow();
     });
 
@@ -107,6 +110,8 @@ describe("Environment Configuration", () => {
       // Arrange
       process.env.SUPABASE_URL = "https://test.supabase.co";
       process.env.SUPABASE_ANON_KEY = "test-anon-key";
+      process.env.JWT_SECRET =
+        "test-jwt-secret-that-is-at-least-32-characters-long-for-testing";
 
       // Act
       const envs = require("../envs").default;
@@ -116,12 +121,15 @@ describe("Environment Configuration", () => {
       expect(envs).toHaveProperty("PORT");
       expect(envs).toHaveProperty("SUPABASE_URL");
       expect(envs).toHaveProperty("SUPABASE_ANON_KEY");
+      expect(envs).toHaveProperty("JWT_SECRET");
     });
 
     it("should have correct property types", () => {
       // Arrange
       process.env.SUPABASE_URL = "https://test.supabase.co";
       process.env.SUPABASE_ANON_KEY = "test-anon-key";
+      process.env.JWT_SECRET =
+        "test-jwt-secret-that-is-at-least-32-characters-long-for-testing";
 
       // Act
       const envs = require("../envs").default;
@@ -131,6 +139,7 @@ describe("Environment Configuration", () => {
       expect(typeof envs.PORT).toBe("number");
       expect(typeof envs.SUPABASE_URL).toBe("string");
       expect(typeof envs.SUPABASE_ANON_KEY).toBe("string");
+      expect(typeof envs.JWT_SECRET).toBe("string");
     });
 
     it("should validate SUPABASE_URL format", () => {
@@ -143,6 +152,21 @@ describe("Environment Configuration", () => {
 
       // Assert
       expect(envs.SUPABASE_URL).toMatch(/^https?:\/\/.+/);
+    });
+
+    it("should validate JWT_SECRET minimum length", () => {
+      // Arrange
+      process.env.SUPABASE_URL = "https://test.supabase.co";
+      process.env.SUPABASE_ANON_KEY = "test-anon-key";
+      process.env.JWT_SECRET =
+        "test-jwt-secret-that-is-at-least-32-characters-long-for-testing";
+
+      // Act
+      const envs = require("../envs").default;
+
+      // Assert
+      expect(envs.JWT_SECRET).toBeDefined();
+      expect(envs.JWT_SECRET.length).toBeGreaterThanOrEqual(32);
     });
   });
 

@@ -5,7 +5,10 @@ import globalStrings from "@/config/strings/global.strings.json";
 // Mock RequestResetPasswordEmailDto
 jest.mock("@/domain/dtos/request-reset-password-email.dto");
 
-const MockedRequestResetPasswordEmailDto = RequestResetPasswordEmailDto as jest.MockedClass<typeof RequestResetPasswordEmailDto>;
+const MockedRequestResetPasswordEmailDto =
+  RequestResetPasswordEmailDto as jest.MockedClass<
+    typeof RequestResetPasswordEmailDto
+  >;
 const { DATA_VALIDATION } = globalStrings.ERRORS;
 const { VALIDATION } = globalStrings.ERRORS.AUTH.REQUEST_RESET_PASSWORD_EMAIL;
 
@@ -19,10 +22,9 @@ describe("RequestResetPasswordEmailValidator", () => {
       redirectTo: "https://example.com/reset-password",
     } as RequestResetPasswordEmailDto;
 
-    (MockedRequestResetPasswordEmailDto.createFrom as jest.Mock).mockReturnValue([
-      undefined,
-      mockDto,
-    ]);
+    (
+      MockedRequestResetPasswordEmailDto.createFrom as jest.Mock
+    ).mockReturnValue([undefined, mockDto]);
   });
 
   describe("validate method", () => {
@@ -36,7 +38,9 @@ describe("RequestResetPasswordEmailValidator", () => {
         const dto = RequestResetPasswordEmailValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(MockedRequestResetPasswordEmailDto.createFrom).toHaveBeenCalledWith({
+        expect(
+          MockedRequestResetPasswordEmailDto.createFrom,
+        ).toHaveBeenCalledWith({
           email: "test@example.com",
           redirectTo: "https://example.com/reset-password",
         });
@@ -50,7 +54,9 @@ describe("RequestResetPasswordEmailValidator", () => {
         const dto = RequestResetPasswordEmailValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(MockedRequestResetPasswordEmailDto.createFrom).toHaveBeenCalledWith({
+        expect(
+          MockedRequestResetPasswordEmailDto.createFrom,
+        ).toHaveBeenCalledWith({
           email: "test@example.com",
         });
       });
@@ -63,7 +69,9 @@ describe("RequestResetPasswordEmailValidator", () => {
 
         RequestResetPasswordEmailValidator.validate(validData);
 
-        expect(MockedRequestResetPasswordEmailDto.createFrom).toHaveBeenCalledWith(
+        expect(
+          MockedRequestResetPasswordEmailDto.createFrom,
+        ).toHaveBeenCalledWith(
           expect.objectContaining({
             email: "test@example.com",
           }),
@@ -109,9 +117,9 @@ describe("RequestResetPasswordEmailValidator", () => {
           redirectTo: "https://example.com/reset",
         };
 
-        expect(() => RequestResetPasswordEmailValidator.validate(invalidData)).toThrow(
-          VALIDATION.EMAIL.INVALID_FORMAT,
-        );
+        expect(() =>
+          RequestResetPasswordEmailValidator.validate(invalidData),
+        ).toThrow(VALIDATION.EMAIL.INVALID_FORMAT);
       });
 
       it("should throw error for email too long", () => {
@@ -120,9 +128,9 @@ describe("RequestResetPasswordEmailValidator", () => {
           redirectTo: "https://example.com/reset",
         };
 
-        expect(() => RequestResetPasswordEmailValidator.validate(invalidData)).toThrow(
-          VALIDATION.EMAIL.MAX_LENGTH,
-        );
+        expect(() =>
+          RequestResetPasswordEmailValidator.validate(invalidData),
+        ).toThrow(VALIDATION.EMAIL.MAX_LENGTH);
       });
 
       it("should throw error for missing email", () => {
@@ -130,9 +138,9 @@ describe("RequestResetPasswordEmailValidator", () => {
           redirectTo: "https://example.com/reset",
         };
 
-        expect(() => RequestResetPasswordEmailValidator.validate(invalidData)).toThrow(
-          "Must be a valid email",
-        );
+        expect(() =>
+          RequestResetPasswordEmailValidator.validate(invalidData),
+        ).toThrow("Must be a valid email");
       });
 
       it("should throw error for empty email", () => {
@@ -141,9 +149,9 @@ describe("RequestResetPasswordEmailValidator", () => {
           redirectTo: "https://example.com/reset",
         };
 
-        expect(() => RequestResetPasswordEmailValidator.validate(invalidData)).toThrow(
-          "Must be a valid email",
-        );
+        expect(() =>
+          RequestResetPasswordEmailValidator.validate(invalidData),
+        ).toThrow("Must be a valid email");
       });
 
       it("should throw error for null email", () => {
@@ -152,9 +160,9 @@ describe("RequestResetPasswordEmailValidator", () => {
           redirectTo: "https://example.com/reset",
         };
 
-        expect(() => RequestResetPasswordEmailValidator.validate(invalidData)).toThrow(
-          "Must be a valid email",
-        );
+        expect(() =>
+          RequestResetPasswordEmailValidator.validate(invalidData),
+        ).toThrow("Must be a valid email");
       });
     });
 
@@ -165,9 +173,9 @@ describe("RequestResetPasswordEmailValidator", () => {
           redirectTo: "not-a-valid-url",
         };
 
-        expect(() => RequestResetPasswordEmailValidator.validate(invalidData)).toThrow(
-          VALIDATION.REDIRECT_TO.INVALID_FORMAT,
-        );
+        expect(() =>
+          RequestResetPasswordEmailValidator.validate(invalidData),
+        ).toThrow(VALIDATION.REDIRECT_TO.INVALID_FORMAT);
       });
 
       it("should throw error for redirectTo too long", () => {
@@ -176,9 +184,9 @@ describe("RequestResetPasswordEmailValidator", () => {
           redirectTo: "https://example.com/" + "a".repeat(500),
         };
 
-        expect(() => RequestResetPasswordEmailValidator.validate(invalidData)).toThrow(
-          VALIDATION.REDIRECT_TO.MAX_LENGTH,
-        );
+        expect(() =>
+          RequestResetPasswordEmailValidator.validate(invalidData),
+        ).toThrow(VALIDATION.REDIRECT_TO.MAX_LENGTH);
       });
 
       it("should throw error for invalid protocol", () => {
@@ -187,9 +195,9 @@ describe("RequestResetPasswordEmailValidator", () => {
           redirectTo: "ftp://example.com/reset",
         };
 
-        expect(() => RequestResetPasswordEmailValidator.validate(invalidData)).toThrow(
-          VALIDATION.REDIRECT_TO.INVALID_FORMAT,
-        );
+        expect(() =>
+          RequestResetPasswordEmailValidator.validate(invalidData),
+        ).toThrow(VALIDATION.REDIRECT_TO.INVALID_FORMAT);
       });
 
       it("should throw error for URL without domain", () => {
@@ -198,9 +206,9 @@ describe("RequestResetPasswordEmailValidator", () => {
           redirectTo: "https://",
         };
 
-        expect(() => RequestResetPasswordEmailValidator.validate(invalidData)).toThrow(
-          VALIDATION.REDIRECT_TO.INVALID_FORMAT,
-        );
+        expect(() =>
+          RequestResetPasswordEmailValidator.validate(invalidData),
+        ).toThrow(VALIDATION.REDIRECT_TO.INVALID_FORMAT);
       });
     });
 
@@ -212,14 +220,13 @@ describe("RequestResetPasswordEmailValidator", () => {
         };
 
         // Mock DTO creation to return an error
-        (MockedRequestResetPasswordEmailDto.createFrom as jest.Mock).mockReturnValue([
-          DATA_VALIDATION.INVALID_DATA,
-          undefined,
-        ]);
+        (
+          MockedRequestResetPasswordEmailDto.createFrom as jest.Mock
+        ).mockReturnValue([DATA_VALIDATION.INVALID_DATA, undefined]);
 
-        expect(() => RequestResetPasswordEmailValidator.validate(validData)).toThrow(
-          DATA_VALIDATION.INVALID_DATA,
-        );
+        expect(() =>
+          RequestResetPasswordEmailValidator.validate(validData),
+        ).toThrow(DATA_VALIDATION.INVALID_DATA);
       });
     });
 
@@ -227,15 +234,21 @@ describe("RequestResetPasswordEmailValidator", () => {
       it("should handle empty object", () => {
         const invalidData = {};
 
-        expect(() => RequestResetPasswordEmailValidator.validate(invalidData)).toThrow();
+        expect(() =>
+          RequestResetPasswordEmailValidator.validate(invalidData),
+        ).toThrow();
       });
 
       it("should handle null data", () => {
-        expect(() => RequestResetPasswordEmailValidator.validate(null as any)).toThrow();
+        expect(() =>
+          RequestResetPasswordEmailValidator.validate(null as any),
+        ).toThrow();
       });
 
       it("should handle undefined data", () => {
-        expect(() => RequestResetPasswordEmailValidator.validate(undefined as any)).toThrow();
+        expect(() =>
+          RequestResetPasswordEmailValidator.validate(undefined as any),
+        ).toThrow();
       });
 
       it("should handle data with extra fields", () => {
@@ -248,7 +261,9 @@ describe("RequestResetPasswordEmailValidator", () => {
         const dto = RequestResetPasswordEmailValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(MockedRequestResetPasswordEmailDto.createFrom).toHaveBeenCalledWith({
+        expect(
+          MockedRequestResetPasswordEmailDto.createFrom,
+        ).toHaveBeenCalledWith({
           email: "test@example.com",
           redirectTo: "https://example.com/reset",
         });

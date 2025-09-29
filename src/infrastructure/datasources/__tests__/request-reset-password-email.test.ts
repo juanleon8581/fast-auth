@@ -10,11 +10,12 @@ jest.mock("@/infrastructure/config/auth.client");
 const MockedAuthClient = AuthClient as jest.MockedClass<typeof AuthClient>;
 
 // Mock data factory
-const createMockRequestResetPasswordEmailDto = (): RequestResetPasswordEmailDto =>
-  ({
-    email: "john.doe@example.com",
-    redirectTo: "https://example.com/reset-password",
-  }) as RequestResetPasswordEmailDto;
+const createMockRequestResetPasswordEmailDto =
+  (): RequestResetPasswordEmailDto =>
+    ({
+      email: "john.doe@example.com",
+      redirectTo: "https://example.com/reset-password",
+    }) as RequestResetPasswordEmailDto;
 
 const createMockSupabaseError = (message: string = "Supabase error") => ({
   message,
@@ -72,14 +73,15 @@ describe("AuthDatasource - RequestResetPasswordEmail Functionality", () => {
       });
 
       it("should call Supabase resetPasswordForEmail with correct parameters", async () => {
-        await authDatasource.requestResetPasswordEmail(mockRequestResetPasswordEmailDto);
-
-        expect(mockSupabaseClient.auth.resetPasswordForEmail).toHaveBeenCalledWith(
-          mockRequestResetPasswordEmailDto.email,
-          {
-            redirectTo: mockRequestResetPasswordEmailDto.redirectTo,
-          }
+        await authDatasource.requestResetPasswordEmail(
+          mockRequestResetPasswordEmailDto,
         );
+
+        expect(
+          mockSupabaseClient.auth.resetPasswordForEmail,
+        ).toHaveBeenCalledWith(mockRequestResetPasswordEmailDto.email, {
+          redirectTo: mockRequestResetPasswordEmailDto.redirectTo,
+        });
       });
 
       it("should call resetPasswordForEmail with email only when redirectTo is not provided", async () => {
@@ -89,16 +91,17 @@ describe("AuthDatasource - RequestResetPasswordEmail Functionality", () => {
 
         await authDatasource.requestResetPasswordEmail(dtoWithoutRedirectTo);
 
-        expect(mockSupabaseClient.auth.resetPasswordForEmail).toHaveBeenCalledWith(
-          dtoWithoutRedirectTo.email,
-          {
-            redirectTo: undefined,
-          }
-        );
+        expect(
+          mockSupabaseClient.auth.resetPasswordForEmail,
+        ).toHaveBeenCalledWith(dtoWithoutRedirectTo.email, {
+          redirectTo: undefined,
+        });
       });
 
       it("should create AuthClient and call create method", async () => {
-        await authDatasource.requestResetPasswordEmail(mockRequestResetPasswordEmailDto);
+        await authDatasource.requestResetPasswordEmail(
+          mockRequestResetPasswordEmailDto,
+        );
 
         expect(MockedAuthClient).toHaveBeenCalled();
         expect(mockAuthClient.create).toHaveBeenCalled();
@@ -106,7 +109,7 @@ describe("AuthDatasource - RequestResetPasswordEmail Functionality", () => {
 
       it("should return void on successful password reset email request", async () => {
         const result = await authDatasource.requestResetPasswordEmail(
-          mockRequestResetPasswordEmailDto
+          mockRequestResetPasswordEmailDto,
         );
 
         expect(result).toBeUndefined();
@@ -122,26 +125,38 @@ describe("AuthDatasource - RequestResetPasswordEmail Functionality", () => {
         });
 
         await expect(
-          authDatasource.requestResetPasswordEmail(mockRequestResetPasswordEmailDto)
+          authDatasource.requestResetPasswordEmail(
+            mockRequestResetPasswordEmailDto,
+          ),
         ).rejects.toThrow(BadRequestError);
 
         await expect(
-          authDatasource.requestResetPasswordEmail(mockRequestResetPasswordEmailDto)
-        ).rejects.toThrow(ERRORS.AUTH.REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT);
+          authDatasource.requestResetPasswordEmail(
+            mockRequestResetPasswordEmailDto,
+          ),
+        ).rejects.toThrow(
+          ERRORS.AUTH.REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT,
+        );
       });
 
       it("should throw BadRequestError when resetPasswordForEmail throws an exception", async () => {
         mockSupabaseClient.auth.resetPasswordForEmail.mockRejectedValue(
-          new Error("Network error")
+          new Error("Network error"),
         );
 
         await expect(
-          authDatasource.requestResetPasswordEmail(mockRequestResetPasswordEmailDto)
+          authDatasource.requestResetPasswordEmail(
+            mockRequestResetPasswordEmailDto,
+          ),
         ).rejects.toThrow(BadRequestError);
 
         await expect(
-          authDatasource.requestResetPasswordEmail(mockRequestResetPasswordEmailDto)
-        ).rejects.toThrow(ERRORS.AUTH.REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT);
+          authDatasource.requestResetPasswordEmail(
+            mockRequestResetPasswordEmailDto,
+          ),
+        ).rejects.toThrow(
+          ERRORS.AUTH.REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT,
+        );
       });
 
       it("should handle AuthClient creation failure", async () => {
@@ -150,12 +165,18 @@ describe("AuthDatasource - RequestResetPasswordEmail Functionality", () => {
         });
 
         await expect(
-          authDatasource.requestResetPasswordEmail(mockRequestResetPasswordEmailDto)
+          authDatasource.requestResetPasswordEmail(
+            mockRequestResetPasswordEmailDto,
+          ),
         ).rejects.toThrow(BadRequestError);
 
         await expect(
-          authDatasource.requestResetPasswordEmail(mockRequestResetPasswordEmailDto)
-        ).rejects.toThrow(ERRORS.AUTH.REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT);
+          authDatasource.requestResetPasswordEmail(
+            mockRequestResetPasswordEmailDto,
+          ),
+        ).rejects.toThrow(
+          ERRORS.AUTH.REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT,
+        );
       });
     });
 
@@ -173,12 +194,11 @@ describe("AuthDatasource - RequestResetPasswordEmail Functionality", () => {
 
         await authDatasource.requestResetPasswordEmail(dtoWithEmptyEmail);
 
-        expect(mockSupabaseClient.auth.resetPasswordForEmail).toHaveBeenCalledWith(
-          "",
-          {
-            redirectTo: "https://example.com/reset-password",
-          }
-        );
+        expect(
+          mockSupabaseClient.auth.resetPasswordForEmail,
+        ).toHaveBeenCalledWith("", {
+          redirectTo: "https://example.com/reset-password",
+        });
       });
 
       it("should handle very long redirectTo URL", async () => {
@@ -195,12 +215,11 @@ describe("AuthDatasource - RequestResetPasswordEmail Functionality", () => {
 
         await authDatasource.requestResetPasswordEmail(dtoWithLongUrl);
 
-        expect(mockSupabaseClient.auth.resetPasswordForEmail).toHaveBeenCalledWith(
-          "john.doe@example.com",
-          {
-            redirectTo: longUrl,
-          }
-        );
+        expect(
+          mockSupabaseClient.auth.resetPasswordForEmail,
+        ).toHaveBeenCalledWith("john.doe@example.com", {
+          redirectTo: longUrl,
+        });
       });
     });
   });
