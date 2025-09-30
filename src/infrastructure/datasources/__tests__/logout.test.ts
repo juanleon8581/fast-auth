@@ -63,7 +63,10 @@ describe("AuthDatasource - Logout Functionality", () => {
 
         mockSupabaseClient.auth.refreshSession.mockResolvedValue({
           data: {
-            session: { access_token: "refreshed-token", refresh_token: "refreshed-refresh" },
+            session: {
+              access_token: "refreshed-token",
+              refresh_token: "refreshed-refresh",
+            },
           },
           error: null,
         });
@@ -195,7 +198,10 @@ describe("AuthDatasource - Logout Functionality", () => {
 
         mockSupabaseClient.auth.refreshSession.mockResolvedValue({
           data: {
-            session: { access_token: "refreshed-token", refresh_token: "refreshed-refresh" },
+            session: {
+              access_token: "refreshed-token",
+              refresh_token: "refreshed-refresh",
+            },
           },
           error: null,
         });
@@ -251,7 +257,10 @@ describe("AuthDatasource - Logout Functionality", () => {
 
         mockSupabaseClient.auth.refreshSession.mockResolvedValue({
           data: {
-            session: { access_token: "refreshed-token", refresh_token: "refreshed-refresh" },
+            session: {
+              access_token: "refreshed-token",
+              refresh_token: "refreshed-refresh",
+            },
           },
           error: null,
         });
@@ -285,7 +294,10 @@ describe("AuthDatasource - Logout Functionality", () => {
 
       mockSupabaseClient.auth.refreshSession.mockResolvedValue({
         data: {
-          session: { access_token: "refreshed-token", refresh_token: "refreshed-refresh" },
+          session: {
+            access_token: "refreshed-token",
+            refresh_token: "refreshed-refresh",
+          },
         },
         error: null,
       });

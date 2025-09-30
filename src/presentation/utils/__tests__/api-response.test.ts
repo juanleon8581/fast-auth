@@ -31,7 +31,9 @@ describe("ApiResponseBuilder", () => {
       expect(result.data).toEqual(data);
       expect(result.meta.requestId).toBe("");
       expect(result.meta.version).toBe("1.0.0");
-      expect(result.meta.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+      expect(result.meta.timestamp).toMatch(
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/,
+      );
     });
 
     it("should handle partial meta information", () => {
@@ -41,7 +43,9 @@ describe("ApiResponseBuilder", () => {
 
       expect(result.meta.requestId).toBe("partial-id");
       expect(result.meta.version).toBe("1.0.0");
-      expect(result.meta.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+      expect(result.meta.timestamp).toMatch(
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/,
+      );
     });
   });
 
@@ -73,7 +77,9 @@ describe("ApiResponseBuilder", () => {
       expect(result.errors).toEqual(errors);
       expect(result.meta.requestId).toBe("");
       expect(result.meta.version).toBe("1.0.0");
-      expect(result.meta.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+      expect(result.meta.timestamp).toMatch(
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/,
+      );
     });
 
     it("should handle multiple errors", () => {
@@ -98,7 +104,11 @@ describe("ApiResponseBuilder", () => {
 
     it("should create a paginated response with provided data, pagination, and meta", () => {
       const pagination = { page: 1, limit: 10, total: 25 };
-      const result = ApiResponseBuilder.paginated(mockData, pagination, mockMeta);
+      const result = ApiResponseBuilder.paginated(
+        mockData,
+        pagination,
+        mockMeta,
+      );
 
       expect(result).toEqual({
         status: "success",
@@ -125,7 +135,9 @@ describe("ApiResponseBuilder", () => {
       expect(result.data).toEqual(mockData);
       expect(result.meta.requestId).toBe("");
       expect(result.meta.version).toBe("1.0.0");
-      expect(result.meta.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+      expect(result.meta.timestamp).toMatch(
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/,
+      );
       expect(result.meta.pagination).toEqual({
         page: 2,
         limit: 5,
@@ -159,17 +171,27 @@ describe("ApiResponseBuilder", () => {
     it("should handle partial meta information in paginated response", () => {
       const pagination = { page: 1, limit: 10, total: 25 };
       const partialMeta = { requestId: "paginated-id" };
-      const result = ApiResponseBuilder.paginated(mockData, pagination, partialMeta);
+      const result = ApiResponseBuilder.paginated(
+        mockData,
+        pagination,
+        partialMeta,
+      );
 
       expect(result.meta.requestId).toBe("paginated-id");
       expect(result.meta.version).toBe("1.0.0");
-      expect(result.meta.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+      expect(result.meta.timestamp).toMatch(
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/,
+      );
       expect(result.meta.pagination).toBeDefined();
     });
 
     it("should preserve all pagination properties in the response", () => {
       const pagination = { page: 3, limit: 7, total: 50 };
-      const result = ApiResponseBuilder.paginated(mockData, pagination, mockMeta);
+      const result = ApiResponseBuilder.paginated(
+        mockData,
+        pagination,
+        mockMeta,
+      );
 
       expect(result.meta.pagination).toEqual({
         page: 3,

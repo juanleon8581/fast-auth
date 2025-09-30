@@ -4,7 +4,9 @@ import { ApiResponseBuilder } from "../api-response";
 
 // Mock ApiResponseBuilder
 jest.mock("../api-response");
-const mockApiResponseBuilder = ApiResponseBuilder as jest.Mocked<typeof ApiResponseBuilder>;
+const mockApiResponseBuilder = ApiResponseBuilder as jest.Mocked<
+  typeof ApiResponseBuilder
+>;
 
 describe("ResponseHelper", () => {
   let mockRequest: Partial<Request>;
@@ -41,7 +43,7 @@ describe("ResponseHelper", () => {
       ResponseHelper.success(
         mockResponse as Response,
         testData,
-        mockRequest as Request
+        mockRequest as Request,
       );
 
       expect(mockApiResponseBuilder.success).toHaveBeenCalledWith(testData, {
@@ -70,7 +72,7 @@ describe("ResponseHelper", () => {
       ResponseHelper.success(
         mockResponse as Response,
         testData,
-        mockRequest as Request
+        mockRequest as Request,
       );
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
@@ -94,7 +96,7 @@ describe("ResponseHelper", () => {
         mockResponse as Response,
         testData,
         mockRequest as Request,
-        201
+        201,
       );
 
       expect(mockResponse.status).toHaveBeenCalledWith(201);
@@ -140,7 +142,11 @@ describe("ResponseHelper", () => {
 
       mockApiResponseBuilder.success.mockReturnValue(mockApiResponse);
 
-      ResponseHelper.success(mockResponse as Response, testData, requestWithoutId);
+      ResponseHelper.success(
+        mockResponse as Response,
+        testData,
+        requestWithoutId,
+      );
 
       expect(mockApiResponseBuilder.success).toHaveBeenCalledWith(testData, {
         requestId: "",
@@ -178,7 +184,7 @@ describe("ResponseHelper", () => {
         mockResponse as Response,
         testData,
         pagination,
-        mockRequest as Request
+        mockRequest as Request,
       );
 
       expect(mockApiResponseBuilder.paginated).toHaveBeenCalledWith(
@@ -188,7 +194,7 @@ describe("ResponseHelper", () => {
           requestId: "test-request-id",
           timestamp: expect.any(String),
           version: "1.0.0",
-        }
+        },
       );
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith(mockApiResponse);
@@ -215,7 +221,7 @@ describe("ResponseHelper", () => {
         mockResponse as Response,
         testData,
         pagination,
-        mockRequest as Request
+        mockRequest as Request,
       );
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
@@ -243,7 +249,7 @@ describe("ResponseHelper", () => {
         testData,
         pagination,
         mockRequest as Request,
-        206
+        206,
       );
 
       expect(mockResponse.status).toHaveBeenCalledWith(206);
@@ -275,7 +281,7 @@ describe("ResponseHelper", () => {
           requestId: "",
           timestamp: expect.any(String),
           version: "1.0.0",
-        }
+        },
       );
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith(mockApiResponse);
@@ -303,7 +309,7 @@ describe("ResponseHelper", () => {
         mockResponse as Response,
         testData,
         pagination,
-        requestWithoutId
+        requestWithoutId,
       );
 
       expect(mockApiResponseBuilder.paginated).toHaveBeenCalledWith(
@@ -313,7 +319,7 @@ describe("ResponseHelper", () => {
           requestId: "",
           timestamp: expect.any(String),
           version: "1.0.0",
-        }
+        },
       );
     });
 
@@ -339,7 +345,7 @@ describe("ResponseHelper", () => {
         mockResponse as Response,
         testData,
         differentPagination,
-        mockRequest as Request
+        mockRequest as Request,
       );
 
       expect(mockApiResponseBuilder.paginated).toHaveBeenCalledWith(
@@ -349,7 +355,7 @@ describe("ResponseHelper", () => {
           requestId: "test-request-id",
           timestamp: expect.any(String),
           version: "1.0.0",
-        }
+        },
       );
     });
   });

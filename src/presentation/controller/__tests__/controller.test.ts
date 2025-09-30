@@ -1535,7 +1535,9 @@ describe("AuthController", () => {
     describe("Validation errors", () => {
       it("should call next with validation error when validation fails", () => {
         const validationError = new Error("Invalid email format");
-        (RequestResetPasswordEmailValidator.validate as jest.Mock).mockImplementation(() => {
+        (
+          RequestResetPasswordEmailValidator.validate as jest.Mock
+        ).mockImplementation(() => {
           throw validationError;
         });
 

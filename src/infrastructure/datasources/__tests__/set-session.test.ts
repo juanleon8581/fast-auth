@@ -399,11 +399,7 @@ describe("AuthDatasource - setSession Method", () => {
 
       // Test with all required parameters
       await expect(
-        setSessionMethod(
-          mockSupabaseClient,
-          "session-token",
-          "refresh-token",
-        ),
+        setSessionMethod(mockSupabaseClient, "session-token", "refresh-token"),
       ).resolves.toBeDefined();
 
       // Verify parameters were used correctly

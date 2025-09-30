@@ -15,7 +15,9 @@ jest.mock("@/infrastructure/dtos/datasource-user.dto");
 
 const MockedAuthClient = AuthClient as jest.MockedClass<typeof AuthClient>;
 const MockedUserEntity = UserEntity as jest.MockedClass<typeof UserEntity>;
-const MockedDatasourceUserDto = DatasourceUserDto as jest.MockedClass<typeof DatasourceUserDto>;
+const MockedDatasourceUserDto = DatasourceUserDto as jest.MockedClass<
+  typeof DatasourceUserDto
+>;
 
 describe("AuthDatasource - UpdateUserPassword Functionality", () => {
   let authDatasource: AuthDatasource;
@@ -29,11 +31,14 @@ describe("AuthDatasource - UpdateUserPassword Functionality", () => {
     jest.clearAllMocks();
 
     // Create simple mock entities
-    mockUserEntity = { id: "user-123", email: "test@example.com" } as UserEntity;
-    mockAuthUserEntity = { 
-      user: mockUserEntity, 
+    mockUserEntity = {
+      id: "user-123",
+      email: "test@example.com",
+    } as UserEntity;
+    mockAuthUserEntity = {
+      user: mockUserEntity,
       accessToken: "access-token",
-      refreshToken: "refresh-token"
+      refreshToken: "refresh-token",
     } as AuthUserEntity;
 
     // Create mock Supabase client with minimal required methods
@@ -54,10 +59,15 @@ describe("AuthDatasource - UpdateUserPassword Functionality", () => {
 
     // Mock static methods to return simple values
     (MockedUserEntity.createFrom as jest.Mock).mockReturnValue(mockUserEntity);
-    (MockedDatasourceUserDto.createFrom as jest.Mock).mockReturnValue([undefined, { id: "user-123" }]);
+    (MockedDatasourceUserDto.createFrom as jest.Mock).mockReturnValue([
+      undefined,
+      { id: "user-123" },
+    ]);
 
     // Mock AuthUserEntity.createFrom directly
-    jest.spyOn(AuthUserEntity, 'createFrom').mockReturnValue(mockAuthUserEntity);
+    jest
+      .spyOn(AuthUserEntity, "createFrom")
+      .mockReturnValue(mockAuthUserEntity);
 
     // Create test data
     mockUpdateUserDto = {
@@ -67,7 +77,9 @@ describe("AuthDatasource - UpdateUserPassword Functionality", () => {
     } as UpdateUserDto;
 
     // Mock the setSession static method directly to avoid complex dependencies
-    jest.spyOn(AuthDatasource as any, 'setSession').mockResolvedValue(mockAuthUserEntity);
+    jest
+      .spyOn(AuthDatasource as any, "setSession")
+      .mockResolvedValue(mockAuthUserEntity);
 
     authDatasource = new AuthDatasource(MockedAuthClient);
   });
@@ -86,9 +98,10 @@ describe("AuthDatasource - UpdateUserPassword Functionality", () => {
       });
 
       it("should successfully update user password", async () => {
-        const result = await authDatasource.updateUserPassword(mockUpdateUserDto);
+        const result =
+          await authDatasource.updateUserPassword(mockUpdateUserDto);
 
-        expect(AuthDatasource['setSession']).toHaveBeenCalledWith(
+        expect(AuthDatasource["setSession"]).toHaveBeenCalledWith(
           mockSupabaseClient,
           mockUpdateUserDto.sessionToken,
           mockUpdateUserDto.refreshToken,
@@ -103,7 +116,8 @@ describe("AuthDatasource - UpdateUserPassword Functionality", () => {
       });
 
       it("should return AuthUserEntity", async () => {
-        const result = await authDatasource.updateUserPassword(mockUpdateUserDto);
+        const result =
+          await authDatasource.updateUserPassword(mockUpdateUserDto);
 
         expect(result).toBeDefined();
         expect(result).toBe(mockAuthUserEntity);
@@ -117,10 +131,12 @@ describe("AuthDatasource - UpdateUserPassword Functionality", () => {
           sessionToken: "",
         } as UpdateUserDto;
 
-        await expect(authDatasource.updateUserPassword(invalidDto)).rejects.toThrow(BadRequestError);
-        await expect(authDatasource.updateUserPassword(invalidDto)).rejects.toThrow(
-          ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED,
-        );
+        await expect(
+          authDatasource.updateUserPassword(invalidDto),
+        ).rejects.toThrow(BadRequestError);
+        await expect(
+          authDatasource.updateUserPassword(invalidDto),
+        ).rejects.toThrow(ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED);
       });
 
       it("should throw error when refreshToken is missing", async () => {
@@ -129,7 +145,9 @@ describe("AuthDatasource - UpdateUserPassword Functionality", () => {
           refreshToken: "",
         } as UpdateUserDto;
 
-        await expect(authDatasource.updateUserPassword(invalidDto)).rejects.toThrow(BadRequestError);
+        await expect(
+          authDatasource.updateUserPassword(invalidDto),
+        ).rejects.toThrow(BadRequestError);
       });
 
       it("should throw error when newPassword is missing", async () => {
@@ -138,7 +156,9 @@ describe("AuthDatasource - UpdateUserPassword Functionality", () => {
           newPassword: "",
         } as UpdateUserDto;
 
-        await expect(authDatasource.updateUserPassword(invalidDto)).rejects.toThrow(BadRequestError);
+        await expect(
+          authDatasource.updateUserPassword(invalidDto),
+        ).rejects.toThrow(BadRequestError);
       });
 
       it("should throw error when updateUser fails", async () => {
@@ -153,7 +173,9 @@ describe("AuthDatasource - UpdateUserPassword Functionality", () => {
           error: updateError,
         });
 
-        await expect(authDatasource.updateUserPassword(mockUpdateUserDto)).rejects.toThrow(BadRequestError);
+        await expect(
+          authDatasource.updateUserPassword(mockUpdateUserDto),
+        ).rejects.toThrow(BadRequestError);
       });
 
       it("should throw error when user is null after update", async () => {
@@ -162,7 +184,9 @@ describe("AuthDatasource - UpdateUserPassword Functionality", () => {
           error: null,
         });
 
-        await expect(authDatasource.updateUserPassword(mockUpdateUserDto)).rejects.toThrow(BadRequestError);
+        await expect(
+          authDatasource.updateUserPassword(mockUpdateUserDto),
+        ).rejects.toThrow(BadRequestError);
       });
 
       it("should handle DatasourceUserDto creation failure", async () => {
@@ -176,7 +200,9 @@ describe("AuthDatasource - UpdateUserPassword Functionality", () => {
           undefined,
         ]);
 
-        await expect(authDatasource.updateUserPassword(mockUpdateUserDto)).rejects.toThrow(ValidationError);
+        await expect(
+          authDatasource.updateUserPassword(mockUpdateUserDto),
+        ).rejects.toThrow(ValidationError);
       });
     });
 
@@ -191,7 +217,7 @@ describe("AuthDatasource - UpdateUserPassword Functionality", () => {
       it("should call setSession before updating password", async () => {
         await authDatasource.updateUserPassword(mockUpdateUserDto);
 
-        expect(AuthDatasource['setSession']).toHaveBeenCalled();
+        expect(AuthDatasource["setSession"]).toHaveBeenCalled();
         expect(mockSupabaseClient.auth.updateUser).toHaveBeenCalled();
       });
 
@@ -207,7 +233,9 @@ describe("AuthDatasource - UpdateUserPassword Functionality", () => {
           error: updateError,
         });
 
-        await expect(authDatasource.updateUserPassword(mockUpdateUserDto)).rejects.toThrow(BadRequestError);
+        await expect(
+          authDatasource.updateUserPassword(mockUpdateUserDto),
+        ).rejects.toThrow(BadRequestError);
       });
     });
   });

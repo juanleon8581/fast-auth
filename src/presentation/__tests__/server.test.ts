@@ -111,12 +111,12 @@ describe("Server", () => {
       const swaggerCall = mockApp.use.mock.calls.find(
         (call: any[]) => call[0] === "/api-docs",
       );
-      
+
       // Verify that the swagger middleware was configured correctly
       expect(swaggerCall).toBeDefined();
       expect(swaggerCall).toHaveLength(3);
-      expect(typeof swaggerCall[2]).toBe('function');
-      
+      expect(typeof swaggerCall[2]).toBe("function");
+
       // The middleware function exists and can be called (covers the function definition)
       const middlewareFunction = swaggerCall[2];
       expect(middlewareFunction).toBeDefined();

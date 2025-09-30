@@ -23,13 +23,13 @@ describe("RequestIdMiddleware", () => {
       RequestIdMiddleware.generate(
         mockRequest as Request,
         mockResponse as Response,
-        mockNext
+        mockNext,
       );
 
       expect(mockRequest.requestId).toBeDefined();
       expect(typeof mockRequest.requestId).toBe("string");
       expect(mockRequest.requestId).toMatch(
-        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
       );
     });
 
@@ -37,12 +37,12 @@ describe("RequestIdMiddleware", () => {
       RequestIdMiddleware.generate(
         mockRequest as Request,
         mockResponse as Response,
-        mockNext
+        mockNext,
       );
 
       expect(mockResponse.setHeader).toHaveBeenCalledWith(
         "X-Request-ID",
-        mockRequest.requestId
+        mockRequest.requestId,
       );
     });
 
@@ -50,7 +50,7 @@ describe("RequestIdMiddleware", () => {
       RequestIdMiddleware.generate(
         mockRequest as Request,
         mockResponse as Response,
-        mockNext
+        mockNext,
       );
 
       expect(mockNext).toHaveBeenCalledTimes(1);
@@ -64,13 +64,13 @@ describe("RequestIdMiddleware", () => {
       RequestIdMiddleware.generate(
         mockRequest1 as Request,
         mockResponse as Response,
-        mockNext
+        mockNext,
       );
 
       RequestIdMiddleware.generate(
         mockRequest2 as Request,
         mockResponse as Response,
-        mockNext
+        mockNext,
       );
 
       expect(mockRequest1.requestId).toBeDefined();
@@ -87,12 +87,15 @@ describe("RequestIdMiddleware", () => {
       RequestIdMiddleware.generate(
         mockRequest as Request,
         mockResponse as Response,
-        nextSpy
+        nextSpy,
       );
 
       // Verificar que se ejecutó todo el flujo
       expect(mockRequest.requestId).toBeDefined();
-      expect(setHeaderSpy).toHaveBeenCalledWith("X-Request-ID", mockRequest.requestId);
+      expect(setHeaderSpy).toHaveBeenCalledWith(
+        "X-Request-ID",
+        mockRequest.requestId,
+      );
       expect(nextSpy).toHaveBeenCalledTimes(1);
     });
 
@@ -113,7 +116,10 @@ describe("RequestIdMiddleware", () => {
       RequestIdMiddleware.generate(mockReq, mockRes, mockNext);
 
       expect(mockReq.requestId).toBeDefined();
-      expect(mockRes.setHeader).toHaveBeenCalledWith("X-Request-ID", mockReq.requestId);
+      expect(mockRes.setHeader).toHaveBeenCalledWith(
+        "X-Request-ID",
+        mockReq.requestId,
+      );
       expect(mockNext).toHaveBeenCalled();
     });
   });

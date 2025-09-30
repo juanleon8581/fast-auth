@@ -18,10 +18,18 @@ export const jwtVerify = async () => ({
 });
 
 export class SignJWT {
-  setProtectedHeader() { return this; }
-  setIssuedAt() { return this; }
-  setExpirationTime() { return this; }
-  async sign() { return "mocked-jwt-token"; }
+  setProtectedHeader() {
+    return this;
+  }
+  setIssuedAt() {
+    return this;
+  }
+  setExpirationTime() {
+    return this;
+  }
+  async sign() {
+    return "mocked-jwt-token";
+  }
 }
 
 export const importJWK = async () => ({
