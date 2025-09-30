@@ -45,9 +45,24 @@ export class AuthDatasource implements AuthRepository {
     if (errorDto) throw new ValidationError(errorDto);
     const user = UserEntity.createFrom(datasourceUserDto!);
 
+    const { data: refreshData, error: refreshError } =
+      await authClient.auth.refreshSession({
+        refresh_token: refreshToken,
+      });
+
+    if (refreshError) {
+      throw new BadRequestError(
+        refreshError.message,
+        refreshError.code,
+        refreshError.status?.toString(),
+      );
+    }
+    if (!refreshData.session)
+      throw new BadRequestError(ERRORS.AUTH.REFRESH_SESSION.SESSION_NOT_FOUND);
+
     return AuthUserEntity.createFrom({
       user,
-      data: data.session,
+      data: refreshData.session,
     });
   }
 
