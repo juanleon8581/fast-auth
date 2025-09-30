@@ -1,7 +1,7 @@
 import type { Config } from "jest";
 
 const config: Config = {
-  preset: "ts-jest/presets/default-esm",
+  preset: "ts-jest",
   testEnvironment: "node",
   roots: ["<rootDir>/src"],
   testMatch: ["**/__tests__/**/*.test.ts", "**/?(*.)+(spec|test).ts"],
@@ -9,10 +9,9 @@ const config: Config = {
     "^.+\.ts$": [
       "ts-jest",
       {
-        useESM: true,
         tsconfig: {
           target: "ES2020",
-          module: "ESNext",
+          module: "CommonJS",
           moduleResolution: "node",
           esModuleInterop: true,
           allowSyntheticDefaultImports: true,
@@ -25,10 +24,13 @@ const config: Config = {
       },
     ],
   },
-  extensionsToTreatAsEsm: [".ts"],
   transformIgnorePatterns: [
     "node_modules/(?!(jose)/)"
   ],
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/src/$1",
+    "^jose$": "<rootDir>/src/config/tests/__mocks__/jose.ts"
+  },
   collectCoverageFrom: [
     "src/**/*.ts",
     "!src/**/*.d.ts",
@@ -39,9 +41,6 @@ const config: Config = {
   coverageDirectory: "coverage",
   coverageReporters: ["text", "lcov", "html"],
   setupFilesAfterEnv: ["<rootDir>/src/config/tests/setup.ts"],
-  moduleNameMapper: {
-    "^@/(.*)$": "<rootDir>/src/$1",
-  },
   testTimeout: 10000,
 };
 
