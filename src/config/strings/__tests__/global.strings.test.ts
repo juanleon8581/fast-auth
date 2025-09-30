@@ -61,6 +61,11 @@ describe("Global Strings Configuration", () => {
   describe("AUTH Error Messages", () => {
     const { AUTH } = globalStrings.ERRORS;
 
+    it("should have REFRESH_SESSION section", () => {
+      expect(AUTH).toHaveProperty("REFRESH_SESSION");
+      expect(typeof AUTH.REFRESH_SESSION).toBe("object");
+    });
+
     it("should have REGISTER section", () => {
       expect(AUTH).toHaveProperty("REGISTER");
       expect(typeof AUTH.REGISTER).toBe("object");
@@ -164,6 +169,20 @@ describe("Global Strings Configuration", () => {
           );
         });
       });
+    });
+  });
+
+  describe("REFRESH_SESSION Error Messages", () => {
+    const { REFRESH_SESSION } = globalStrings.ERRORS.AUTH;
+
+    it("should have session not found error message", () => {
+      expect(REFRESH_SESSION).toHaveProperty("SESSION_NOT_FOUND");
+      expect(REFRESH_SESSION.SESSION_NOT_FOUND).toBe("Session not found");
+    });
+
+    it("should have non-empty string message", () => {
+      expect(typeof REFRESH_SESSION.SESSION_NOT_FOUND).toBe("string");
+      expect(REFRESH_SESSION.SESSION_NOT_FOUND.length).toBeGreaterThan(0);
     });
   });
 
@@ -404,8 +423,9 @@ describe("Global Strings Configuration", () => {
 
       // Currently there are 3 duplicate messages, this test documents the current state
       // Added 5 new messages for REQUEST_RESET_PASSWORD_EMAIL (1 error + 4 validation messages)
-      expect(messageTexts.length).toBe(47);
-      expect(uniqueMessages.length).toBe(39);
+      // Added 1 new message for REFRESH_SESSION (1 error message)
+      expect(messageTexts.length).toBe(48);
+      expect(uniqueMessages.length).toBe(40);
       expect(duplicates.length).toBe(4);
     });
   });
