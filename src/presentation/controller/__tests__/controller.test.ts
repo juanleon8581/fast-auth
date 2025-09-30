@@ -10,10 +10,12 @@ import { LoginUser } from "@/domain/use-cases/login-user";
 import { UpdateUser } from "@/domain/use-cases/update-user";
 import { UpdateUserPassword } from "@/domain/use-cases/update-user-password";
 import { RequestResetPasswordEmail } from "@/domain/use-cases/request-reset-password-email";
+import { LogoutAuth } from "@/domain/use-cases/logout-user";
 import { RegisterValidator } from "@/infrastructure/validators/register.validator";
 import { LoginValidator } from "@/infrastructure/validators/login.validator";
 import { UpdateUserValidator } from "@/infrastructure/validators/update-user.validator";
 import { RequestResetPasswordEmailValidator } from "@/infrastructure/validators/request-reset-password-email.validator";
+import { LogoutValidator } from "@/infrastructure/validators/logout.validator";
 import { UserEntity } from "@/domain/entities/user.entity";
 import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
 
@@ -23,10 +25,12 @@ jest.mock("@/domain/use-cases/login-user");
 jest.mock("@/domain/use-cases/update-user");
 jest.mock("@/domain/use-cases/update-user-password");
 jest.mock("@/domain/use-cases/request-reset-password-email");
+jest.mock("@/domain/use-cases/logout-user");
 jest.mock("@/infrastructure/validators/register.validator");
 jest.mock("@/infrastructure/validators/login.validator");
 jest.mock("@/infrastructure/validators/update-user.validator");
 jest.mock("@/infrastructure/validators/request-reset-password-email.validator");
+jest.mock("@/infrastructure/validators/logout.validator");
 
 describe("AuthController", () => {
   let authController: AuthController;
@@ -1277,6 +1281,122 @@ describe("AuthController", () => {
     });
   });
 
+  describe("logout method", () => {
+    beforeEach(() => {
+      // Mock logout request
+      mockRequest = {
+        body: {
+          userId: "user-123",
+        },
+      };
+    });
+
+    describe("Successful logout", () => {
+      beforeEach(() => {
+        const mockDto = { userId: "user-123" };
+        (LogoutValidator.validate as jest.Mock).mockReturnValue(mockDto);
+      });
+
+      it("should validate request body", () => {
+        const mockLogoutAuth = {
+          execute: jest.fn().mockResolvedValue(undefined),
+        };
+        (LogoutAuth as jest.Mock).mockImplementation(() => mockLogoutAuth);
+
+        authController.logout(
+          mockRequest as Request,
+          mockResponse as Response,
+          mockNext,
+        );
+
+        expect(LogoutValidator.validate).toHaveBeenCalledTimes(1);
+        expect(LogoutValidator.validate).toHaveBeenCalledWith(mockRequest.body);
+      });
+
+      it("should call LogoutAuth use case with correct DTO", async () => {
+        const mockLogoutAuth = {
+          execute: jest.fn().mockResolvedValue(undefined),
+        };
+        (LogoutAuth as jest.Mock).mockImplementation(() => mockLogoutAuth);
+
+        await authController.logout(
+          mockRequest as Request,
+          mockResponse as Response,
+          mockNext,
+        );
+
+        expect(LogoutAuth).toHaveBeenCalledWith(mockDatasource);
+        expect(mockLogoutAuth.execute).toHaveBeenCalledTimes(1);
+      });
+
+      it("should return success response on successful logout", async () => {
+        const mockLogoutAuth = {
+          execute: jest.fn().mockResolvedValue(undefined),
+        };
+        (LogoutAuth as jest.Mock).mockImplementation(() => mockLogoutAuth);
+
+        await authController.logout(
+          mockRequest as Request,
+          mockResponse as Response,
+          mockNext,
+        );
+
+        expect(mockResponse.status).toHaveBeenCalledWith(200);
+        expect(mockResponse.json).toHaveBeenCalledWith({
+          status: "success",
+          data: { message: "Logout successful" },
+          meta: {
+            requestId: expect.any(String),
+            timestamp: expect.any(String),
+            version: "1.0.0",
+          },
+        });
+      });
+    });
+
+    describe("Validation errors", () => {
+      it("should call next with validation error when validation fails", () => {
+        const validationError = new Error("Invalid user ID");
+        (LogoutValidator.validate as jest.Mock).mockImplementation(() => {
+          throw validationError;
+        });
+
+        authController.logout(
+          mockRequest as Request,
+          mockResponse as Response,
+          mockNext,
+        );
+
+        expect(mockNext).toHaveBeenCalledTimes(1);
+        expect(mockNext).toHaveBeenCalledWith(validationError);
+        expect(mockResponse.status).not.toHaveBeenCalled();
+        expect(mockResponse.json).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("Use case errors", () => {
+      it("should call next with error when use case fails", (done) => {
+        const mockDto = { userId: "user-123" };
+        (LogoutValidator.validate as jest.Mock).mockReturnValue(mockDto);
+
+        const error = new Error("Logout failed");
+        const mockLogoutAuth = {
+          execute: jest.fn().mockRejectedValue(error),
+        };
+        (LogoutAuth as jest.Mock).mockImplementation(() => mockLogoutAuth);
+
+        authController.logout(
+          mockRequest as Request,
+          mockResponse as Response,
+          (err) => {
+            expect(err).toBe(error);
+            done();
+          },
+        );
+      });
+    });
+  });
+
   describe("requestResetPasswordEmail method", () => {
     beforeEach(() => {
       // Mock requestResetPasswordEmail request
@@ -1409,6 +1529,26 @@ describe("AuthController", () => {
           ),
         ).not.toThrow();
         expect(RequestResetPasswordEmail).toHaveBeenCalledWith(mockDatasource);
+      });
+    });
+
+    describe("Validation errors", () => {
+      it("should call next with validation error when validation fails", () => {
+        const validationError = new Error("Invalid email format");
+        (RequestResetPasswordEmailValidator.validate as jest.Mock).mockImplementation(() => {
+          throw validationError;
+        });
+
+        authController.requestResetPasswordEmail(
+          mockRequest as Request,
+          mockResponse as Response,
+          mockNext,
+        );
+
+        expect(mockNext).toHaveBeenCalledTimes(1);
+        expect(mockNext).toHaveBeenCalledWith(validationError);
+        expect(mockResponse.status).not.toHaveBeenCalled();
+        expect(mockResponse.json).not.toHaveBeenCalled();
       });
     });
   });
