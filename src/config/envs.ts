@@ -17,6 +17,9 @@ const envSchema = z.object({
   JWT_SECRET: z
     .string()
     .min(32, { message: "JWT_SECRET must be at least 32 characters long" }),
+
+  // Database Configuration
+  DATABASE_URL: z.url({ message: "Must be a valid database URL" }),
 });
 
 type IEnv = z.infer<typeof envSchema>;
