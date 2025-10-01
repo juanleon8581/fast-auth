@@ -26,38 +26,42 @@ export class CreateLogDto {
   private static create(props: ICreateLogDto): CreateLogDto {
     const { level, message, meta, service, userId, requestId, error } = props;
 
-    return new CreateLogDto(level, message, meta, service, userId, requestId, error);
+    return new CreateLogDto(
+      level,
+      message,
+      meta,
+      service,
+      userId,
+      requestId,
+      error,
+    );
   }
 
   static createFrom(props: TRawJson): [string?, CreateLogDto?] {
     const { level, message, meta, service, userId, requestId, error } = props;
 
-    // Validate required fields
     if (!level || !message) {
       return [ERRORS.DATA_VALIDATION.INVALID_DATA];
     }
 
-    // Validate log level
     if (!LOG_LEVELS.includes(level as LogLevel)) {
       return [ERRORS.DATA_VALIDATION.INVALID_DATA];
     }
 
-    // Validate message is not empty
     if (typeof message !== "string" || message.trim().length === 0) {
       return [ERRORS.DATA_VALIDATION.INVALID_DATA];
     }
 
-    // Validate meta is an object if provided
-    if (meta !== undefined && (typeof meta !== "object" || meta === null || Array.isArray(meta))) {
+    if (meta && typeof meta !== "object") {
       return [ERRORS.DATA_VALIDATION.INVALID_DATA];
     }
 
-    // Validate string fields if provided
-    const stringFields = { service, userId, requestId, error };
-    for (const [, fieldValue] of Object.entries(stringFields)) {
-      if (fieldValue !== undefined && typeof fieldValue !== "string") {
-        return [ERRORS.DATA_VALIDATION.INVALID_DATA];
-      }
+    const stringFields = [service, userId, requestId, error];
+    const validStringFields = stringFields.filter(
+      (field) => !field || typeof field !== "string",
+    );
+    if (validStringFields.length > 0) {
+      return [ERRORS.DATA_VALIDATION.INVALID_DATA];
     }
 
     return [
