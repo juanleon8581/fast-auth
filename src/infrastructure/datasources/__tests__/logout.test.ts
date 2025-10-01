@@ -23,6 +23,7 @@ describe("AuthDatasource - Logout Functionality", () => {
         signUp: jest.fn(),
         signInWithPassword: jest.fn(),
         setSession: jest.fn(),
+        refreshSession: jest.fn(),
         signOut: jest.fn(),
       },
     };
@@ -45,11 +46,46 @@ describe("AuthDatasource - Logout Functionality", () => {
     describe("successful logout", () => {
       beforeEach(() => {
         mockSupabaseClient.auth.setSession.mockResolvedValue({
+          data: {
+            user: {
+              id: "user-123",
+              email: "test@example.com",
+              email_confirmed_at: "2024-01-01T00:00:00Z",
+              phone: "+1234567890",
+              user_metadata: {
+                display_name: "John Doe",
+              },
+            },
+            session: { access_token: "token", refresh_token: "refresh" },
+          },
+          error: null,
+        });
+
+        mockSupabaseClient.auth.refreshSession.mockResolvedValue({
+          data: {
+            session: {
+              access_token: "refreshed-token",
+              refresh_token: "refreshed-refresh",
+            },
+          },
           error: null,
         });
 
         mockSupabaseClient.auth.signOut.mockResolvedValue({
           error: null,
+        });
+      });
+
+      it("should call setSession and refreshSession during logout process", async () => {
+        await authDatasource.logout(mockLogoutDto);
+
+        expect(mockSupabaseClient.auth.setSession).toHaveBeenCalledWith({
+          access_token: mockLogoutDto.sessionToken,
+          refresh_token: mockLogoutDto.refreshToken,
+        });
+
+        expect(mockSupabaseClient.auth.refreshSession).toHaveBeenCalledWith({
+          refresh_token: mockLogoutDto.refreshToken,
         });
       });
 
@@ -62,11 +98,11 @@ describe("AuthDatasource - Logout Functionality", () => {
         });
       });
 
-      it("should call Supabase signOut with local scope", async () => {
+      it("should call Supabase signOut with global scope", async () => {
         await authDatasource.logout(mockLogoutDto);
 
         expect(mockSupabaseClient.auth.signOut).toHaveBeenCalledWith({
-          scope: "local",
+          scope: "global",
         });
       });
 
@@ -83,11 +119,12 @@ describe("AuthDatasource - Logout Functionality", () => {
         expect(result).toBeUndefined();
       });
 
-      it("should call setSession and signOut in correct order", async () => {
+      it("should call setSession, refreshSession and signOut in correct order", async () => {
         await authDatasource.logout(mockLogoutDto);
 
-        // Verify both methods were called
+        // Verify all methods were called
         expect(mockSupabaseClient.auth.setSession).toHaveBeenCalledTimes(1);
+        expect(mockSupabaseClient.auth.refreshSession).toHaveBeenCalledTimes(1);
         expect(mockSupabaseClient.auth.signOut).toHaveBeenCalledTimes(1);
       });
     });
@@ -144,6 +181,28 @@ describe("AuthDatasource - Logout Functionality", () => {
 
       it("should throw error when signOut fails", async () => {
         mockSupabaseClient.auth.setSession.mockResolvedValue({
+          data: {
+            user: {
+              id: "user-123",
+              email: "test@example.com",
+              email_confirmed_at: "2024-01-01T00:00:00Z",
+              phone: "+1234567890",
+              user_metadata: {
+                display_name: "John Doe",
+              },
+            },
+            session: { access_token: "token", refresh_token: "refresh" },
+          },
+          error: null,
+        });
+
+        mockSupabaseClient.auth.refreshSession.mockResolvedValue({
+          data: {
+            session: {
+              access_token: "refreshed-token",
+              refresh_token: "refreshed-refresh",
+            },
+          },
           error: null,
         });
 
@@ -180,7 +239,32 @@ describe("AuthDatasource - Logout Functionality", () => {
       });
 
       it("should return Promise<void>", async () => {
-        mockSupabaseClient.auth.setSession.mockResolvedValue({ error: null });
+        mockSupabaseClient.auth.setSession.mockResolvedValue({
+          data: {
+            user: {
+              id: "user-123",
+              email: "test@example.com",
+              email_confirmed_at: "2024-01-01T00:00:00Z",
+              phone: "+1234567890",
+              user_metadata: {
+                display_name: "John Doe",
+              },
+            },
+            session: { access_token: "token", refresh_token: "refresh" },
+          },
+          error: null,
+        });
+
+        mockSupabaseClient.auth.refreshSession.mockResolvedValue({
+          data: {
+            session: {
+              access_token: "refreshed-token",
+              refresh_token: "refreshed-refresh",
+            },
+          },
+          error: null,
+        });
+
         mockSupabaseClient.auth.signOut.mockResolvedValue({ error: null });
 
         const result = await authDatasource.logout(mockLogoutDto);
@@ -192,14 +276,40 @@ describe("AuthDatasource - Logout Functionality", () => {
 
   describe("integration with dependencies", () => {
     it("should properly integrate with all dependencies", async () => {
-      mockSupabaseClient.auth.setSession.mockResolvedValue({ error: null });
+      mockSupabaseClient.auth.setSession.mockResolvedValue({
+        data: {
+          user: {
+            id: "user-123",
+            email: "test@example.com",
+            email_confirmed_at: "2024-01-01T00:00:00Z",
+            phone: "+1234567890",
+            user_metadata: {
+              display_name: "John Doe",
+            },
+          },
+          session: { access_token: "token", refresh_token: "refresh" },
+        },
+        error: null,
+      });
+
+      mockSupabaseClient.auth.refreshSession.mockResolvedValue({
+        data: {
+          session: {
+            access_token: "refreshed-token",
+            refresh_token: "refreshed-refresh",
+          },
+        },
+        error: null,
+      });
+
       mockSupabaseClient.auth.signOut.mockResolvedValue({ error: null });
 
       await authDatasource.logout(mockLogoutDto);
 
-      // Verify the flow: AuthClient -> Supabase setSession -> Supabase signOut
+      // Verify the flow: AuthClient -> Supabase setSession -> refreshSession -> Supabase signOut
       expect(mockAuthClient.create).toHaveBeenCalled();
       expect(mockSupabaseClient.auth.setSession).toHaveBeenCalled();
+      expect(mockSupabaseClient.auth.refreshSession).toHaveBeenCalled();
       expect(mockSupabaseClient.auth.signOut).toHaveBeenCalled();
     });
 

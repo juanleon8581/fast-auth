@@ -23,8 +23,8 @@ export class AuthDatasource implements AuthRepository {
     authClient: SupabaseClient,
     sessionToken: string,
     refreshToken: string,
-  ): Promise<void> {
-    const { error } = await authClient.auth.setSession({
+  ): Promise<AuthUserEntity> {
+    const { data, error } = await authClient.auth.setSession({
       access_token: sessionToken,
       refresh_token: refreshToken,
     });
@@ -35,6 +35,35 @@ export class AuthDatasource implements AuthRepository {
         error.status?.toString(),
       );
     }
+    if (!data.user || !data.session)
+      throw new BadRequestError(ERRORS.AUTH.LOGIN.USER_NOT_FOUND);
+
+    const [errorDto, datasourceUserDto] = DatasourceUserDto.createFrom(
+      data.user,
+    );
+
+    if (errorDto) throw new ValidationError(errorDto);
+    const user = UserEntity.createFrom(datasourceUserDto!);
+
+    const { data: refreshData, error: refreshError } =
+      await authClient.auth.refreshSession({
+        refresh_token: refreshToken,
+      });
+
+    if (refreshError) {
+      throw new BadRequestError(
+        refreshError.message,
+        refreshError.code,
+        refreshError.status?.toString(),
+      );
+    }
+    if (!refreshData.session)
+      throw new BadRequestError(ERRORS.AUTH.REFRESH_SESSION.SESSION_NOT_FOUND);
+
+    return AuthUserEntity.createFrom({
+      user,
+      data: refreshData.session,
+    });
   }
 
   async register(dto: RegisterDto): Promise<UserEntity | AuthUserEntity> {
@@ -120,7 +149,7 @@ export class AuthDatasource implements AuthRepository {
       dto.refreshToken,
     );
 
-    const { error } = await authClient.auth.signOut({ scope: "local" });
+    const { error } = await authClient.auth.signOut({ scope: "global" });
 
     if (error) {
       throw new BadRequestError(
@@ -138,7 +167,7 @@ export class AuthDatasource implements AuthRepository {
       throw new BadRequestError(ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED);
     }
 
-    await AuthDatasource.setSession(
+    const actualUserSession = await AuthDatasource.setSession(
       authClient,
       dto.sessionToken,
       dto.refreshToken,
@@ -172,7 +201,13 @@ export class AuthDatasource implements AuthRepository {
     if (errorDto) throw new ValidationError(errorDto);
     const user = UserEntity.createFrom(datasourceUserDto!);
 
-    return user;
+    return AuthUserEntity.createFrom({
+      user,
+      data: {
+        access_token: actualUserSession.accessToken,
+        refresh_token: actualUserSession.refreshToken,
+      },
+    });
   }
 
   async updateUserPassword(dto: UpdateUserDto): Promise<AuthUserEntity> {
@@ -182,7 +217,7 @@ export class AuthDatasource implements AuthRepository {
       throw new BadRequestError(ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED);
     }
 
-    await AuthDatasource.setSession(
+    const actualUserSession = await AuthDatasource.setSession(
       authClient,
       dto.sessionToken,
       dto.refreshToken,
@@ -213,8 +248,8 @@ export class AuthDatasource implements AuthRepository {
     return AuthUserEntity.createFrom({
       user,
       data: {
-        access_token: dto.sessionToken,
-        refresh_token: dto.refreshToken,
+        access_token: actualUserSession.accessToken,
+        refresh_token: actualUserSession.refreshToken,
       },
     });
   }
