@@ -57,10 +57,10 @@ export class CreateLogDto {
     }
 
     const stringFields = [service, userId, requestId, error];
-    const validStringFields = stringFields.filter(
-      (field) => !field || typeof field !== "string",
+    const invalidStringFields = stringFields.filter(
+      (field) => field && typeof field !== "string",
     );
-    if (validStringFields.length > 0) {
+    if (invalidStringFields.length > 0) {
       return [ERRORS.DATA_VALIDATION.INVALID_DATA];
     }
 
