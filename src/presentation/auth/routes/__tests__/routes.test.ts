@@ -9,13 +9,13 @@ jest.mock("@/infrastructure/datasources/auth.datasource");
 jest.mock("@/infrastructure/config/auth.client");
 jest.mock("@/presentation/controller/controller");
 jest.mock("@/presentation/middlewares/auth.middleware", () => ({
-  authMiddleware: jest.fn((req, res, next) => next()),
+  AuthMiddleware: {
+    verify: jest.fn((req: any, res: any, next: any) => next()),
+  },
 }));
 
-// Import the mocked authMiddleware
-const {
-  authMiddleware,
-} = require("@/presentation/middlewares/auth.middleware");
+// Import the mocked AuthMiddleware
+const { AuthMiddleware } = require("@/presentation/middlewares/auth.middleware");
 
 describe("AuthRoutes", () => {
   let mockRouter: jest.Mocked<Router>;
@@ -99,29 +99,29 @@ describe("AuthRoutes", () => {
       );
     });
 
-    it("should register POST /logout route with authMiddleware", () => {
+    it("should register POST /logout route with AuthMiddleware.verify", () => {
       AuthRoutes.routes;
       expect(mockRouter.post).toHaveBeenCalledWith(
         "/logout",
-        authMiddleware,
+        AuthMiddleware.verify,
         mockAuthController.logout,
       );
     });
 
-    it("should register PUT /update route with authMiddleware", () => {
+    it("should register PUT /update route with AuthMiddleware.verify", () => {
       AuthRoutes.routes;
       expect(mockRouter.put).toHaveBeenCalledWith(
         "/update-user",
-        authMiddleware,
+        AuthMiddleware.verify,
         mockAuthController.updateUser,
       );
     });
 
-    it("should register PUT /update-user-password route with authMiddleware", () => {
+    it("should register PUT /update-user-password route with AuthMiddleware.verify", () => {
       AuthRoutes.routes;
       expect(mockRouter.put).toHaveBeenCalledWith(
         "/update-user-password",
-        authMiddleware,
+        AuthMiddleware.verify,
         mockAuthController.updateUserPassword,
       );
     });
@@ -170,17 +170,17 @@ describe("AuthRoutes", () => {
       );
       expect(mockRouter.post).toHaveBeenCalledWith(
         "/logout",
-        authMiddleware,
+        AuthMiddleware.verify,
         expect.any(Function),
       );
       expect(mockRouter.put).toHaveBeenCalledWith(
         "/update-user",
-        authMiddleware,
+        AuthMiddleware.verify,
         expect.any(Function),
       );
       expect(mockRouter.put).toHaveBeenCalledWith(
         "/update-user-password",
-        authMiddleware,
+        AuthMiddleware.verify,
         expect.any(Function),
       );
       expect(mockRouter.post).toHaveBeenCalledWith(
@@ -267,7 +267,7 @@ describe("AuthRoutes", () => {
       const logoutRoute = postCalls.find((call) => call[0] === "/logout");
 
       expect(logoutRoute).toBeDefined();
-      expect(logoutRoute[1]).toBe(authMiddleware);
+      expect(logoutRoute[1]).toBe(AuthMiddleware.verify);
       expect(logoutRoute[2]).toBe(mockAuthController.logout);
     });
 
@@ -278,7 +278,7 @@ describe("AuthRoutes", () => {
       const updateRoute = putCalls.find((call) => call[0] === "/update-user");
 
       expect(updateRoute).toBeDefined();
-      expect(updateRoute[1]).toBe(authMiddleware);
+      expect(updateRoute[1]).toBe(AuthMiddleware.verify);
       expect(updateRoute[2]).toBe(mockAuthController.updateUser);
     });
 
@@ -291,7 +291,7 @@ describe("AuthRoutes", () => {
       );
 
       expect(updatePasswordRoute).toBeDefined();
-      expect(updatePasswordRoute[1]).toBe(authMiddleware);
+      expect(updatePasswordRoute[1]).toBe(AuthMiddleware.verify);
       expect(updatePasswordRoute[2]).toBe(
         mockAuthController.updateUserPassword,
       );
@@ -299,7 +299,7 @@ describe("AuthRoutes", () => {
   });
 
   describe("Middleware Integration", () => {
-    it("should apply authMiddleware to protected routes", () => {
+    it("should apply AuthMiddleware.verify to protected routes", () => {
       AuthRoutes.routes;
 
       const postCalls = (mockRouter.post as jest.Mock).mock.calls;
@@ -307,22 +307,22 @@ describe("AuthRoutes", () => {
 
       // Check that authMiddleware is applied to logout route
       const logoutCall = postCalls.find((call) => call[0] === "/logout");
-      expect(logoutCall[1]).toBe(authMiddleware);
+      expect(logoutCall[1]).toBe(AuthMiddleware.verify);
 
       // Check that authMiddleware is applied to update-user route
       const updateUserCall = putCalls.find(
         (call) => call[0] === "/update-user",
       );
-      expect(updateUserCall[1]).toBe(authMiddleware);
+      expect(updateUserCall[1]).toBe(AuthMiddleware.verify);
 
       // Check that authMiddleware is applied to update-user-password route
       const updatePasswordCall = putCalls.find(
         (call) => call[0] === "/update-user-password",
       );
-      expect(updatePasswordCall[1]).toBe(authMiddleware);
+      expect(updatePasswordCall[1]).toBe(AuthMiddleware.verify);
     });
 
-    it("should not apply authMiddleware to public routes", () => {
+    it("should not apply AuthMiddleware.verify to public routes", () => {
       AuthRoutes.routes;
 
       const postCalls = (mockRouter.post as jest.Mock).mock.calls;
@@ -330,12 +330,12 @@ describe("AuthRoutes", () => {
       // Check that authMiddleware is NOT applied to register route
       const registerCall = postCalls.find((call) => call[0] === "/register");
       expect(registerCall[1]).toBe(mockAuthController.register);
-      expect(registerCall[1]).not.toBe(authMiddleware);
+      expect(registerCall[1]).not.toBe(AuthMiddleware.verify);
 
       // Check that authMiddleware is NOT applied to login route
       const loginCall = postCalls.find((call) => call[0] === "/login");
       expect(loginCall[1]).toBe(mockAuthController.login);
-      expect(loginCall[1]).not.toBe(authMiddleware);
+      expect(loginCall[1]).not.toBe(AuthMiddleware.verify);
 
       // Check that authMiddleware is NOT applied to request-reset-password-email route
       const resetPasswordCall = postCalls.find(
@@ -344,7 +344,7 @@ describe("AuthRoutes", () => {
       expect(resetPasswordCall[1]).toBe(
         mockAuthController.requestResetPasswordEmail,
       );
-      expect(resetPasswordCall[1]).not.toBe(authMiddleware);
+      expect(resetPasswordCall[1]).not.toBe(AuthMiddleware.verify);
     });
 
     it("should have correct middleware order for protected routes", () => {
@@ -356,7 +356,7 @@ describe("AuthRoutes", () => {
       // Verify middleware comes before controller for logout
       const logoutCall = postCalls.find((call) => call[0] === "/logout");
       expect(logoutCall).toHaveLength(3); // path, middleware, controller
-      expect(logoutCall[1]).toBe(authMiddleware);
+      expect(logoutCall[1]).toBe(AuthMiddleware.verify);
       expect(logoutCall[2]).toBe(mockAuthController.logout);
 
       // Verify middleware comes before controller for update-user
@@ -364,7 +364,7 @@ describe("AuthRoutes", () => {
         (call) => call[0] === "/update-user",
       );
       expect(updateUserCall).toHaveLength(3); // path, middleware, controller
-      expect(updateUserCall[1]).toBe(authMiddleware);
+      expect(updateUserCall[1]).toBe(AuthMiddleware.verify);
       expect(updateUserCall[2]).toBe(mockAuthController.updateUser);
 
       // Verify middleware comes before controller for update-user-password
@@ -372,7 +372,7 @@ describe("AuthRoutes", () => {
         (call) => call[0] === "/update-user-password",
       );
       expect(updatePasswordCall).toHaveLength(3); // path, middleware, controller
-      expect(updatePasswordCall[1]).toBe(authMiddleware);
+      expect(updatePasswordCall[1]).toBe(AuthMiddleware.verify);
       expect(updatePasswordCall[2]).toBe(mockAuthController.updateUserPassword);
     });
   });
