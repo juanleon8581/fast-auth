@@ -30,7 +30,11 @@ export class UserEntity implements IUserData {
       throw new Error(ERRORS.DATA_VALIDATION.INVALID_DATA);
     }
 
-    if (!email_verified) {
+    // Distinguish between missing and explicitly unverified email
+    if (email_verified === undefined || email_verified === null) {
+      throw new Error(ERRORS.DATA_VALIDATION.INVALID_DATA);
+    }
+    if (email_verified === false) {
       throw new Error(ERRORS.DATA_VALIDATION.EMAIL_NOT_VERIFIED);
     }
 
