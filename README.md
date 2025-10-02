@@ -1,162 +1,210 @@
 # Fast Auth API
 
-Authentication API built with Express.js and TypeScript following Clean Architecture principles.
+API de autenticación rápida construida con Express, TypeScript, Prisma y Supabase.
 
-## Features
+## 🚀 Características
 
-- ✅ Express.js with TypeScript
-- ✅ Clean Architecture
-- ✅ Environment variables validation with Zod
-- ✅ Security middlewares (Helmet, CORS)
-- ✅ API documentation with Swagger
-- ✅ Linting with ESLint
-- ✅ Code formatting with Prettier
-- ✅ Testing with Jest
-- ✅ Containerization with Docker
-- ✅ Supabase integration for authentication
+- **Autenticación JWT** con Supabase Auth
+- **Base de datos PostgreSQL** con Prisma ORM
+- **Arquitectura limpia** con separación de capas
+- **Logging avanzado** con Winston y PostgreSQL
+- **Validación de datos** con Zod
+- **Documentación API** con Swagger
+- **Testing** con Jest
+- **Linting y formateo** con ESLint y Prettier
+- **Soporte multi-entorno** con archivos .env específicos
 
-## Project Structure
+## 📁 Estructura del Proyecto
 
 ```
-├── docs/                           # Project documentation
-│   └── api/                       # API documentation (Swagger)
-├── src/
-│   ├── app.ts                     # Main entry point
-│   ├── config/                    # Application configurations
-│   ├── domain/                    # Domain layer (entities, use cases)
-│   ├── infrastructure/            # Infrastructure layer (databases, external services)
-│   └── presentation/              # Presentation layer (controllers, routes)
-├── supabase/                      # Supabase configuration
-│   └── config.toml               # Local Supabase configuration
+fast-auth/
 ├── .env.example                   # Environment variables template
-├── package.json                   # Dependencies and scripts
-└── tsconfig.json                  # TypeScript configuration
+├── .env.dev                       # Development environment
+├── .env.prod                      # Production environment
+├── src/
+│   ├── app.ts                     # Application entry point
+│   ├── config/                    # Configuration files
+│   ├── domain/                    # Business logic layer
+│   │   ├── entities/              # Domain entities
+│   │   ├── repositories/          # Repository interfaces
+│   │   ├── use-cases/             # Business use cases
+│   │   └── dtos/                  # Data transfer objects
+│   ├── infrastructure/            # Infrastructure layer
+│   │   ├── datasources/           # Data access implementations
+│   │   ├── config/                # Infrastructure configuration
+│   │   └── validators/            # Input validation
+│   └── presentation/              # Presentation layer
+│       ├── controller/            # HTTP controllers
+│       ├── middlewares/           # Express middlewares
+│       └── routes.ts              # Route definitions
+├── prisma/
+│   ├── schema.prisma              # Database schema
+│   └── migrations/                # Database migrations
+└── docs/                          # Documentation
 ```
 
-## Installation
+## 🛠️ Configuración
 
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   pnpm install
-   ```
-3. Copy the environment variables file:
-   ```bash
-   cp .env.example .env
-   ```
-4. Set up Supabase (see [Supabase Setup](#supabase-setup) section)
-5. Start the development server:
-   ```bash
-   pnpm run dev
-   ```
+### 1. Instalación
 
-## Supabase Setup
-
-This project uses Supabase for authentication and database management. You can use either a local Supabase instance or connect to a remote Supabase project.
-
-### Option 1: Local Supabase (Recommended for Development)
-
-1. Install Supabase CLI:
-   ```bash
-   npm install -g supabase
-   ```
-
-2. Start local Supabase:
-   ```bash
-   supabase start
-   ```
-
-3. The local Supabase will be available at:
-   - API URL: `http://localhost:54321`
-   - Database URL: `postgresql://postgres:postgres@localhost:54322/postgres`
-   - Studio URL: `http://localhost:54323`
-
-4. Update your `.env` file with local Supabase credentials:
-   ```bash
-   SUPABASE_URL=http://localhost:54321
-   SUPABASE_ANON_KEY=your-local-anon-key
-   ```
-
-### Option 2: Remote Supabase Project
-
-1. Create a new project at [supabase.com](https://supabase.com)
-2. Get your project URL and anon key from the project settings
-3. Update your `.env` file:
-   ```bash
-   SUPABASE_URL=https://your-project.supabase.co
-   SUPABASE_ANON_KEY=your-supabase-anon-key
-   ```
-
-## Available Scripts
-
-- `pnpm run dev` - Start the server in development mode
-- `pnpm run build` - Build the project
-- `pnpm start` - Start the server in production mode
-- `pnpm test` - Run tests
-- `pnpm run test:watch` - Run tests in watch mode
-- `pnpm run test:coverage` - Run tests with coverage
-- `pnpm run lint` - Run the linter
-- `pnpm run lint:fix` - Run the linter and fix errors automatically
-- `pnpm run format` - Format code with Prettier
-
-## API Documentation
-
-The API documentation is available via Swagger UI:
-- **Development**: `http://localhost:3000/api-docs`
-- **Production**: `https://your-domain.com/api-docs`
-
-### Authentication Endpoints
-
-#### Public Endpoints (No authentication required)
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `POST /api/auth/request-reset-password-email` - Request password reset email
-
-#### Protected Endpoints (Authentication required)
-- `POST /api/auth/logout` - User logout
-- `PUT /api/auth/update-user` - Update user information
-- `PUT /api/auth/update-user-password` - Update user password
-
-#### General Endpoints
-- `GET /health` - Health check
-- `GET /api/` - API information
-
-## Docker
-
-### Development
 ```bash
-docker-compose up -d
+# Clonar el repositorio
+git clone <repository-url>
+cd fast-auth
+
+# Instalar dependencias
+pnpm install
 ```
 
-### Production
+### 2. Configuración de entorno
+
 ```bash
-docker build -t fast-auth .
-docker run -p 3000:3000 fast-auth
+# Copiar el archivo de ejemplo para desarrollo
+cp .env.example .env.dev
+
+# Editar las variables de entorno
+nano .env.dev
 ```
 
-## Requirements
+### 3. Configuración de Supabase
 
-- Node.js >= 18.0.0
-- pnpm >= 8.0.0
-- Supabase CLI (for local development)
-
-## Environment Variables
-
-Make sure to configure the following environment variables in your `.env` file:
+1. Crear un proyecto en [Supabase](https://supabase.com)
+2. Iniciar Supabase localmente:
 
 ```bash
-# Environment
-NODE_ENV=development
+npx supabase start
+```
+
+3. Actualizar tu archivo `.env.dev` con las credenciales locales de Supabase:
+
+```env
+SUPABASE_URL=http://127.0.0.1:54321
+SUPABASE_ANON_KEY=your-anon-key
+DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres
+```
+
+### 4. Base de datos
+
+```bash
+# Ejecutar migraciones para desarrollo
+pnpm db:migrate:dev
+
+# O sincronizar el esquema sin migraciones
+pnpm db:push:dev
+
+# Abrir Prisma Studio para desarrollo
+pnpm db:studio:dev
+```
+
+## 🚀 Scripts Disponibles
+
+### Desarrollo
+```bash
+pnpm dev                    # Iniciar servidor de desarrollo
+```
+
+### Base de datos (Desarrollo)
+```bash
+pnpm db:migrate:dev         # Ejecutar migraciones con .env.dev
+pnpm db:push:dev           # Sincronizar esquema con .env.dev
+pnpm db:studio:dev         # Abrir Prisma Studio con .env.dev
+```
+
+### Base de datos (Producción)
+```bash
+pnpm db:migrate:prod       # Ejecutar migraciones con .env.prod
+pnpm db:push:prod         # Sincronizar esquema con .env.prod
+pnpm db:studio:prod       # Abrir Prisma Studio con .env.prod
+```
+
+### Testing
+```bash
+pnpm test                  # Ejecutar tests
+pnpm test:watch           # Ejecutar tests en modo watch
+pnpm test:coverage        # Ejecutar tests con coverage
+```
+
+### Linting y formateo
+```bash
+pnpm lint                 # Ejecutar linter
+pnpm lint:fix            # Corregir errores de linting
+pnpm format              # Formatear código
+pnpm format:check        # Verificar formato
+pnpm code:check          # Verificar linting y formato
+pnpm code:fix            # Corregir linting y formato
+```
+
+### Build y producción
+```bash
+pnpm build               # Compilar TypeScript
+pnpm start               # Iniciar servidor de producción
+```
+
+## 🌍 Manejo de Entornos
+
+Este proyecto soporta múltiples entornos usando archivos `.env` específicos:
+
+- **`.env.dev`** - Entorno de desarrollo
+- **`.env.prod`** - Entorno de producción
+- **`.env.test`** - Entorno de testing (opcional)
+
+### Configuración de variables de entorno
+
+Asegúrate de configurar las siguientes variables de entorno en tu archivo `.env.dev`:
+
+```env
+# Server Configuration
+NODE_ENV=dev
 PORT=3000
 
-# Supabase Configuration
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=your-supabase-anon-key
+# Database Configuration
+DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres
 
 # JWT Configuration
-JWT_SECRET=your_jwt_secret_here_minimum_32_characters_long
+JWT_SECRET=super-secret-jwt-token-with-at-least-32-characters-long
+
+# Supabase Configuration
+SUPABASE_URL=http://127.0.0.1:54321
+SUPABASE_ANON_KEY=your-supabase-anon-key
 ```
 
-## License
+## 📚 Documentación
 
-MIT
+- [Guía de Arquitectura](./docs/development/architecture-guide.md)
+- [Guía de Desarrollo de Endpoints](./docs/development/endpoint-development-guide.md)
+- [Documentación de la API](./docs/api/) - Swagger/OpenAPI
+
+## 🧪 Testing
+
+El proyecto incluye tests unitarios y de integración:
+
+```bash
+# Ejecutar todos los tests
+pnpm test
+
+# Ejecutar tests en modo watch
+pnpm test:watch
+
+# Generar reporte de coverage
+pnpm test:coverage
+```
+
+## 🏗️ Arquitectura
+
+El proyecto sigue los principios de **Arquitectura Limpia**:
+
+- **Domain Layer**: Lógica de negocio pura
+- **Infrastructure Layer**: Implementaciones de acceso a datos
+- **Presentation Layer**: Controladores HTTP y middlewares
+
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
