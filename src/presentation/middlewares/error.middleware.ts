@@ -21,8 +21,9 @@ export class ErrorMiddleware {
           url: req.url,
           userAgent: req.get("User-Agent")?.substring(0, 100),
           ip: req.ip,
+          endpoint: req.path,
         },
-        service: req.path,
+        service: "error-middleware",
         requestId: req.requestId,
       };
 

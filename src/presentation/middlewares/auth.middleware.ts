@@ -27,8 +27,9 @@ export class AuthMiddleware {
         userAgent: req.get("User-Agent")?.substring(0, 100),
         ip: req.ip,
         resCode: res.statusCode,
+        endpoint: req.path,
       },
-      service: req.path,
+      service: "auth-middleware",
       requestId: req.requestId,
     };
 
