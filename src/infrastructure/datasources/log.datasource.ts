@@ -23,8 +23,16 @@ interface PrismaLogData {
 
 export class LogDatasource implements LogRepository {
   private readonly client = DatabaseClient;
+  private static instance: LogDatasource;
   constructor() {
     Object.freeze(this);
+  }
+
+  static getInstance(): LogDatasource {
+    if (!LogDatasource.instance) {
+      LogDatasource.instance = new LogDatasource();
+    }
+    return LogDatasource.instance;
   }
 
   /**

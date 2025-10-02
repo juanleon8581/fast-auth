@@ -7,7 +7,7 @@ import { ILogData } from "@/domain/interfaces/log.interfaces";
 import { TypeGuardsUtils } from "@/utils/type-guards.utils";
 
 export class ErrorMiddleware {
-  private static logDatasource = new LogDatasource();
+  private static logDatasource = LogDatasource.getInstance();
 
   private static logError(error: unknown, req: Request): Promise<boolean> {
     try {
