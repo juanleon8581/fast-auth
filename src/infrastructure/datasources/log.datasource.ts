@@ -22,7 +22,8 @@ interface PrismaLogData {
 }
 
 export class LogDatasource implements LogRepository {
-  constructor(private readonly client: typeof DatabaseClient) {
+  private readonly client = DatabaseClient;
+  constructor() {
     Object.freeze(this);
   }
 

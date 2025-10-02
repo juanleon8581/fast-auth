@@ -4,10 +4,10 @@ import { ERRORS } from "@/config/strings/global.strings.json";
 
 export class LogEntity implements ILogData {
   constructor(
-    public readonly id: string,
     public readonly level: LogLevel,
     public readonly message: string,
     public readonly timestamp: Date,
+    public readonly id?: string,
     public readonly meta?: Record<string, unknown>,
     public readonly service?: string,
     public readonly userId?: string,
@@ -19,10 +19,10 @@ export class LogEntity implements ILogData {
 
   private static create(data: ILogData): LogEntity {
     return new LogEntity(
-      data.id,
       data.level,
       data.message,
       data.timestamp,
+      data.id,
       data.meta,
       data.service,
       data.userId,
@@ -32,7 +32,17 @@ export class LogEntity implements ILogData {
   }
 
   static createFrom = (raw: TRawJson): LogEntity => {
-    const { id, level, message, timestamp, meta, service, userId, requestId, error } = raw;
+    const {
+      id,
+      level,
+      message,
+      timestamp,
+      meta,
+      service,
+      userId,
+      requestId,
+      error,
+    } = raw;
 
     if (!id || !level || !message || !timestamp) {
       throw new Error(ERRORS.DATA_VALIDATION.INVALID_DATA);
@@ -44,7 +54,8 @@ export class LogEntity implements ILogData {
     }
 
     // Ensure timestamp is a Date object
-    const parsedTimestamp = timestamp instanceof Date ? timestamp : new Date(timestamp);
+    const parsedTimestamp =
+      timestamp instanceof Date ? timestamp : new Date(timestamp);
     if (isNaN(parsedTimestamp.getTime())) {
       throw new Error(ERRORS.DATA_VALIDATION.INVALID_DATA);
     }
