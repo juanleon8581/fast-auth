@@ -1,5 +1,6 @@
-declare module 'winston-postgresql' {
-  import TransportStream from 'winston-transport';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+declare module "winston-postgresql" {
+  import TransportStream from "winston-transport";
 
   interface PostgreSQLTransportOptions {
     connectionString: string;
