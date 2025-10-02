@@ -421,11 +421,10 @@ describe("Global Strings Configuration", () => {
         console.log("Duplicate messages found:", duplicates);
       }
 
-      // Currently there are 3 duplicate messages, this test documents the current state
-      // Added 5 new messages for REQUEST_RESET_PASSWORD_EMAIL (1 error + 4 validation messages)
-      // Added 1 new message for REFRESH_SESSION (1 error message)
-      expect(messageTexts.length).toBe(48);
-      expect(uniqueMessages.length).toBe(40);
+      // This test documents the current state of global messages
+      // Count includes REQUEST_RESET_PASSWORD_EMAIL and REFRESH_SESSION additions
+      expect(messageTexts.length).toBe(52);
+      expect(uniqueMessages.length).toBe(44);
       expect(duplicates.length).toBe(4);
     });
   });

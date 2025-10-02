@@ -5,7 +5,10 @@
       "INVALID_FIELDS": "Invalid fields",
       "UNKNOWN_VALIDATION_ERROR": "Unknown validation error",
       "INVALID_DATA": "Invalid data",
-      "EMAIL_NOT_VERIFIED": "Email not verified"
+      "EMAIL_NOT_VERIFIED": "Email not verified",
+      "AUTHORIZATION_HEADER_REQUIRED": "Authorization header is required",
+      "INVALID_AUTHORIZATION_FORMAT": "Invalid authorization format",
+      "TOKEN_EXPIRED": "Token has expired"
     },
     "AUTH": {
       "REFRESH_SESSION": {

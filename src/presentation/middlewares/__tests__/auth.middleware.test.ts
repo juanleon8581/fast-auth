@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AuthMiddleware } from "../auth.middleware";
+import { UnauthorizedError } from "@/domain/errors/unauthorized-error";
 
 // Use jose mock from config tests
 jest.mock("jose");
@@ -30,22 +31,24 @@ describe("AuthMiddleware", () => {
   });
 
   describe("verify", () => {
-    it("should return 401 when Authorization header is missing", async () => {
+    it("should call next with UnauthorizedError when Authorization header is missing", async () => {
       await AuthMiddleware.verify(
         mockReq as Request,
         mockRes as Response,
         mockNext,
       );
 
-      expect(mockStatus).toHaveBeenCalledWith(401);
-      expect(mockJson).toHaveBeenCalledWith({
-        error: "Authorization header is required",
-        message: "Please provide a valid Bearer token",
-      });
-      expect(mockNext).not.toHaveBeenCalled();
+      expect(mockNext).toHaveBeenCalledTimes(1);
+      const err = (mockNext as jest.Mock).mock.calls[0][0];
+      expect(err).toBeInstanceOf(UnauthorizedError);
+      expect(err.message).toBe("Authorization header is required");
+      expect(err.field).toBe("authorization");
+      expect(err.code).toBe("MISSING_AUTH_HEADER");
+      expect(mockStatus).not.toHaveBeenCalled();
+      expect(mockJson).not.toHaveBeenCalled();
     });
 
-    it("should return 401 when Authorization format is invalid", async () => {
+    it("should call next with UnauthorizedError when Authorization format is invalid", async () => {
       mockReq.headers = { authorization: "Basic abc" } as any;
 
       await AuthMiddleware.verify(
@@ -54,15 +57,17 @@ describe("AuthMiddleware", () => {
         mockNext,
       );
 
-      expect(mockStatus).toHaveBeenCalledWith(401);
-      expect(mockJson).toHaveBeenCalledWith({
-        error: "Invalid authorization format",
-        message: 'Authorization header must start with "Bearer "',
-      });
-      expect(mockNext).not.toHaveBeenCalled();
+      expect(mockNext).toHaveBeenCalledTimes(1);
+      const err = (mockNext as jest.Mock).mock.calls[0][0];
+      expect(err).toBeInstanceOf(UnauthorizedError);
+      expect(err.message).toBe('Authorization header must start with "Bearer "');
+      expect(err.field).toBe("authorization");
+      expect(err.code).toBe("INVALID_AUTH_FORMAT");
+      expect(mockStatus).not.toHaveBeenCalled();
+      expect(mockJson).not.toHaveBeenCalled();
     });
 
-    it("should return 401 when token is empty", async () => {
+    it("should call next with UnauthorizedError when token is empty", async () => {
       mockReq.headers = { authorization: "Bearer " } as any;
 
       await AuthMiddleware.verify(
@@ -71,12 +76,14 @@ describe("AuthMiddleware", () => {
         mockNext,
       );
 
-      expect(mockStatus).toHaveBeenCalledWith(401);
-      expect(mockJson).toHaveBeenCalledWith({
-        error: "Token is required",
-        message: "Bearer token cannot be empty",
-      });
-      expect(mockNext).not.toHaveBeenCalled();
+      expect(mockNext).toHaveBeenCalledTimes(1);
+      const err = (mockNext as jest.Mock).mock.calls[0][0];
+      expect(err).toBeInstanceOf(UnauthorizedError);
+      expect(err.message).toBe("Bearer token cannot be empty");
+      expect(err.field).toBe("token");
+      expect(err.code).toBe("MISSING_TOKEN");
+      expect(mockStatus).not.toHaveBeenCalled();
+      expect(mockJson).not.toHaveBeenCalled();
     });
 
     it("should call next on valid token", async () => {

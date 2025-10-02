@@ -2,12 +2,46 @@ import { Request, Response, NextFunction } from "express";
 import { jwtVerify } from "jose";
 import { TextEncoder } from "util";
 import envs from "../../config/envs";
+import { LogDatasource } from "@/infrastructure/datasources/log.datasource";
+import { UnauthorizedError } from "@/domain/errors/unauthorized-error";
+import { ERRORS } from "@/config/strings/global.strings.json";
+import { ILogData } from "@/domain/interfaces/log.interfaces";
+import { CreateLogDto } from "@/domain/dtos/create-log.dto";
+import { CreateLog } from "@/domain/use-cases/create-log";
 
 /**
  * Authentication middleware that validates JWT Bearer tokens
  * Implemented as a class with static methods to align with project standards
  */
 export class AuthMiddleware {
+  private static logDatasource = LogDatasource.getInstance();
+
+  static logAuth(req: Request, res: Response) {
+    const logData: ILogData = {
+      level: "INFO",
+      message: "Authorization header verified",
+      timestamp: new Date(),
+      meta: {
+        method: req.method,
+        url: req.url,
+        userAgent: req.get("User-Agent")?.substring(0, 100),
+        ip: req.ip,
+        resCode: res.statusCode,
+      },
+      service: req.path,
+      requestId: req.requestId,
+    };
+
+    const [dtoError, createLogDto] = CreateLogDto.createFrom(logData);
+
+    if (dtoError) return Promise.resolve(false);
+
+    return new CreateLog(AuthMiddleware.logDatasource)
+      .execute(createLogDto!)
+      .then(() => true)
+      .catch(() => false);
+  }
+
   /**
    * Verifies the presence and integrity of a JWT Bearer token
    */
@@ -21,19 +55,25 @@ export class AuthMiddleware {
       const authHeader = req.headers.authorization;
 
       if (!authHeader) {
-        res.status(401).json({
-          error: "Authorization header is required",
-          message: "Please provide a valid Bearer token",
-        });
+        next(
+          new UnauthorizedError(
+            ERRORS.DATA_VALIDATION.AUTHORIZATION_HEADER_REQUIRED,
+            "authorization",
+            "MISSING_AUTH_HEADER",
+          ),
+        );
         return;
       }
 
       // Check if it's a Bearer token
       if (!authHeader.startsWith("Bearer ")) {
-        res.status(401).json({
-          error: "Invalid authorization format",
-          message: 'Authorization header must start with "Bearer "',
-        });
+        next(
+          new UnauthorizedError(
+            'Authorization header must start with "Bearer "',
+            "authorization",
+            "INVALID_AUTH_FORMAT",
+          ),
+        );
         return;
       }
 
@@ -41,10 +81,13 @@ export class AuthMiddleware {
       const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
       if (!token) {
-        res.status(401).json({
-          error: "Token is required",
-          message: "Bearer token cannot be empty",
-        });
+        next(
+          new UnauthorizedError(
+            "Bearer token cannot be empty",
+            "token",
+            "MISSING_TOKEN",
+          ),
+        );
         return;
       }
 
@@ -56,42 +99,51 @@ export class AuthMiddleware {
           algorithms: ["HS256"], // Supabase uses HS256 for symmetric keys
         });
 
+        // Log successful authentication
+        AuthMiddleware.logAuth(req, res).catch((logError) => {
+          console.error("Failed to log auth:", logError);
+        });
+
         // Continue to the next middleware/route handler
         next();
       } catch (jwtError) {
         // Handle JWT verification errors
         if (jwtError instanceof Error) {
           if (jwtError.message.includes("expired")) {
-            res.status(401).json({
-              error: "Token expired",
-              message:
-                "The provided token has expired. Please refresh your token.",
-            });
+            next(
+              new UnauthorizedError(
+                ERRORS.DATA_VALIDATION.TOKEN_EXPIRED,
+                "token",
+                "TOKEN_EXPIRED",
+              ),
+            );
             return;
           }
 
           if (jwtError.message.includes("signature")) {
-            res.status(401).json({
-              error: "Invalid token signature",
-              message: "The token signature is invalid",
-            });
+            next(
+              new UnauthorizedError(
+                "Invalid token signature",
+                "token",
+                "INVALID_SIGNATURE",
+              ),
+            );
             return;
           }
         }
-
-        res.status(401).json({
-          error: "Invalid token",
-          message: "The provided token is invalid or malformed",
-        });
+        next(
+          new UnauthorizedError(
+            "Invalid or malformed token",
+            "token",
+            "INVALID_TOKEN",
+          ),
+        );
         return;
       }
     } catch (error) {
       // Handle unexpected errors
       console.error("Auth middleware error:", error);
-      res.status(500).json({
-        error: "Internal server error",
-        message: "An unexpected error occurred during authentication",
-      });
+      next(error);
       return;
     }
   }
