@@ -4,7 +4,8 @@
       "MISSING_FIELDS": "Required fields are missing",
       "INVALID_FIELDS": "Invalid fields",
       "UNKNOWN_VALIDATION_ERROR": "Unknown validation error",
-      "INVALID_DATA": "Invalid data"
+      "INVALID_DATA": "Invalid data",
+      "EMAIL_NOT_VERIFIED": "Email not verified"
     },
     "AUTH": {
       "REFRESH_SESSION": {

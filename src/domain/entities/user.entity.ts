@@ -26,8 +26,12 @@ export class UserEntity implements IUserData {
   static createFrom = (raw: TRawJson): UserEntity => {
     const { id, email, name, email_verified, phone } = raw;
 
-    if (!id || !email || !name || !email_verified) {
+    if (!id || !email || !name) {
       throw new Error(ERRORS.DATA_VALIDATION.INVALID_DATA);
+    }
+
+    if (!email_verified) {
+      throw new Error(ERRORS.DATA_VALIDATION.EMAIL_NOT_VERIFIED);
     }
 
     return this.create({ id, email, name, email_verified, phone });
