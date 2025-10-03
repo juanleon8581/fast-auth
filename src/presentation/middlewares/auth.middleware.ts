@@ -2,47 +2,15 @@ import { Request, Response, NextFunction } from "express";
 import { jwtVerify } from "jose";
 import { TextEncoder } from "util";
 import envs from "../../config/envs";
-import { LogDatasource } from "@/infrastructure/datasources/log.datasource";
 import { UnauthorizedError } from "@/domain/errors/unauthorized-error";
 import { ERRORS } from "@/config/strings/global.strings.json";
-import { ILogData } from "@/domain/interfaces/log.interfaces";
-import { CreateLogDto } from "@/domain/dtos/create-log.dto";
-import { CreateLog } from "@/domain/use-cases/create-log";
+import { LoggerService } from "@/infrastructure/services/logger.service";
 
 /**
  * Authentication middleware that validates JWT Bearer tokens
  * Implemented as a class with static methods to align with project standards
  */
 export class AuthMiddleware {
-  private static logDatasource = LogDatasource.getInstance();
-
-  static logAuth(req: Request, res: Response) {
-    const logData: ILogData = {
-      level: "INFO",
-      message: "Authorization header verified",
-      timestamp: new Date(),
-      meta: {
-        method: req.method,
-        url: req.url,
-        userAgent: req.get("User-Agent")?.substring(0, 100),
-        ip: req.ip,
-        resCode: res.statusCode,
-        endpoint: req.path,
-      },
-      service: "auth-middleware",
-      requestId: req.requestId,
-    };
-
-    const [dtoError, createLogDto] = CreateLogDto.createFrom(logData);
-
-    if (dtoError) return Promise.resolve(false);
-
-    return new CreateLog(AuthMiddleware.logDatasource)
-      .execute(createLogDto!)
-      .then(() => true)
-      .catch(() => false);
-  }
-
   /**
    * Verifies the presence and integrity of a JWT Bearer token
    */
@@ -101,8 +69,10 @@ export class AuthMiddleware {
         });
 
         // Log successful authentication
-        AuthMiddleware.logAuth(req, res).catch((logError) => {
-          console.error("Failed to log auth:", logError);
+        LoggerService.logInfo({
+          message: "JWT token verified successfully",
+          req,
+          service: "auth-middleware",
         });
 
         // Continue to the next middleware/route handler
