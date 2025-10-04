@@ -1,21 +1,15 @@
-export type LogLevel =
-  | "ERROR"
-  | "WARN"
-  | "INFO"
-  | "HTTP"
-  | "VERBOSE"
-  | "DEBUG"
-  | "SILLY";
+export type LogLevel = "FATAL" | "ERROR" | "WARN" | "INFO" | "DEBUG" | "TRACE";
 
 export const LOG_LEVELS: readonly LogLevel[] = [
+  "FATAL",
   "ERROR",
   "WARN",
   "INFO",
-  "HTTP",
-  "VERBOSE",
   "DEBUG",
-  "SILLY",
+  "TRACE",
 ] as const;
+
+export const PROD_LOG_LEVELS: readonly LogLevel[] = ["ERROR", "WARN", "FATAL"];
 
 export interface ILogData {
   id?: string;

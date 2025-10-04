@@ -11,6 +11,8 @@ import { LoggerService } from "@/infrastructure/services/logger.service";
  * Implemented as a class with static methods to align with project standards
  */
 export class AuthMiddleware {
+  private static readonly serviceNameForLogger = "auth-middleware";
+
   /**
    * Verifies the presence and integrity of a JWT Bearer token
    */
@@ -72,7 +74,7 @@ export class AuthMiddleware {
         LoggerService.logInfo({
           message: "JWT token verified successfully",
           req,
-          service: "auth-middleware",
+          service: this.serviceNameForLogger,
         });
 
         // Continue to the next middleware/route handler
@@ -113,7 +115,6 @@ export class AuthMiddleware {
       }
     } catch (error) {
       // Handle unexpected errors
-      console.error("Auth middleware error:", error);
       next(error);
       return;
     }

@@ -6,9 +6,7 @@ import { resolve } from "path";
 config();
 
 const envSchema = z.object({
-  NODE_ENV: z
-    .enum(["development", "production", "test", "dev", "prod", "qa"])
-    .default("development"),
+  NODE_ENV: z.enum(["test", "dev", "prod", "qa"]).default("dev"),
   PORT: z.coerce.number().default(3000),
 
   // Supabase Configuration

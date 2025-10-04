@@ -3,6 +3,7 @@ import { ErrorHandler } from "@/domain/errors/error-handler";
 import { LoggerService } from "@/infrastructure/services/logger.service";
 
 export class ErrorMiddleware {
+  private static readonly serviceNameForLogger = "error-middleware";
   static handleError(
     error: unknown,
     req: Request,
@@ -16,7 +17,8 @@ export class ErrorMiddleware {
     LoggerService.logError({
       error,
       req,
-      service: "error-middleware",
+      res,
+      service: this.serviceNameForLogger,
     });
   }
 }
