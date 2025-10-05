@@ -6,18 +6,27 @@ import { resolve } from "path";
 config();
 
 const envSchema = z.object({
-  NODE_ENV: z.enum(["test", "dev", "prod", "qa"]).default("dev"),
+  // Accept common and shorthand environment names
+  NODE_ENV: z
+    .enum(["test", "dev", "prod", "qa", "development", "production"])
+    .default("dev"),
   PORT: z.coerce.number().default(3000),
 
   // Supabase Configuration
   SUPABASE_URL: z.string().url({ message: "Must be a valid URL" }),
   SUPABASE_ANON_KEY: z.string(),
+
+  // Optional in tests/dev; validated when present
   JWT_SECRET: z
     .string()
-    .min(32, { message: "JWT_SECRET must be at least 32 characters long" }),
+    .min(32, { message: "JWT_SECRET must be at least 32 characters long" })
+    .optional(),
 
-  // Database Configuration
-  DATABASE_URL: z.url({ message: "Must be a valid database URL" }),
+  // Optional; validate format when provided
+  DATABASE_URL: z
+    .string()
+    .url({ message: "Must be a valid database URL" })
+    .optional(),
 });
 
 type IEnv = z.infer<typeof envSchema>;

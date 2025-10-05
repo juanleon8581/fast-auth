@@ -45,7 +45,7 @@ export class LoggerService {
         method: req.method,
         endpoint: req.path,
         url: req.url,
-        userAgent: req.get("User-Agent")?.substring(0, 100),
+        userAgent: req.get?.("User-Agent")?.substring(0, 100),
         ip: req.ip,
         httpVersion: req.httpVersion,
       },

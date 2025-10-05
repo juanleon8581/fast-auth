@@ -7,11 +7,12 @@ import { ValidationError } from "@/domain/errors/validation-error";
 import type { LogLevel } from "@/domain/interfaces/log.interfaces";
 import { LOG_LEVELS } from "@/domain/interfaces/log.interfaces";
 import { TRawJson } from "@/domain/interfaces/general.interfaces";
+import { $Enums } from "@prisma/client";
 
 // Type for Prisma Log model
 interface PrismaLogData {
   id: string;
-  level: string;
+  level: $Enums.LogLevel;
   message: string;
   timestamp: Date;
   meta: unknown;
@@ -19,6 +20,48 @@ interface PrismaLogData {
   userId: string | null;
   requestId: string | null;
   error: string | null;
+}
+
+// Maps domain LogLevel to Prisma LogLevel
+function toPrismaLogLevel(level: LogLevel): $Enums.LogLevel {
+  switch (level) {
+    case "ERROR":
+      return "ERROR" as $Enums.LogLevel;
+    case "WARN":
+      return "WARN" as $Enums.LogLevel;
+    case "INFO":
+      return "INFO" as $Enums.LogLevel;
+    case "DEBUG":
+      return "DEBUG" as $Enums.LogLevel;
+    case "TRACE":
+      return "SILLY" as $Enums.LogLevel; // closest
+    case "FATAL":
+      return "ERROR" as $Enums.LogLevel; // closest
+    default:
+      return "INFO" as $Enums.LogLevel;
+  }
+}
+
+// Maps Prisma LogLevel to domain LogLevel
+function fromPrismaLogLevel(level: $Enums.LogLevel): LogLevel {
+  switch (level) {
+    case "ERROR":
+      return "ERROR";
+    case "WARN":
+      return "WARN";
+    case "INFO":
+      return "INFO";
+    case "DEBUG":
+      return "DEBUG";
+    case "SILLY":
+      return "TRACE";
+    case "HTTP":
+      return "INFO";
+    case "VERBOSE":
+      return "DEBUG";
+    default:
+      return "INFO";
+  }
 }
 
 export class LogDatasource implements LogRepository {
@@ -49,7 +92,7 @@ export class LogDatasource implements LogRepository {
 
       const logData = await dbClient.log.create({
         data: {
-          level: dto.level as LogLevel,
+          level: toPrismaLogLevel(dto.level),
           message: dto.message,
           meta: dto.meta as TRawJson,
           service: dto.service,
@@ -165,7 +208,7 @@ export class LogDatasource implements LogRepository {
       const dbClient = this.client.create();
 
       const logs = await dbClient.log.findMany({
-        where: { level: level as LogLevel },
+        where: { level: toPrismaLogLevel(level as LogLevel) },
         orderBy: { timestamp: "desc" },
         ...(limit && { take: limit }),
       });
@@ -249,7 +292,7 @@ export class LogDatasource implements LogRepository {
     try {
       return LogEntity.createFrom({
         id: logData.id,
-        level: logData.level as LogLevel,
+        level: fromPrismaLogLevel(logData.level),
         message: logData.message,
         timestamp: logData.timestamp,
         meta: logData.meta as Record<string, unknown>,
