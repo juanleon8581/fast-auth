@@ -15,7 +15,14 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "code:check": "pnpm lint && pnpm format:check",
-    "code:fix": "pnpm lint:fix && pnpm format"
+    "code:fix": "pnpm lint:fix && pnpm format",
+    "db:migrate:dev": "dotenv -e .env.dev -- prisma migrate dev",
+    "db:migrate:prod": "dotenv -e .env.prod -- prisma migrate deploy",
+    "db:push:dev": "dotenv -e .env.dev -- prisma db push",
+    "db:push:prod": "dotenv -e .env.prod -- prisma db push",
+    "db:studio:dev": "dotenv -e .env.dev -- prisma studio",
+    "db:studio:prod": "dotenv -e .env.prod -- prisma studio",
+    "db:generate": "prisma generate"
   },
   "keywords": [
     "express",
@@ -26,6 +33,7 @@
   "author": "Tu Nombre",
   "license": "MIT",
   "dependencies": {
+    "@prisma/client": "^6.16.3",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.56.1",
     "@types/uuid": "^10.0.0",
@@ -34,9 +42,12 @@
     "express": "^4.21.2",
     "helmet": "^8.1.0",
     "jose": "^6.1.0",
+    "prisma": "^6.16.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^11.1.0",
+    "winston": "^3.18.3",
+    "winston-postgresql": "^1.2.0",
     "zod": "^4.1.5"
   },
   "devDependencies": {
@@ -49,6 +60,7 @@
     "@types/swagger-ui-express": "^4.1.8",
     "@typescript-eslint/eslint-plugin": "^8.41.0",
     "@typescript-eslint/parser": "^8.41.0",
+    "dotenv-cli": "^10.0.0",
     "eslint": "^9.34.0",
     "eslint-config-prettier": "^10.1.8",
     "jest": "^30.1.1",

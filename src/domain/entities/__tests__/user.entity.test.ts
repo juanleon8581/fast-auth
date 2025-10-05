@@ -257,7 +257,7 @@ describe("UserEntity", () => {
 
       expect(() => {
         UserEntity.createFrom(invalidData);
-      }).toThrow("Invalid data");
+      }).toThrow("Email not verified");
     });
   });
 });
