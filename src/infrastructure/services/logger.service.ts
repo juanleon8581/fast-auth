@@ -1,10 +1,14 @@
-import { Request, Response } from "express";
 import { LogDatasource } from "../datasources/log.datasource";
 import { TypeGuardsUtils } from "@/utils/type-guards.utils";
 import { CreateLogDto } from "@/domain/dtos/create-log.dto";
 import { CreateLog } from "@/domain/use-cases/create-log";
 import { ILogData, PROD_LOG_LEVELS } from "@/domain/interfaces/log.interfaces";
 import envs from "@/config/envs";
+import {
+  IErrorlogData,
+  IGenericLog,
+  IInfoLogData,
+} from "./logger.service.interfaces";
 
 export class LoggerService {
   private static logDatasource = LogDatasource.getInstance();
@@ -31,61 +35,77 @@ export class LoggerService {
     }
   }
 
-  static logError({
-    error,
-    req,
-    res,
-    service,
-  }: {
-    error: unknown;
-    req: Request;
-    res: Response;
-    service: string;
-  }) {
-    const logData: ILogData = {
-      level: "ERROR",
-      message: TypeGuardsUtils.getErrorMessage(error),
-      error: TypeGuardsUtils.getAllErrorToString(error),
+  private static generateLogData(logData: IGenericLog): ILogData {
+    const { level, req, res, service, message, error } = logData;
+    const log: ILogData = {
+      level,
+      message: TypeGuardsUtils.truncateStringByKB(message ?? "", 1),
       timestamp: new Date(),
       meta: {
         method: req.method,
+        endpoint: req.path,
         url: req.url,
         userAgent: req.get("User-Agent")?.substring(0, 100),
         ip: req.ip,
-        endpoint: req.path,
-        statusCode: res.statusCode,
         httpVersion: req.httpVersion,
       },
       service: service,
       requestId: req.requestId,
     };
 
+    if (res) log.meta = { ...log.meta, statusCode: res.statusCode };
+    if (error) log.error = TypeGuardsUtils.getAllErrorToString(error);
+
+    return log;
+  }
+
+  static logError({ error, req, res, service }: IErrorlogData) {
+    const logData: ILogData = LoggerService.generateLogData({
+      level: "ERROR",
+      req,
+      res,
+      service,
+      message: TypeGuardsUtils.getErrorMessage(error),
+      error,
+    });
+
+    LoggerService.executeLog(logData);
+  }
+  static logWarn({ error, req, res, service }: IErrorlogData) {
+    const logData: ILogData = LoggerService.generateLogData({
+      level: "WARN",
+      req,
+      res,
+      service,
+      message: TypeGuardsUtils.getErrorMessage(error),
+      error,
+    });
+
     LoggerService.executeLog(logData);
   }
 
-  static logInfo({
-    message,
-    req,
-    service,
-  }: {
-    message: string;
-    req: Request;
-    service: string;
-  }) {
-    const logData: ILogData = {
-      level: "INFO",
-      message: TypeGuardsUtils.truncateStringByKB(message, 1),
-      timestamp: new Date(),
-      meta: {
-        method: req.method,
-        url: req.url,
-        userAgent: req.get("User-Agent")?.substring(0, 100),
-        ip: req.ip,
-        endpoint: req.path,
-      },
-      service: service,
-      requestId: req.requestId,
+  static logDebug({ message, req, res, service }: IInfoLogData) {
+    const data: IGenericLog = {
+      level: "DEBUG",
+      req,
+      service,
+      message,
     };
+    if (res) data.res = res;
+    const logData: ILogData = LoggerService.generateLogData(data);
+
+    LoggerService.executeLog(logData);
+  }
+
+  static logInfo({ message, req, res, service }: IInfoLogData) {
+    const data: IGenericLog = {
+      level: "INFO",
+      req,
+      service,
+      message,
+    };
+    if (res) data.res = res;
+    const logData: ILogData = LoggerService.generateLogData(data);
 
     LoggerService.executeLog(logData);
   }

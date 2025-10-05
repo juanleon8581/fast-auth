@@ -14,11 +14,14 @@ export class ErrorMiddleware {
     const errorResponse = ErrorHandler.handle(error, req.requestId, "1.0.0");
     res.status(errorResponse.code).json(errorResponse);
 
-    LoggerService.logError({
+    const logData = {
       error,
       req,
       res,
       service: this.serviceNameForLogger,
-    });
+    };
+
+    if (errorResponse.code < 500) return LoggerService.logWarn(logData);
+    LoggerService.logError(logData);
   }
 }

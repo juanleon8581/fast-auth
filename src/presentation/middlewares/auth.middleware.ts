@@ -71,7 +71,7 @@ export class AuthMiddleware {
         });
 
         // Log successful authentication
-        LoggerService.logInfo({
+        LoggerService.logDebug({
           message: "JWT token verified successfully",
           req,
           service: this.serviceNameForLogger,
