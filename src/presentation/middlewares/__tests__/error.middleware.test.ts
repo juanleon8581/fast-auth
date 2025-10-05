@@ -2,6 +2,15 @@ import { Request, Response, NextFunction } from "express";
 import { ErrorMiddleware } from "../error.middleware";
 import { ErrorHandler } from "@/domain/errors/error-handler";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
+import { LoggerService } from "@/infrastructure/services/logger.service";
+
+// Mock LoggerService to prevent real DB calls via CreateLog
+jest.mock("@/infrastructure/services/logger.service", () => ({
+  LoggerService: {
+    logWarn: jest.fn(),
+    logError: jest.fn(),
+  },
+}));
 
 // Mock ErrorHandler
 jest.mock("@/domain/errors/error-handler");
@@ -63,6 +72,8 @@ describe("ErrorMiddleware", () => {
       );
       expect(mockStatus).toHaveBeenCalledWith(400);
       expect(mockJson).toHaveBeenCalledWith(expectedResponse);
+      expect((LoggerService.logWarn as jest.Mock)).toHaveBeenCalledTimes(1);
+      expect((LoggerService.logError as jest.Mock)).not.toHaveBeenCalled();
     });
 
     it("should handle generic error", () => {
@@ -97,6 +108,8 @@ describe("ErrorMiddleware", () => {
       );
       expect(mockStatus).toHaveBeenCalledWith(500);
       expect(mockJson).toHaveBeenCalledWith(expectedResponse);
+      expect((LoggerService.logError as jest.Mock)).toHaveBeenCalledTimes(1);
+      expect((LoggerService.logWarn as jest.Mock)).not.toHaveBeenCalled();
     });
 
     it("should handle unknown error types", () => {
@@ -131,6 +144,8 @@ describe("ErrorMiddleware", () => {
       );
       expect(mockStatus).toHaveBeenCalledWith(500);
       expect(mockJson).toHaveBeenCalledWith(expectedResponse);
+      expect((LoggerService.logError as jest.Mock)).toHaveBeenCalledTimes(1);
+      expect((LoggerService.logWarn as jest.Mock)).not.toHaveBeenCalled();
     });
 
     it("should handle null error", () => {
@@ -165,6 +180,8 @@ describe("ErrorMiddleware", () => {
       );
       expect(mockStatus).toHaveBeenCalledWith(500);
       expect(mockJson).toHaveBeenCalledWith(expectedResponse);
+      expect((LoggerService.logError as jest.Mock)).toHaveBeenCalledTimes(1);
+      expect((LoggerService.logWarn as jest.Mock)).not.toHaveBeenCalled();
     });
 
     it("should handle different status codes", () => {
@@ -199,6 +216,8 @@ describe("ErrorMiddleware", () => {
       );
       expect(mockStatus).toHaveBeenCalledWith(422);
       expect(mockJson).toHaveBeenCalledWith(expectedResponse);
+      expect((LoggerService.logWarn as jest.Mock)).toHaveBeenCalledTimes(1);
+      expect((LoggerService.logError as jest.Mock)).not.toHaveBeenCalled();
     });
   });
 });

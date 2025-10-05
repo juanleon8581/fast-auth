@@ -1,9 +1,18 @@
 import { Request, Response, NextFunction } from "express";
 import { AuthMiddleware } from "../auth.middleware";
 import { UnauthorizedError } from "@/domain/errors/unauthorized-error";
+import { jwtVerify } from "jose";
 
-// Use jose mock from config tests
-jest.mock("jose");
+// Mock jose with explicit jwtVerify function
+jest.mock("jose", () => ({ jwtVerify: jest.fn() }));
+
+// Mock LoggerService to assert debug logging on success
+import { LoggerService } from "@/infrastructure/services/logger.service";
+jest.mock("@/infrastructure/services/logger.service", () => ({
+  LoggerService: {
+    logDebug: jest.fn(),
+  },
+}));
 
 describe("AuthMiddleware", () => {
   let mockReq: Partial<Request>;
@@ -88,6 +97,7 @@ describe("AuthMiddleware", () => {
 
     it("should call next on valid token", async () => {
       mockReq.headers = { authorization: "Bearer valid-token" } as any;
+      (jwtVerify as jest.Mock).mockResolvedValueOnce({ payload: { sub: "u1" } });
 
       await AuthMiddleware.verify(
         mockReq as Request,
@@ -98,6 +108,65 @@ describe("AuthMiddleware", () => {
       expect(mockNext).toHaveBeenCalledTimes(1);
       expect(mockStatus).not.toHaveBeenCalled();
       expect(mockJson).not.toHaveBeenCalled();
+
+      // Assert jwtVerify was called with HS256 and proper token
+      const calls = (jwtVerify as jest.Mock).mock.calls;
+      expect(calls[0][0]).toBe("valid-token");
+      expect(calls[0][1]).toBeInstanceOf(Uint8Array);
+      expect(calls[0][2]).toEqual({ algorithms: ["HS256"] });
+
+      // Assert LoggerService.logDebug called
+      expect((LoggerService.logDebug as jest.Mock)).toHaveBeenCalledTimes(1);
+      const logArg = (LoggerService.logDebug as jest.Mock).mock.calls[0][0];
+      expect(logArg.service).toBe("auth-middleware");
+    });
+
+    it("should call next with TOKEN_EXPIRED on expired token", async () => {
+      mockReq.headers = { authorization: "Bearer expired-token" } as any;
+      (jwtVerify as jest.Mock).mockRejectedValueOnce(new Error("token expired"));
+
+      await AuthMiddleware.verify(
+        mockReq as Request,
+        mockRes as Response,
+        mockNext,
+      );
+
+      expect(mockNext).toHaveBeenCalledTimes(1);
+      const err = (mockNext as jest.Mock).mock.calls[0][0];
+      expect(err).toBeInstanceOf(UnauthorizedError);
+      expect(err.code).toBe("TOKEN_EXPIRED");
+    });
+
+    it("should call next with INVALID_SIGNATURE on bad signature", async () => {
+      mockReq.headers = { authorization: "Bearer badsig-token" } as any;
+      (jwtVerify as jest.Mock).mockRejectedValueOnce(new Error("invalid signature"));
+
+      await AuthMiddleware.verify(
+        mockReq as Request,
+        mockRes as Response,
+        mockNext,
+      );
+
+      expect(mockNext).toHaveBeenCalledTimes(1);
+      const err = (mockNext as jest.Mock).mock.calls[0][0];
+      expect(err).toBeInstanceOf(UnauthorizedError);
+      expect(err.code).toBe("INVALID_SIGNATURE");
+    });
+
+    it("should call next with INVALID_TOKEN on malformed token", async () => {
+      mockReq.headers = { authorization: "Bearer malformed" } as any;
+      (jwtVerify as jest.Mock).mockRejectedValueOnce(new Error("malformed"));
+
+      await AuthMiddleware.verify(
+        mockReq as Request,
+        mockRes as Response,
+        mockNext,
+      );
+
+      expect(mockNext).toHaveBeenCalledTimes(1);
+      const err = (mockNext as jest.Mock).mock.calls[0][0];
+      expect(err).toBeInstanceOf(UnauthorizedError);
+      expect(err.code).toBe("INVALID_TOKEN");
     });
   });
 

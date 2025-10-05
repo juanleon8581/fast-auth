@@ -78,6 +78,40 @@ describe("LoggerService", () => {
     expect(mockExecute).toHaveBeenCalledTimes(1);
   });
 
+  describe("generateLogData via public methods", () => {
+    it("composes meta from req, res and custom meta", () => {
+      const longUA = "Mozilla/5.0" + "x".repeat(300);
+      const req = makeReq({ get: jest.fn().mockReturnValue(longUA), path: "/hello", url: "/hello?x=1" });
+      const res = makeRes({ statusCode: 201 });
+      LoggerService.logDebug({ message: "meta", req, res, service: "svc", meta: { extra: 1 } });
+      const dto = (mockExecute as jest.Mock).mock.calls[0][0];
+      expect(dto.service).toBe("svc");
+      expect(dto.requestId).toBe("req-1");
+      expect(dto.message).toBeDefined();
+      expect(dto.meta).toBeDefined();
+      expect(dto.meta.method).toBe("GET");
+      expect(dto.meta.endpoint).toBe("/hello");
+      expect(dto.meta.url).toBe("/hello?x=1");
+      expect(dto.meta.ip).toBe("127.0.0.1");
+      expect(dto.meta.httpVersion).toBe("1.1");
+      expect(dto.meta.statusCode).toBe(201);
+      expect(dto.meta.extra).toBe(1);
+      expect(typeof dto.meta.userAgent).toBe("string");
+      expect(dto.meta.userAgent.length).toBeLessThanOrEqual(100);
+    });
+
+    it("maps error to string in logError", () => {
+      jest.clearAllMocks();
+      const req = makeReq();
+      const res = makeRes();
+      const err = new Error("boom");
+      LoggerService.logError({ error: err, req, res, service: "svc" });
+      const dto = (mockExecute as jest.Mock).mock.calls[0][0];
+      expect(typeof dto.error).toBe("string");
+      expect(dto.error.length).toBeGreaterThan(0);
+    });
+  });
+
   it("skips non-prod levels when NODE_ENV=prod", () => {
     jest.resetModules();
     jest.doMock("@/config/envs", () => ({ __esModule: true, default: { NODE_ENV: "prod" } }));

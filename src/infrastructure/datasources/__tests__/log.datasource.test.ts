@@ -54,6 +54,13 @@ describe("LogDatasource", () => {
     await expect(datasource.getLogsByLevel("BAD", 5)).rejects.toThrow(ValidationError);
   });
 
+  it("getLogsByLevel validates limit bounds", async () => {
+    await expect(datasource.getLogsByLevel("INFO", 0)).rejects.toThrow(ValidationError);
+    await expect(datasource.getLogsByLevel("INFO", 1001)).rejects.toThrow(ValidationError);
+    (mockPrisma.log.findMany as jest.Mock).mockResolvedValue([]);
+    await expect(datasource.getLogsByLevel("INFO", 1)).resolves.toEqual([]);
+  });
+
   it("getLogsByUserId validates empty userId", async () => {
     await expect(datasource.getLogsByUserId("", 5)).rejects.toThrow(ValidationError);
   });
@@ -76,6 +83,11 @@ describe("LogDatasource", () => {
     expect(count).toBe(3);
   });
 
+  it("deleteOldLogs propagates BadRequestError on DB failure", async () => {
+    (mockPrisma.log.deleteMany as jest.Mock).mockRejectedValueOnce(new Error("db down"));
+    await expect(datasource.deleteOldLogs(1)).rejects.toThrow(/Failed to delete old logs/);
+  });
+
   it("mapToLogEntity converts Prisma level variants", async () => {
     (mockPrisma.log.findMany as jest.Mock).mockResolvedValue([
       { id: "1", level: "SILLY", message: "m", timestamp: new Date(), meta: {}, service: null, userId: null, requestId: null, error: null },
@@ -87,5 +99,18 @@ describe("LogDatasource", () => {
     expect(res[0]!.level).toBe("TRACE");
     expect(res[1]!.level).toBe("DEBUG");
     expect(res[2]!.level).toBe("INFO");
+  });
+
+  it("createLog propagates BadRequestError on DB failure", async () => {
+    (mockPrisma.log.create as jest.Mock).mockRejectedValueOnce(new Error("insert failed"));
+    const dto = new CreateLogDto("ERROR", "m", { a: 1 }, "svc", "u1", "r1", undefined);
+    await expect(datasource.createLog(dto)).rejects.toThrow(/Failed to create log/);
+  });
+
+  it("mapToLogEntity handles invalid timestamp mapping with ValidationError", async () => {
+    (mockPrisma.log.findMany as jest.Mock).mockResolvedValue([
+      { id: "1", level: "INFO", message: "m", timestamp: "not-a-date", meta: {}, service: null, userId: null, requestId: null, error: null },
+    ]);
+    await expect(datasource.getLogsByService("svc")).rejects.toThrow(ValidationError);
   });
 });
