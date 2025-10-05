@@ -66,7 +66,7 @@ export class AuthMiddleware {
       const secret = new TextEncoder().encode(envs.JWT_SECRET);
 
       try {
-        await jwtVerify(token, secret, {
+        const jwtClaims = await jwtVerify(token, secret, {
           algorithms: ["HS256"], // Supabase uses HS256 for symmetric keys
         });
 
@@ -75,6 +75,7 @@ export class AuthMiddleware {
           message: "JWT token verified successfully",
           req,
           service: this.serviceNameForLogger,
+          meta: { jwtClaims },
         });
 
         // Continue to the next middleware/route handler

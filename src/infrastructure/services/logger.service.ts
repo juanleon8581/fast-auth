@@ -36,7 +36,7 @@ export class LoggerService {
   }
 
   private static generateLogData(logData: IGenericLog): ILogData {
-    const { level, req, res, service, message, error } = logData;
+    const { level, req, res, service, message, error, meta } = logData;
     const log: ILogData = {
       level,
       message: TypeGuardsUtils.truncateStringByKB(message ?? "", 1),
@@ -53,6 +53,7 @@ export class LoggerService {
       requestId: req.requestId,
     };
 
+    if (meta) log.meta = { ...log.meta, ...meta };
     if (res) log.meta = { ...log.meta, statusCode: res.statusCode };
     if (error) log.error = TypeGuardsUtils.getAllErrorToString(error);
 
@@ -84,13 +85,14 @@ export class LoggerService {
     LoggerService.executeLog(logData);
   }
 
-  static logDebug({ message, req, res, service }: IInfoLogData) {
+  static logDebug({ message, req, res, service, meta }: IInfoLogData) {
     const data: IGenericLog = {
       level: "DEBUG",
       req,
       service,
       message,
     };
+    if (meta) data.meta = meta;
     if (res) data.res = res;
     const logData: ILogData = LoggerService.generateLogData(data);
 

@@ -8,6 +8,7 @@ export interface IGenericLog {
   res?: Response;
   message?: string;
   error?: unknown;
+  meta?: Record<string, unknown>;
 }
 
 export interface IErrorlogData {
@@ -22,4 +23,5 @@ export interface IInfoLogData {
   req: Request;
   service: string;
   res?: Response;
+  meta?: Record<string, unknown>;
 }
