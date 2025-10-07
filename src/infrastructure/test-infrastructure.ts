@@ -94,7 +94,7 @@ async function testInfrastructureLayer() {
     // Test 3: Log Datasource
     console.log("\n3️⃣ Testing Log Datasource...");
 
-    const logDatasource = new LogDatasource(DatabaseClient);
+    const logDatasource = new LogDatasource();
 
     // Create a test log
     try {
@@ -122,7 +122,9 @@ async function testInfrastructureLayer() {
           "nonexistent-user",
           5,
         );
-        console.log(`✅ Retrieved ${userLogs.length} logs by user ID (expected 0)`);
+        console.log(
+          `✅ Retrieved ${userLogs.length} logs by user ID (expected 0)`,
+        );
 
         // Test retrieving logs by service
         const serviceLogs = await logDatasource.getLogsByService(

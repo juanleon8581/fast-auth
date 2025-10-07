@@ -27,6 +27,9 @@ const envSchema = z.object({
     .string()
     .url({ message: "Must be a valid database URL" })
     .optional(),
+
+  // Private Key for RSA-OAEP
+  PRIVATE_KEY: z.string(),
 });
 
 type IEnv = z.infer<typeof envSchema>;
