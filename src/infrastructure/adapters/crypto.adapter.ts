@@ -179,7 +179,7 @@ export class CryptoAdapter {
   }
 
   /**
-   * Generate RSA-OAEP key pair with non-extractable keys by default.
+   * Generate RSA-OAEP key pair extractable for export.
    */
   async generateKeyPair(): Promise<{
     publicKey: CryptoKey;
@@ -192,7 +192,7 @@ export class CryptoAdapter {
         publicExponent: new Uint8Array([1, 0, 1]),
         hash: "SHA-256",
       },
-      false,
+      true,
       ["encrypt", "decrypt", "wrapKey", "unwrapKey"],
     );
     return keyPair;
