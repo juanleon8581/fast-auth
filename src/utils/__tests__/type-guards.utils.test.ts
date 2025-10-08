@@ -30,8 +30,12 @@ describe("TypeGuardsUtils", () => {
     });
 
     it("returns unknown for non-error object", () => {
-      expect(TypeGuardsUtils.getErrorMessage({})).toBe("Unknown error occurred");
-      expect(TypeGuardsUtils.getErrorMessage(null)).toBe("Unknown error occurred");
+      expect(TypeGuardsUtils.getErrorMessage({})).toBe(
+        "Unknown error occurred",
+      );
+      expect(TypeGuardsUtils.getErrorMessage(null)).toBe(
+        "Unknown error occurred",
+      );
     });
   });
 
@@ -45,7 +49,9 @@ describe("TypeGuardsUtils", () => {
 
     it("stringifies arbitrary values", () => {
       expect(TypeGuardsUtils.getAllErrorToString(123)).toBe("123");
-      expect(TypeGuardsUtils.getAllErrorToString({ a: 1 })).toContain("[object Object]");
+      expect(TypeGuardsUtils.getAllErrorToString({ a: 1 })).toContain(
+        "[object Object]",
+      );
     });
   });
 });

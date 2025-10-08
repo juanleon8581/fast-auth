@@ -6,12 +6,13 @@ import type { TRawJson } from "@/domain/interfaces/general.interfaces";
 import { processValidationError } from "./utils/processError.validator";
 
 const createLogSchema = z.object({
-  level: z.string()
+  level: z
+    .string()
     .min(1, "Log level is required")
-    .refine(
-      (val): val is LogLevel => LOG_LEVELS.includes(val as LogLevel),
-      { message: "Invalid log level. Must be one of: ERROR, WARN, INFO, HTTP, VERBOSE, DEBUG, SILLY" }
-    ),
+    .refine((val): val is LogLevel => LOG_LEVELS.includes(val as LogLevel), {
+      message:
+        "Invalid log level. Must be one of: ERROR, WARN, INFO, HTTP, VERBOSE, DEBUG, SILLY",
+    }),
   message: z
     .string({ message: "Message is required" })
     .min(1, "Message cannot be empty")
@@ -20,10 +21,9 @@ const createLogSchema = z.object({
   meta: z
     .record(z.string(), z.unknown())
     .optional()
-    .refine(
-      (val) => !val || Object.keys(val).length <= 50,
-      { message: "Meta object cannot have more than 50 keys" }
-    ),
+    .refine((val) => !val || Object.keys(val).length <= 50, {
+      message: "Meta object cannot have more than 50 keys",
+    }),
   service: z
     .string()
     .min(1, "Service name cannot be empty")
@@ -74,12 +74,13 @@ export class CreateLogValidator {
    */
   static validateLogLevel(level: string): LogLevel {
     try {
-      const levelSchema = z.string()
+      const levelSchema = z
+        .string()
         .refine(
           (val): val is LogLevel => LOG_LEVELS.includes(val as LogLevel),
-          { message: "Invalid log level" }
+          { message: "Invalid log level" },
         );
-      
+
       const result = levelSchema.parse(level);
       return result as LogLevel;
     } catch (error) {
@@ -92,7 +93,8 @@ export class CreateLogValidator {
    */
   static validateMessage(message: string): string {
     try {
-      return z.string()
+      return z
+        .string()
         .min(1, "Message cannot be empty")
         .max(1000, "Message cannot exceed 1000 characters")
         .trim()

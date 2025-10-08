@@ -32,9 +32,10 @@ export class DatabaseClient {
         maxConnections: 10,
         connectionTimeout: 10000,
         enableLogging: process.env.NODE_ENV !== "production",
-        logLevel: process.env.NODE_ENV === "production" 
-          ? ["error", "warn"] 
-          : ["query", "info", "warn", "error"],
+        logLevel:
+          process.env.NODE_ENV === "production"
+            ? ["error", "warn"]
+            : ["query", "info", "warn", "error"],
       };
 
       const finalConfig = { ...defaultConfig, ...config };
@@ -56,7 +57,9 @@ export class DatabaseClient {
       return DatabaseClient.instance;
     } catch (error) {
       DatabaseClient.instance = null;
-      throw new BadRequestError(`Failed to create database client: ${(error as Error).message}`);
+      throw new BadRequestError(
+        `Failed to create database client: ${(error as Error).message}`,
+      );
     }
   }
 
@@ -77,21 +80,23 @@ export class DatabaseClient {
     try {
       DatabaseClient.connectionPromise = this.createConnection(config);
       const client = await DatabaseClient.connectionPromise;
-      
+
       // Test the connection
       await client.$connect();
-      
+
       DatabaseClient.instance = client;
       DatabaseClient.isConnecting = false;
       DatabaseClient.connectionPromise = null;
-      
+
       return client;
     } catch (error) {
       DatabaseClient.isConnecting = false;
       DatabaseClient.connectionPromise = null;
       DatabaseClient.instance = null;
-      
-      throw new BadRequestError(`Failed to connect to database: ${(error as Error).message}`);
+
+      throw new BadRequestError(
+        `Failed to connect to database: ${(error as Error).message}`,
+      );
     }
   }
 
@@ -104,7 +109,7 @@ export class DatabaseClient {
         await DatabaseClient.instance.$disconnect();
         DatabaseClient.instance = null;
       }
-      
+
       DatabaseClient.isConnecting = false;
       DatabaseClient.connectionPromise = null;
     } catch (error) {
@@ -113,8 +118,10 @@ export class DatabaseClient {
       DatabaseClient.instance = null;
       DatabaseClient.isConnecting = false;
       DatabaseClient.connectionPromise = null;
-      
-      throw new BadRequestError(`Failed to disconnect from database: ${(error as Error).message}`);
+
+      throw new BadRequestError(
+        `Failed to disconnect from database: ${(error as Error).message}`,
+      );
     }
   }
 
@@ -153,14 +160,17 @@ export class DatabaseClient {
   /**
    * Private method to create the actual connection
    */
-  private static async createConnection(config?: DatabaseConfig): Promise<PrismaClient> {
+  private static async createConnection(
+    config?: DatabaseConfig,
+  ): Promise<PrismaClient> {
     const defaultConfig: DatabaseConfig = {
       maxConnections: 10,
       connectionTimeout: 10000,
       enableLogging: process.env.NODE_ENV !== "production",
-      logLevel: process.env.NODE_ENV === "production" 
-        ? ["error", "warn"] 
-        : ["query", "info", "warn", "error"],
+      logLevel:
+        process.env.NODE_ENV === "production"
+          ? ["error", "warn"]
+          : ["query", "info", "warn", "error"],
     };
 
     const finalConfig = { ...defaultConfig, ...config };

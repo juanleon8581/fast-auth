@@ -21,15 +21,18 @@ jest.mock("@/domain/dtos/create-log.dto", () => {
     ...actual,
     CreateLogDto: {
       ...actual.CreateLogDto,
-      createFrom: jest.fn((data: any) => [undefined, new actual.CreateLogDto(
-        data.level,
-        data.message,
-        data.meta,
-        data.service,
+      createFrom: jest.fn((data: any) => [
         undefined,
-        data.requestId,
-        data.error,
-      )]),
+        new actual.CreateLogDto(
+          data.level,
+          data.message,
+          data.meta,
+          data.service,
+          undefined,
+          data.requestId,
+          data.error,
+        ),
+      ]),
     },
   };
 });
@@ -54,14 +57,24 @@ describe("LoggerService", () => {
   it("logError calls CreateLog.execute in dev", () => {
     const req = makeReq();
     const res = makeRes();
-    LoggerService.logError({ error: new Error("boom"), req, res, service: "svc" });
+    LoggerService.logError({
+      error: new Error("boom"),
+      req,
+      res,
+      service: "svc",
+    });
     expect(mockExecute).toHaveBeenCalledTimes(1);
   });
 
   it("logWarn calls CreateLog.execute in dev", () => {
     const req = makeReq();
     const res = makeRes();
-    LoggerService.logWarn({ error: new Error("boom"), req, res, service: "svc" });
+    LoggerService.logWarn({
+      error: new Error("boom"),
+      req,
+      res,
+      service: "svc",
+    });
     expect(mockExecute).toHaveBeenCalledTimes(1);
   });
 
@@ -81,9 +94,19 @@ describe("LoggerService", () => {
   describe("generateLogData via public methods", () => {
     it("composes meta from req, res and custom meta", () => {
       const longUA = "Mozilla/5.0" + "x".repeat(300);
-      const req = makeReq({ get: jest.fn().mockReturnValue(longUA), path: "/hello", url: "/hello?x=1" });
+      const req = makeReq({
+        get: jest.fn().mockReturnValue(longUA),
+        path: "/hello",
+        url: "/hello?x=1",
+      });
       const res = makeRes({ statusCode: 201 });
-      LoggerService.logDebug({ message: "meta", req, res, service: "svc", meta: { extra: 1 } });
+      LoggerService.logDebug({
+        message: "meta",
+        req,
+        res,
+        service: "svc",
+        meta: { extra: 1 },
+      });
       const dto = (mockExecute as jest.Mock).mock.calls[0][0];
       expect(dto.service).toBe("svc");
       expect(dto.requestId).toBe("req-1");
@@ -114,15 +137,28 @@ describe("LoggerService", () => {
 
   it("skips non-prod levels when NODE_ENV=prod", () => {
     jest.resetModules();
-    jest.doMock("@/config/envs", () => ({ __esModule: true, default: { NODE_ENV: "prod" } }));
+    jest.doMock("@/config/envs", () => ({
+      __esModule: true,
+      default: { NODE_ENV: "prod" },
+    }));
     jest.isolateModules(() => {
       const { LoggerService: ProdLogger } = require("../logger.service");
       const req = makeReq();
       ProdLogger.logInfo({ message: "m", req, res: makeRes(), service: "svc" });
       ProdLogger.logDebug({ message: "m", req, service: "svc" });
       expect(mockExecute).toHaveBeenCalledTimes(0);
-      ProdLogger.logError({ error: new Error("e"), req, res: makeRes(), service: "svc" });
-      ProdLogger.logWarn({ error: new Error("w"), req, res: makeRes(), service: "svc" });
+      ProdLogger.logError({
+        error: new Error("e"),
+        req,
+        res: makeRes(),
+        service: "svc",
+      });
+      ProdLogger.logWarn({
+        error: new Error("w"),
+        req,
+        res: makeRes(),
+        service: "svc",
+      });
       expect(mockExecute).toHaveBeenCalledTimes(2);
     });
   });

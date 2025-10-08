@@ -35,8 +35,8 @@ describe("AuthMiddleware", () => {
     } as Partial<Response>;
 
     jest.clearAllMocks();
-    process.env.JWT_SECRET = process.env.JWT_SECRET ||
-      "abcdefghijklmnopqrstuvwxyz012345"; // ensure length >= 32
+    process.env.JWT_SECRET =
+      process.env.JWT_SECRET || "abcdefghijklmnopqrstuvwxyz012345"; // ensure length >= 32
   });
 
   describe("verify", () => {
@@ -69,7 +69,9 @@ describe("AuthMiddleware", () => {
       expect(mockNext).toHaveBeenCalledTimes(1);
       const err = (mockNext as jest.Mock).mock.calls[0][0];
       expect(err).toBeInstanceOf(UnauthorizedError);
-      expect(err.message).toBe('Authorization header must start with "Bearer "');
+      expect(err.message).toBe(
+        'Authorization header must start with "Bearer "',
+      );
       expect(err.field).toBe("authorization");
       expect(err.code).toBe("INVALID_AUTH_FORMAT");
       expect(mockStatus).not.toHaveBeenCalled();
@@ -97,7 +99,9 @@ describe("AuthMiddleware", () => {
 
     it("should call next on valid token", async () => {
       mockReq.headers = { authorization: "Bearer valid-token" } as any;
-      (jwtVerify as jest.Mock).mockResolvedValueOnce({ payload: { sub: "u1" } });
+      (jwtVerify as jest.Mock).mockResolvedValueOnce({
+        payload: { sub: "u1" },
+      });
 
       await AuthMiddleware.verify(
         mockReq as Request,
@@ -116,14 +120,16 @@ describe("AuthMiddleware", () => {
       expect(calls[0][2]).toEqual({ algorithms: ["HS256"] });
 
       // Assert LoggerService.logDebug called
-      expect((LoggerService.logDebug as jest.Mock)).toHaveBeenCalledTimes(1);
+      expect(LoggerService.logDebug as jest.Mock).toHaveBeenCalledTimes(1);
       const logArg = (LoggerService.logDebug as jest.Mock).mock.calls[0][0];
       expect(logArg.service).toBe("auth-middleware");
     });
 
     it("should call next with TOKEN_EXPIRED on expired token", async () => {
       mockReq.headers = { authorization: "Bearer expired-token" } as any;
-      (jwtVerify as jest.Mock).mockRejectedValueOnce(new Error("token expired"));
+      (jwtVerify as jest.Mock).mockRejectedValueOnce(
+        new Error("token expired"),
+      );
 
       await AuthMiddleware.verify(
         mockReq as Request,
@@ -139,7 +145,9 @@ describe("AuthMiddleware", () => {
 
     it("should call next with INVALID_SIGNATURE on bad signature", async () => {
       mockReq.headers = { authorization: "Bearer badsig-token" } as any;
-      (jwtVerify as jest.Mock).mockRejectedValueOnce(new Error("invalid signature"));
+      (jwtVerify as jest.Mock).mockRejectedValueOnce(
+        new Error("invalid signature"),
+      );
 
       await AuthMiddleware.verify(
         mockReq as Request,

@@ -15,7 +15,9 @@ jest.mock("@/presentation/middlewares/auth.middleware", () => ({
 }));
 
 // Import the mocked AuthMiddleware
-const { AuthMiddleware } = require("@/presentation/middlewares/auth.middleware");
+const {
+  AuthMiddleware,
+} = require("@/presentation/middlewares/auth.middleware");
 
 describe("AuthRoutes", () => {
   let mockRouter: jest.Mocked<Router>;
