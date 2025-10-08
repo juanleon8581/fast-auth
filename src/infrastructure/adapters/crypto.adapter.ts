@@ -105,8 +105,9 @@ export class CryptoAdapter {
   }
 
   createPrivateKey(privateKeyPem: string): KeyObject {
+    const keyDer = Buffer.from(privateKeyPem, "base64");
     const privateKey = createPrivateKey({
-      key: privateKeyPem,
+      key: keyDer,
       format: "der",
       type: "pkcs8",
     });
