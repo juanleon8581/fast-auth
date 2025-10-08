@@ -1,3 +1,5 @@
+import { subtle, createPrivateKey, KeyObject } from "node:crypto";
+
 export class CryptoAdapter {
   async importPrivateKey(
     kid: string,
@@ -8,7 +10,7 @@ export class CryptoAdapter {
     const keyUsages: KeyUsage[] = ["decrypt", "encrypt"];
     const pemOrKeyMaterial = Buffer.from(privateKeyPem, "base64");
 
-    return globalThis.crypto.subtle.importKey(
+    return subtle.importKey(
       format,
       pemOrKeyMaterial,
       {
@@ -25,7 +27,7 @@ export class CryptoAdapter {
     privateKey: CryptoKey,
   ): Promise<ArrayBuffer> {
     const encKey = Buffer.from(encKeyBase64url, "base64");
-    const decryptedKey = await globalThis.crypto.subtle.decrypt(
+    const decryptedKey = await subtle.decrypt(
       {
         name: "RSA-OAEP",
       },
@@ -36,7 +38,7 @@ export class CryptoAdapter {
   }
 
   async importSymmetricKey(rawKey: ArrayBuffer): Promise<CryptoKey> {
-    const key = await globalThis.crypto.subtle.importKey(
+    const key = await subtle.importKey(
       "raw",
       rawKey,
       {
@@ -55,7 +57,7 @@ export class CryptoAdapter {
   ): Promise<string> {
     const cipherText = Buffer.from(cipherTextBase64url, "base64");
     const iv = Buffer.from(ivBase64url, "base64");
-    const decrypted = await globalThis.crypto.subtle.decrypt(
+    const decrypted = await subtle.decrypt(
       {
         name: "AES-GCM",
         iv,
@@ -67,10 +69,13 @@ export class CryptoAdapter {
   }
 
   async exportPublicKeyPem(publicKey: CryptoKey): Promise<string> {
-    const exportedKey = await globalThis.crypto.subtle.exportKey(
-      "spki",
-      publicKey,
-    );
+    const exportedKey = await subtle.exportKey("spki", publicKey);
+    const pem = Buffer.from(exportedKey).toString("base64");
+    return pem;
+  }
+
+  async exportPrivateKeyPem(privateKey: CryptoKey): Promise<string> {
+    const exportedKey = await subtle.exportKey("pkcs8", privateKey);
     const pem = Buffer.from(exportedKey).toString("base64");
     return pem;
   }
@@ -79,7 +84,7 @@ export class CryptoAdapter {
     publicKey: CryptoKey;
     privateKey: CryptoKey;
   }> {
-    const keyPair = await globalThis.crypto.subtle.generateKey(
+    const keyPair = await subtle.generateKey(
       {
         name: "RSA-OAEP",
         modulusLength: 2048,
@@ -93,14 +98,18 @@ export class CryptoAdapter {
   }
 
   async wrapKey(symKey: CryptoKey, publicKey: CryptoKey): Promise<ArrayBuffer> {
-    const wrappedKey = await globalThis.crypto.subtle.wrapKey(
-      "raw",
-      symKey,
-      publicKey,
-      {
-        name: "RSA-OAEP",
-      },
-    );
+    const wrappedKey = await subtle.wrapKey("raw", symKey, publicKey, {
+      name: "RSA-OAEP",
+    });
     return wrappedKey;
+  }
+
+  createPrivateKey(privateKeyPem: string): KeyObject {
+    const privateKey = createPrivateKey({
+      key: privateKeyPem,
+      format: "der",
+      type: "pkcs8",
+    });
+    return privateKey;
   }
 }

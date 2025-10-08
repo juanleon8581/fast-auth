@@ -13,7 +13,7 @@ const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
 
   // Supabase Configuration
-  SUPABASE_URL: z.string().url({ message: "Must be a valid URL" }),
+  SUPABASE_URL: z.url({ message: "Must be a valid URL" }),
   SUPABASE_ANON_KEY: z.string(),
 
   // Optional in tests/dev; validated when present
@@ -29,7 +29,7 @@ const envSchema = z.object({
     .optional(),
 
   // Private Key for RSA-OAEP
-  PRIVATE_KEY: z.string(),
+  PASSPHRASE: z.string().min(1, { message: "PASSPHRASE must be provided" }),
 });
 
 type IEnv = z.infer<typeof envSchema>;
