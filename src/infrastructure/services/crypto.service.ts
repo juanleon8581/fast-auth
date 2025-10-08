@@ -1,61 +1,114 @@
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { CryptoAdapter } from "../adapters/crypto.adapter";
 import envs from "@/config/envs";
+import { KeyExportOptions } from "crypto";
+import { BadRequestError } from "@/domain/errors/bad-request-error";
 
 export class CryptoService {
   constructor(
     private readonly cryptoAdapter: CryptoAdapter,
-    private readonly keysPath = "./src/config/keys",
+    private readonly keysPath = "./.keys",
   ) {}
 
-  private processPassphrase(passphrase: string, keyPem: string): string {
-    const privateKeyObj = this.cryptoAdapter.createPrivateKey(keyPem);
+  private processPassphrase(
+    passphrase: string,
+    key: Buffer,
+    operation: "encrypt" | "decrypt",
+  ): Buffer {
+    // Passphrase validada desde envs.ts; verificar buffer de clave
+    if (!Buffer.isBuffer(key) || key.length === 0) {
+      throw new BadRequestError(
+        "Private key DER buffer is required",
+        "key",
+        "REQUIRED_FIELD",
+      );
+    }
+    try {
+      // For decrypt operation, the incoming key is protected and needs passphrase.
+      // For encrypt operation, the incoming key is unprotected; no passphrase required to import.
+      const privateKeyObj =
+        operation === "decrypt"
+          ? this.cryptoAdapter.createPrivateKey(key, passphrase)
+          : this.cryptoAdapter.createPrivateKey(key);
 
-    const keyPemProtected = privateKeyObj.export({
-      format: "pem",
-      type: "pkcs8",
-      cipher: "aes-256-cbc",
+      const options: KeyExportOptions<"der"> = {
+        format: "der",
+        type: "pkcs8",
+      };
+
+      if (operation === "encrypt") {
+        options.cipher = "aes-256-cbc";
+        options.passphrase = passphrase;
+      }
+
+      const keyDerProtected = privateKeyObj.export(options);
+      return keyDerProtected;
+    } catch {
+      const code =
+        operation === "encrypt" ? "PROTECT_ERROR" : "UNPROTECT_ERROR";
+      const field = operation === "encrypt" ? "key" : "keyDerProtected";
+      throw new BadRequestError(
+        "Failed to process passphrase operation",
+        field,
+        code,
+      );
+    }
+  }
+
+  encryptPassPhrase(passphrase: string, key: Buffer): Buffer {
+    return this.processPassphrase(passphrase, key, "encrypt");
+  }
+
+  async decryptPassPhrase(
+    passphrase: string,
+    keyDerProtected: Buffer,
+  ): Promise<CryptoKey> {
+    const keyDer = this.processPassphrase(
       passphrase,
-    });
+      keyDerProtected,
+      "decrypt",
+    );
 
-    return keyPemProtected.toString("base64");
-  }
+    const cryptoKey = await this.cryptoAdapter.importPrivateKey(
+      keyDer.toString("base64url"),
+    );
 
-  encryptPassPhrase(passphrase: string, keyPem: string): string {
-    return this.processPassphrase(passphrase, keyPem);
-  }
-
-  decryptPassPhrase(passphrase: string, keyPemProtected: string): string {
-    return this.processPassphrase(passphrase, keyPemProtected);
+    return cryptoKey;
   }
 
   async generateKeyPair(): Promise<void> {
     const version = 1;
+    const keysPath = this.keysPath;
     const cryptoAdapter = this.cryptoAdapter;
-    const keysPath = "./src/config/keys";
-    const passphrase = envs.PASSPHRASE ?? "change_this_secret";
+    const passphrase = envs.PASSPHRASE;
     const kidName = `rsa-${new Date().toISOString().split("T")[0]}`;
     const { publicKey, privateKey } = await cryptoAdapter.generateKeyPair();
 
-    const publicKeyPem = await cryptoAdapter.exportPublicKeyPem(publicKey);
-    const privateKeyPem = await cryptoAdapter.exportPrivateKeyPem(privateKey);
+    const publicKeyDer = await cryptoAdapter.exportPublicKeyDer(publicKey);
+    const privateKeyDer = await cryptoAdapter.exportPrivateKeyDer(privateKey);
 
-    const privateKeyPemProtected = this.encryptPassPhrase(
+    const privateKeyDerProtected = this.encryptPassPhrase(
       passphrase,
-      privateKeyPem,
+      privateKeyDer,
     );
-
-    if (!existsSync(keysPath)) {
-      mkdirSync(keysPath);
+    try {
+      if (!existsSync(keysPath)) {
+        mkdirSync(keysPath);
+      }
+      writeFileSync(
+        `${keysPath}/public-${kidName}-v${version}.der`,
+        publicKeyDer,
+      );
+      writeFileSync(
+        `${keysPath}/private-${kidName}-v${version}.der`,
+        privateKeyDerProtected,
+      );
+    } catch {
+      throw new BadRequestError(
+        "Persisting keys failed",
+        "keysPath",
+        "IO_ERROR",
+      );
     }
-
-    writeFileSync(
-      `${keysPath}/public-${kidName}-v${version}.pem`,
-      publicKeyPem,
-    );
-    writeFileSync(
-      `${keysPath}/private-${kidName}-v${version}.pem`,
-      privateKeyPemProtected,
-    );
   }
 }

@@ -60,7 +60,7 @@ jspm_packages/
 
 # Secrets files
 .env*
-src/config/keys/
+/.keys/
 !.env.example
 
 # parcel-bundler cache

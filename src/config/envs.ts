@@ -29,7 +29,9 @@ const envSchema = z.object({
     .optional(),
 
   // Private Key for RSA-OAEP
-  PASSPHRASE: z.string().min(1, { message: "PASSPHRASE must be provided" }),
+  PASSPHRASE: z
+    .string()
+    .min(12, { message: "PASSPHRASE must be at least 12 characters long" }),
 });
 
 type IEnv = z.infer<typeof envSchema>;
