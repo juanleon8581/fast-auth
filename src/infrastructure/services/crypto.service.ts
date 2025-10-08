@@ -82,6 +82,15 @@ export class CryptoService {
     const cryptoAdapter = this.cryptoAdapter;
     const passphrase = envs.PASSPHRASE;
     const kidName = `rsa-${new Date().toISOString().split("T")[0]}`;
+    const publicPath = `${keysPath}/public-${kidName}-v${version}.der`;
+    const privatePath = `${keysPath}/private-${kidName}-v${version}.der`;
+    // Guard: evitar sobrescritura si ya existen las llaves del día
+    if (existsSync(publicPath) || existsSync(privatePath)) {
+      console.info(
+        `🔒 Key generation skipped: keys for '${kidName}-v${version}' already exist.`,
+      );
+      return;
+    }
     const { publicKey, privateKey } = await cryptoAdapter.generateKeyPair();
 
     const publicKeyDer = await cryptoAdapter.exportPublicKeyDer(publicKey);
@@ -95,14 +104,9 @@ export class CryptoService {
       if (!existsSync(keysPath)) {
         mkdirSync(keysPath);
       }
-      writeFileSync(
-        `${keysPath}/public-${kidName}-v${version}.der`,
-        publicKeyDer,
-      );
-      writeFileSync(
-        `${keysPath}/private-${kidName}-v${version}.der`,
-        privateKeyDerProtected,
-      );
+      writeFileSync(publicPath, publicKeyDer);
+      writeFileSync(privatePath, privateKeyDerProtected);
+      console.info(`✅ Keys generated for '${kidName}-v${version}'.`);
     } catch {
       throw new BadRequestError(
         "Persisting keys failed",

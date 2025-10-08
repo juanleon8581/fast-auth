@@ -37,7 +37,7 @@ export class CryptoAdapter {
    */
   async importPrivateKey(privateKey: string): Promise<CryptoKey> {
     const format = "pkcs8";
-    const extractable = false;
+    const extractable = true;
     const keyUsages: KeyUsage[] = ["decrypt", "unwrapKey"];
     const keyMaterial = this.fromStringBase64Url(privateKey);
 
