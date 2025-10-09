@@ -13,6 +13,7 @@ export class AuthRoutes {
     router.post("/register", controller.register);
     router.post("/login", controller.login);
     router.post("/logout", AuthMiddleware.verify, controller.logout);
+    router.get("/public-key", controller.getPublicKey);
     router.put("/update-user", AuthMiddleware.verify, controller.updateUser);
     router.put(
       "/update-user-password",

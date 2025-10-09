@@ -13,6 +13,7 @@ import { UpdateUser } from "@/domain/use-cases/update-user";
 import { UpdateUserPassword } from "@/domain/use-cases/update-user-password";
 import { RequestResetPasswordEmail } from "@/domain/use-cases/request-reset-password-email";
 import { RequestResetPasswordEmailValidator } from "@/infrastructure/validators/request-reset-password-email.validator";
+import { CryptoService } from "@/infrastructure/services/crypto.service";
 
 export class AuthController {
   constructor(private readonly datasource: AuthRepository) {}
@@ -115,6 +116,20 @@ export class AuthController {
           ),
         )
         .catch(next);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public getPublicKey = (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): void => {
+    try {
+      const cryptoService = new CryptoService();
+      const publicKeyDerBase64url = cryptoService.getLatestPublicKeyBase64url();
+      ResponseHelper.success(res, { publicKeyDerBase64url }, req, 200);
     } catch (error) {
       next(error);
     }
