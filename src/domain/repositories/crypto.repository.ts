@@ -5,12 +5,14 @@ export abstract class CryptoRepository {
   abstract decryptPassPhrase(
     passphrase: string,
     keyDerProtected: Buffer,
-  ): Promise<CryptoKey>;
+  ): Promise<Buffer>;
   abstract generateKeyPair(): Promise<void>;
   abstract getLatestPublicKeyBase64url(): string;
+  abstract getLatestPrivateKeyBase64url(): Promise<Buffer>;
   abstract decryptPayload(
     cipherTextBase64url: string,
     ivBase64url: string,
-    symKey: CryptoKey,
+    wrappedKeyBase64url: string,
+    privateKeyDer: Buffer,
   ): Promise<TRawJson>;
 }

@@ -13,10 +13,20 @@ import { CryptoRepository } from "@/domain/repositories/crypto.repository";
 import { TRawJson } from "@/domain/interfaces/general.interfaces";
 
 export class CryptoService implements CryptoRepository {
-  constructor(
-    private readonly cryptoAdapter: CryptoAdapter = new CryptoAdapter(),
-    private readonly _keysPath = "./.keys",
-  ) {}
+  private readonly cryptoAdapter: CryptoAdapter = new CryptoAdapter();
+  private readonly _keysPath = "./.keys";
+  private static _instance: CryptoService;
+
+  private constructor() {
+    Object.freeze(this);
+  }
+
+  static getInstance(): CryptoService {
+    if (!CryptoService._instance) {
+      CryptoService._instance = new CryptoService();
+    }
+    return CryptoService._instance;
+  }
 
   get keysPath(): string {
     return this._keysPath;
@@ -74,18 +84,16 @@ export class CryptoService implements CryptoRepository {
   async decryptPassPhrase(
     passphrase: string,
     keyDerProtected: Buffer,
-  ): Promise<CryptoKey> {
+  ): Promise<Buffer> {
     const keyDer = this.processPassphrase(
       passphrase,
       keyDerProtected,
       "decrypt",
     );
 
-    const cryptoKey = await this.cryptoAdapter.importPrivateKey(
-      keyDer.toString("base64url"),
-    );
+    // const cryptoKey = await this.cryptoAdapter.importPrivateKey(keyDer);
 
-    return cryptoKey;
+    return keyDer;
   }
 
   async generateKeyPair(): Promise<void> {
@@ -157,11 +165,55 @@ export class CryptoService implements CryptoRepository {
     return der.toString("base64url");
   }
 
+  async getLatestPrivateKeyBase64url(): Promise<Buffer> {
+    const keysPath = this.keysPath;
+    if (!existsSync(keysPath)) {
+      throw new BadRequestError(
+        "Keys directory not found",
+        "keysPath",
+        "NOT_FOUND",
+      );
+    }
+    const files = readdirSync(keysPath).filter(
+      (f) => f.startsWith("private-") && f.endsWith(".der"),
+    );
+    if (files.length === 0) {
+      throw new BadRequestError(
+        "No private key found",
+        "privateKey",
+        "NOT_FOUND",
+      );
+    }
+
+    const latest = files.sort().reverse()[0];
+    const der = readFileSync(`${keysPath}/${latest}`);
+
+    const decryptedPrivateKey = await this.decryptPassPhrase(
+      envs.PASSPHRASE,
+      der,
+    );
+
+    return decryptedPrivateKey;
+  }
+
   async decryptPayload(
     cipherTextBase64url: string,
     ivBase64url: string,
-    symKey: CryptoKey,
+    wrappedKeyBase64url: string,
+    privateKeyDer: Buffer,
   ): Promise<TRawJson> {
+    // Importar clave privada PKCS8 DER para usar en RSA-OAEP
+    const privateKey = await this.cryptoAdapter.importPrivateKey(
+      privateKeyDer,
+    );
+
+    // Desempaquetar la clave simétrica AES-GCM previamente envuelta con RSA-OAEP
+    const symKey = await this.cryptoAdapter.unwrapKey(
+      wrappedKeyBase64url,
+      privateKey,
+    );
+
+    // Desencriptar el payload con AES-GCM usando la clave simétrica y el IV
     const decrypted = await this.cryptoAdapter.decryptPayload(
       cipherTextBase64url,
       ivBase64url,

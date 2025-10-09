@@ -35,15 +35,14 @@ export class CryptoAdapter {
   /**
    * Import a PKCS8 private key from base64url DER.
    */
-  async importPrivateKey(privateKey: string): Promise<CryptoKey> {
+  async importPrivateKey(privateKey: Buffer): Promise<CryptoKey> {
     const format = "pkcs8";
     const extractable = true;
     const keyUsages: KeyUsage[] = ["decrypt", "unwrapKey"];
-    const keyMaterial = this.fromStringBase64Url(privateKey);
 
     return webcrypto.subtle.importKey(
       format,
-      keyMaterial,
+      privateKey,
       {
         name: "RSA-OAEP",
         hash: "SHA-256",
@@ -159,7 +158,8 @@ export class CryptoAdapter {
         cipherText,
       );
       return new TextDecoder().decode(decrypted);
-    } catch {
+    } catch (error) {
+      console.error("Decryption error:", error);
       throw new BadRequestError(
         "Failed to decrypt payload",
         undefined,

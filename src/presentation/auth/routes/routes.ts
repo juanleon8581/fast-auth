@@ -3,6 +3,7 @@ import { AuthDatasource } from "@/infrastructure/datasources/auth.datasource";
 import { AuthClient } from "@/infrastructure/config/auth.client";
 import { AuthController } from "@/presentation/controller/controller";
 import { AuthMiddleware } from "@/presentation/middlewares/auth.middleware";
+import { CryptoMiddleware } from "@/presentation/middlewares/crypto.middleware";
 
 export class AuthRoutes {
   static get routes(): Router {
@@ -14,7 +15,12 @@ export class AuthRoutes {
     router.post("/login", controller.login);
     router.post("/logout", AuthMiddleware.verify, controller.logout);
     router.get("/public-key", controller.getPublicKey);
-    router.put("/update-user", AuthMiddleware.verify, controller.updateUser);
+    router.put(
+      "/update-user",
+      CryptoMiddleware.decrypt,
+      AuthMiddleware.verify,
+      controller.updateUser,
+    );
     router.put(
       "/update-user-password",
       AuthMiddleware.verify,
