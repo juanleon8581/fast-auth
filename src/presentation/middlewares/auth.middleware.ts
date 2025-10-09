@@ -74,7 +74,7 @@ export class AuthMiddleware {
         LoggerService.logDebug({
           message: "JWT token verified successfully",
           req,
-          service: this.serviceNameForLogger,
+          service: AuthMiddleware.serviceNameForLogger,
           meta: { jwtClaims },
         });
 
@@ -83,7 +83,10 @@ export class AuthMiddleware {
       } catch (jwtError) {
         // Handle JWT verification errors
         if (jwtError instanceof Error) {
-          if (jwtError.message.includes("expired")) {
+          if (
+            jwtError.message.includes("expired") ||
+            jwtError.name === "JWTExpired"
+          ) {
             next(
               new UnauthorizedError(
                 ERRORS.DATA_VALIDATION.TOKEN_EXPIRED,

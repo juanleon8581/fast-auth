@@ -18,7 +18,7 @@ export class ErrorMiddleware {
       error,
       req,
       res,
-      service: this.serviceNameForLogger,
+      service: ErrorMiddleware.serviceNameForLogger,
     };
 
     if (errorResponse.code < 500) return LoggerService.logWarn(logData);
