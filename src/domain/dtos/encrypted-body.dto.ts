@@ -2,7 +2,7 @@ import {
   IEncryptedBody,
   IEncryption,
   ISignature,
-} from "../interfaces/encrypted-body.interface";
+} from "../interfaces/encrypted-body.interfaces";
 import { TRawJson } from "../interfaces/general.interfaces";
 
 import { ERRORS } from "@/config/strings/global.strings.json";

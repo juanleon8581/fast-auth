@@ -1,15 +1,22 @@
 import { z } from "zod";
 import { config } from "dotenv";
 import { resolve } from "path";
+import { TEnvironment } from "@/domain/interfaces/environtments.interfaces";
 
 // Load environment variables
 config();
 
+const environmentsArray: TEnvironment[] = [
+  "dev",
+  "prod",
+  "qa",
+  "development",
+  "production",
+];
+
 const envSchema = z.object({
   // Accept common and shorthand environment names
-  NODE_ENV: z
-    .enum(["test", "dev", "prod", "qa", "development", "production"])
-    .default("dev"),
+  NODE_ENV: z.enum(environmentsArray).default("dev"),
   PORT: z.coerce.number().default(3000),
 
   // Supabase Configuration

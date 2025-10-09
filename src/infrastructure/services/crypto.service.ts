@@ -11,10 +11,11 @@ import { KeyExportOptions } from "crypto";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { CryptoRepository } from "@/domain/repositories/crypto.repository";
 import { TRawJson } from "@/domain/interfaces/general.interfaces";
+import cryptoConfig from "@/config/crypto.config";
 
 export class CryptoService implements CryptoRepository {
   private readonly cryptoAdapter: CryptoAdapter = new CryptoAdapter();
-  private readonly _keysPath = "./.keys";
+  private readonly _keysPath = cryptoConfig.keysPath;
   private static _instance: CryptoService;
 
   private constructor() {
@@ -203,9 +204,7 @@ export class CryptoService implements CryptoRepository {
     privateKeyDer: Buffer,
   ): Promise<TRawJson> {
     // Importar clave privada PKCS8 DER para usar en RSA-OAEP
-    const privateKey = await this.cryptoAdapter.importPrivateKey(
-      privateKeyDer,
-    );
+    const privateKey = await this.cryptoAdapter.importPrivateKey(privateKeyDer);
 
     // Desempaquetar la clave simétrica AES-GCM previamente envuelta con RSA-OAEP
     const symKey = await this.cryptoAdapter.unwrapKey(
