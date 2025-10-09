@@ -1,14 +1,26 @@
-import { existsSync, mkdirSync, writeFileSync } from "fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  writeFileSync,
+} from "fs";
 import { CryptoAdapter } from "../adapters/crypto.adapter";
 import envs from "@/config/envs";
 import { KeyExportOptions } from "crypto";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
+import { CryptoRepository } from "@/domain/repositories/crypto.repository";
+import { TRawJson } from "@/domain/interfaces/general.interfaces";
 
-export class CryptoService {
+export class CryptoService implements CryptoRepository {
   constructor(
-    private readonly cryptoAdapter: CryptoAdapter,
-    private readonly keysPath = "./.keys",
+    private readonly cryptoAdapter: CryptoAdapter = new CryptoAdapter(),
+    private readonly _keysPath = "./.keys",
   ) {}
+
+  get keysPath(): string {
+    return this._keysPath;
+  }
 
   private processPassphrase(
     passphrase: string,
@@ -114,5 +126,47 @@ export class CryptoService {
         "IO_ERROR",
       );
     }
+  }
+
+  /**
+   * Devuelve la clave pública más reciente en formato base64url DER.
+   * Busca archivos con patrón `public-*.der` dentro de `./.keys` y selecciona el más nuevo por nombre.
+   */
+  getLatestPublicKeyBase64url(): string {
+    const keysPath = this.keysPath;
+    if (!existsSync(keysPath)) {
+      throw new BadRequestError(
+        "Keys directory not found",
+        "keysPath",
+        "NOT_FOUND",
+      );
+    }
+    const files = readdirSync(keysPath).filter(
+      (f) => f.startsWith("public-") && f.endsWith(".der"),
+    );
+    if (files.length === 0) {
+      throw new BadRequestError(
+        "No public key found",
+        "publicKey",
+        "NOT_FOUND",
+      );
+    }
+    // Ordenar por nombre descendente (iso-date incluido en nombre), tomar el primero
+    const latest = files.sort().reverse()[0];
+    const der = readFileSync(`${keysPath}/${latest}`);
+    return der.toString("base64url");
+  }
+
+  async decryptPayload(
+    cipherTextBase64url: string,
+    ivBase64url: string,
+    symKey: CryptoKey,
+  ): Promise<TRawJson> {
+    const decrypted = await this.cryptoAdapter.decryptPayload(
+      cipherTextBase64url,
+      ivBase64url,
+      symKey,
+    );
+    return JSON.parse(decrypted);
   }
 }
