@@ -11,10 +11,22 @@ export class AuthRoutes {
     const datasource = new AuthDatasource(AuthClient);
     const controller = new AuthController(datasource);
 
-    router.post("/register", controller.register);
-    router.post("/login", controller.login);
-    router.post("/logout", AuthMiddleware.verify, controller.logout);
+    // Public routes
     router.get("/public-key", controller.getPublicKey);
+    router.post(
+      "/request-reset-password-email",
+      controller.requestResetPasswordEmail,
+    );
+
+    // Crypto routes
+    router.post("/register", CryptoMiddleware.decrypt, controller.register);
+    router.post("/login", CryptoMiddleware.decrypt, controller.login);
+    router.post(
+      "/logout",
+      CryptoMiddleware.decrypt,
+      AuthMiddleware.verify,
+      controller.logout,
+    );
     router.put(
       "/update-user",
       CryptoMiddleware.decrypt,
@@ -23,12 +35,9 @@ export class AuthRoutes {
     );
     router.put(
       "/update-user-password",
+      CryptoMiddleware.decrypt,
       AuthMiddleware.verify,
       controller.updateUserPassword,
-    );
-    router.post(
-      "/request-reset-password-email",
-      controller.requestResetPasswordEmail,
     );
 
     return router;
