@@ -7,7 +7,7 @@ describe("CryptoService - passphrase protect/unprotect", () => {
 
   it("encryptPassPhrase and decryptPassPhrase round-trip DER", async () => {
     const adapter = new CryptoAdapter();
-    const service = new CryptoService(adapter);
+    const service = CryptoService.getInstance();
 
     const { privateKey } = await adapter.generateKeyPair();
 
@@ -17,21 +17,18 @@ describe("CryptoService - passphrase protect/unprotect", () => {
     expect(Buffer.isBuffer(protectedDer)).toBe(true);
     expect(protectedDer.length).toBeGreaterThan(0);
 
-    const unprotectedCryptoKey = await service.decryptPassPhrase(
+    const unprotectedDer = await service.decryptPassPhrase(
       passphrase,
       protectedDer,
     );
-    const roundTripDer = await adapter.exportPrivateKeyDer(
-      unprotectedCryptoKey,
-    );
 
     // Expect same DER bytes after protect/unprotect
-    expect(roundTripDer.equals(privateDer)).toBe(true);
+    expect(unprotectedDer.equals(privateDer)).toBe(true);
   });
 
   it("decryptPassPhrase fails with wrong passphrase", async () => {
     const adapter = new CryptoAdapter();
-    const service = new CryptoService(adapter);
+    const service = CryptoService.getInstance();
 
     const { privateKey } = await adapter.generateKeyPair();
     const privateDer = await adapter.exportPrivateKeyDer(privateKey);

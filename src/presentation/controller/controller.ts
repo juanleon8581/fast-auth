@@ -127,7 +127,7 @@ export class AuthController {
     next: NextFunction,
   ): void => {
     try {
-      const cryptoService = new CryptoService();
+      const cryptoService = CryptoService.getInstance();
       const publicKeyDerBase64url = cryptoService.getLatestPublicKeyBase64url();
       ResponseHelper.success(res, { publicKeyDerBase64url }, req, 200);
     } catch (error) {

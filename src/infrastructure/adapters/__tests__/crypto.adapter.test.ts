@@ -19,9 +19,7 @@ describe("CryptoAdapter - RSA key generation and DER export", () => {
     const { privateKey } = await adapter.generateKeyPair();
 
     const privateDer = await adapter.exportPrivateKeyDer(privateKey);
-    const privateDerB64Url = privateDer.toString("base64url");
-
-    const imported = await adapter.importPrivateKey(privateDerB64Url);
+    const imported = await adapter.importPrivateKey(privateDer);
     const reExportedDer = await adapter.exportPrivateKeyDer(imported);
 
     expect(reExportedDer.equals(privateDer)).toBe(true);
