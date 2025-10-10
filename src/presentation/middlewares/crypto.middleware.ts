@@ -32,11 +32,6 @@ export class CryptoMiddleware {
 
       req.body = decryptedPayload;
 
-      console.log(
-        "🚀 ~ CryptoMiddleware ~ decrypt ~ decryptedPayload:",
-        decryptedPayload,
-      );
-
       return next();
     } catch (error) {
       return next(error);
