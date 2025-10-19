@@ -6,9 +6,27 @@ import { LogEntity } from "../../entities/log.entity";
 describe("CreateLog UseCase", () => {
   it("delegates to repository.createLog and returns LogEntity", async () => {
     const now = new Date();
-    const dto = new CreateLogDto("INFO", "message", { a: 1 }, "svc", "u1", "r1", undefined);
+    const dto = new CreateLogDto(
+      "INFO",
+      "message",
+      { a: 1 },
+      "svc",
+      "u1",
+      "r1",
+      undefined,
+    );
 
-    const expected = new LogEntity("INFO", "message", now, "id-1", { a: 1 }, "svc", "u1", "r1", undefined);
+    const expected = new LogEntity(
+      "INFO",
+      "message",
+      now,
+      "id-1",
+      { a: 1 },
+      "svc",
+      "u1",
+      "r1",
+      undefined,
+    );
 
     const repo: LogRepository = {
       createLog: jest.fn().mockResolvedValue(expected),

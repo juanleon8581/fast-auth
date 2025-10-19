@@ -31,7 +31,11 @@ describe("DeleteOldLogs UseCase", () => {
 
     const usecase = new DeleteOldLogs(repo);
 
-    await expect(usecase.execute(0)).rejects.toThrow("Days must be greater than 0");
-    await expect(usecase.execute(-1)).rejects.toThrow("Days must be greater than 0");
+    await expect(usecase.execute(0)).rejects.toThrow(
+      "Days must be greater than 0",
+    );
+    await expect(usecase.execute(-1)).rejects.toThrow(
+      "Days must be greater than 0",
+    );
   });
 });

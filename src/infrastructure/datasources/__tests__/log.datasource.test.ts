@@ -41,7 +41,15 @@ describe("LogDatasource", () => {
     };
     (mockPrisma.log.create as jest.Mock).mockResolvedValue(prismaLog);
 
-    const dto = new CreateLogDto("ERROR", "m", { a: 1 }, "svc", "u1", "r1", undefined);
+    const dto = new CreateLogDto(
+      "ERROR",
+      "m",
+      { a: 1 },
+      "svc",
+      "u1",
+      "r1",
+      undefined,
+    );
     const result = await datasource.createLog(dto);
 
     expect(mockPrisma.log.create).toHaveBeenCalled();
@@ -51,31 +59,45 @@ describe("LogDatasource", () => {
   });
 
   it("getLogsByLevel validates level", async () => {
-    await expect(datasource.getLogsByLevel("BAD", 5)).rejects.toThrow(ValidationError);
+    await expect(datasource.getLogsByLevel("BAD", 5)).rejects.toThrow(
+      ValidationError,
+    );
   });
 
   it("getLogsByLevel validates limit bounds", async () => {
-    await expect(datasource.getLogsByLevel("INFO", 0)).rejects.toThrow(ValidationError);
-    await expect(datasource.getLogsByLevel("INFO", 1001)).rejects.toThrow(ValidationError);
+    await expect(datasource.getLogsByLevel("INFO", 0)).rejects.toThrow(
+      ValidationError,
+    );
+    await expect(datasource.getLogsByLevel("INFO", 1001)).rejects.toThrow(
+      ValidationError,
+    );
     (mockPrisma.log.findMany as jest.Mock).mockResolvedValue([]);
     await expect(datasource.getLogsByLevel("INFO", 1)).resolves.toEqual([]);
   });
 
   it("getLogsByUserId validates empty userId", async () => {
-    await expect(datasource.getLogsByUserId("", 5)).rejects.toThrow(ValidationError);
+    await expect(datasource.getLogsByUserId("", 5)).rejects.toThrow(
+      ValidationError,
+    );
   });
 
   it("getLogsByService validates empty service", async () => {
-    await expect(datasource.getLogsByService("", 5)).rejects.toThrow(ValidationError);
+    await expect(datasource.getLogsByService("", 5)).rejects.toThrow(
+      ValidationError,
+    );
   });
 
   it("getLogsByRequestId validates empty requestId", async () => {
-    await expect(datasource.getLogsByRequestId("")) .rejects.toThrow(ValidationError);
+    await expect(datasource.getLogsByRequestId("")).rejects.toThrow(
+      ValidationError,
+    );
   });
 
   it("deleteOldLogs enforces range and calls deleteMany", async () => {
     await expect(datasource.deleteOldLogs(0)).rejects.toThrow(ValidationError);
-    await expect(datasource.deleteOldLogs(366)).rejects.toThrow(ValidationError);
+    await expect(datasource.deleteOldLogs(366)).rejects.toThrow(
+      ValidationError,
+    );
 
     (mockPrisma.log.deleteMany as jest.Mock).mockResolvedValue({ count: 3 });
     const count = await datasource.deleteOldLogs(7);
@@ -84,15 +106,49 @@ describe("LogDatasource", () => {
   });
 
   it("deleteOldLogs propagates BadRequestError on DB failure", async () => {
-    (mockPrisma.log.deleteMany as jest.Mock).mockRejectedValueOnce(new Error("db down"));
-    await expect(datasource.deleteOldLogs(1)).rejects.toThrow(/Failed to delete old logs/);
+    (mockPrisma.log.deleteMany as jest.Mock).mockRejectedValueOnce(
+      new Error("db down"),
+    );
+    await expect(datasource.deleteOldLogs(1)).rejects.toThrow(
+      /Failed to delete old logs/,
+    );
   });
 
   it("mapToLogEntity converts Prisma level variants", async () => {
     (mockPrisma.log.findMany as jest.Mock).mockResolvedValue([
-      { id: "1", level: "SILLY", message: "m", timestamp: new Date(), meta: {}, service: null, userId: null, requestId: null, error: null },
-      { id: "2", level: "VERBOSE", message: "m", timestamp: new Date(), meta: {}, service: null, userId: null, requestId: null, error: null },
-      { id: "3", level: "HTTP", message: "m", timestamp: new Date(), meta: {}, service: null, userId: null, requestId: null, error: null },
+      {
+        id: "1",
+        level: "SILLY",
+        message: "m",
+        timestamp: new Date(),
+        meta: {},
+        service: null,
+        userId: null,
+        requestId: null,
+        error: null,
+      },
+      {
+        id: "2",
+        level: "VERBOSE",
+        message: "m",
+        timestamp: new Date(),
+        meta: {},
+        service: null,
+        userId: null,
+        requestId: null,
+        error: null,
+      },
+      {
+        id: "3",
+        level: "HTTP",
+        message: "m",
+        timestamp: new Date(),
+        meta: {},
+        service: null,
+        userId: null,
+        requestId: null,
+        error: null,
+      },
     ]);
     const res = await datasource.getLogsByService("svc");
     expect(res.length).toBe(3);
@@ -102,15 +158,39 @@ describe("LogDatasource", () => {
   });
 
   it("createLog propagates BadRequestError on DB failure", async () => {
-    (mockPrisma.log.create as jest.Mock).mockRejectedValueOnce(new Error("insert failed"));
-    const dto = new CreateLogDto("ERROR", "m", { a: 1 }, "svc", "u1", "r1", undefined);
-    await expect(datasource.createLog(dto)).rejects.toThrow(/Failed to create log/);
+    (mockPrisma.log.create as jest.Mock).mockRejectedValueOnce(
+      new Error("insert failed"),
+    );
+    const dto = new CreateLogDto(
+      "ERROR",
+      "m",
+      { a: 1 },
+      "svc",
+      "u1",
+      "r1",
+      undefined,
+    );
+    await expect(datasource.createLog(dto)).rejects.toThrow(
+      /Failed to create log/,
+    );
   });
 
   it("mapToLogEntity handles invalid timestamp mapping with ValidationError", async () => {
     (mockPrisma.log.findMany as jest.Mock).mockResolvedValue([
-      { id: "1", level: "INFO", message: "m", timestamp: "not-a-date", meta: {}, service: null, userId: null, requestId: null, error: null },
+      {
+        id: "1",
+        level: "INFO",
+        message: "m",
+        timestamp: "not-a-date",
+        meta: {},
+        service: null,
+        userId: null,
+        requestId: null,
+        error: null,
+      },
     ]);
-    await expect(datasource.getLogsByService("svc")).rejects.toThrow(ValidationError);
+    await expect(datasource.getLogsByService("svc")).rejects.toThrow(
+      ValidationError,
+    );
   });
 });

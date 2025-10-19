@@ -1,19 +1,26 @@
 import { z } from "zod";
 import { config } from "dotenv";
 import { resolve } from "path";
+import { TEnvironment } from "@/domain/interfaces/environtments.interfaces";
 
 // Load environment variables
 config();
 
+const environmentsArray: TEnvironment[] = [
+  "dev",
+  "prod",
+  "qa",
+  "development",
+  "production",
+];
+
 const envSchema = z.object({
   // Accept common and shorthand environment names
-  NODE_ENV: z
-    .enum(["test", "dev", "prod", "qa", "development", "production"])
-    .default("dev"),
+  NODE_ENV: z.enum(environmentsArray).default("dev"),
   PORT: z.coerce.number().default(3000),
 
   // Supabase Configuration
-  SUPABASE_URL: z.string().url({ message: "Must be a valid URL" }),
+  SUPABASE_URL: z.url({ message: "Must be a valid URL" }),
   SUPABASE_ANON_KEY: z.string(),
 
   // Optional in tests/dev; validated when present
@@ -27,6 +34,11 @@ const envSchema = z.object({
     .string()
     .url({ message: "Must be a valid database URL" })
     .optional(),
+
+  // Private Key for RSA-OAEP
+  PASSPHRASE: z
+    .string()
+    .min(12, { message: "PASSPHRASE must be at least 12 characters long" }),
 });
 
 type IEnv = z.infer<typeof envSchema>;
