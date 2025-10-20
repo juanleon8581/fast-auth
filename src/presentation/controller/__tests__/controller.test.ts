@@ -17,7 +17,7 @@ import { UpdateUserValidator } from "@/infrastructure/validators/update-user.val
 import { RequestResetPasswordEmailValidator } from "@/infrastructure/validators/request-reset-password-email.validator";
 import { LogoutValidator } from "@/infrastructure/validators/logout.validator";
 import { UserEntity } from "@/domain/entities/user.entity";
-import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
+import { AuthUserEntity } from "@/domain/auth/entities/auth-user.entity";
 
 // Mock dependencies
 jest.mock("@/domain/auth/use-cases/register-user");

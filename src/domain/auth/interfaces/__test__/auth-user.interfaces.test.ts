@@ -3,7 +3,7 @@ import {
   IAuthUserEntity,
 } from "../auth-user.interfaces";
 import { UserEntity } from "@/domain/entities/user.entity";
-import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
+import { AuthUserEntity } from "@/domain/auth/entities/auth-user.entity";
 
 describe("Auth User Interfaces", () => {
   let mockUser: UserEntity;

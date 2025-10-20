@@ -1,6 +1,6 @@
 import { AuthRepository } from "../auth.repository";
 import { RegisterDto } from "../../dtos/register.dto";
-import { AuthUserEntity } from "../../../entities/auth-user.entity";
+import { AuthUserEntity } from "../../entities/auth-user.entity";
 import { UserEntity } from "../../../entities/user.entity";
 import { LoginDto } from "@/domain/auth/dtos/login.dto";
 import { LogoutDto } from "@/domain/auth/dtos/logout.dto";

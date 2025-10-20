@@ -1,6 +1,6 @@
 import { AuthDatasource } from "../auth.datasource";
 import { AuthClient } from "@/infrastructure/config/auth.client";
-import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
+import { AuthUserEntity } from "@/domain/auth/entities/auth-user.entity";
 import { UserEntity } from "@/domain/entities/user.entity";
 import { DatasourceUserDto } from "@/infrastructure/dtos/datasource-user.dto";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
@@ -17,7 +17,7 @@ import {
 // Mock dependencies
 jest.mock("@/infrastructure/config/auth.client");
 jest.mock("@/domain/entities/user.entity");
-jest.mock("@/domain/entities/auth-user.entity");
+jest.mock("@/domain/auth/entities/auth-user.entity");
 jest.mock("@/infrastructure/dtos/datasource-user.dto");
 
 const MockedAuthClient = AuthClient as jest.MockedClass<typeof AuthClient>;
