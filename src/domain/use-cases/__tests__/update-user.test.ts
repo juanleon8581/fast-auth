@@ -1,5 +1,5 @@
 import { UpdateUser } from "../update-user";
-import { UpdateUserDto } from "../../dtos/update-user.dto";
+import { UpdateUserDto } from "../../user/dtos/update-user.dto";
 import { UserEntity } from "../../entities/user.entity";
 import { MockAuthRepository } from "../../../config/__tests__/mocks/auth-repository.mock";
 

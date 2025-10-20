@@ -1,4 +1,4 @@
-import { UpdateUserDto } from "../update-user.dto";
+import { UpdateUserDto } from "@/domain/user/dtos/update-user.dto";
 import { clearAllMocks } from "@/config/tests/test-utils";
 
 describe("UpdateUserDto", () => {

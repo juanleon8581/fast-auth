@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { UpdateUserDto } from "@/domain/dtos/update-user.dto";
+import { UpdateUserDto } from "@/domain/user/dtos/update-user.dto";
 import globalStrings from "@/config/strings/global.strings.json";
 import {
   SECURE_PASSWORD_REGEX,

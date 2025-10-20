@@ -1,4 +1,4 @@
-import { UpdateUserDto } from "@/domain/dtos/update-user.dto";
+import { UpdateUserDto } from "@/domain/user/dtos/update-user.dto";
 import { AuthUserEntity } from "../entities/auth-user.entity";
 import { UserEntity } from "../entities/user.entity";
 import { AuthRepository } from "@/domain/auth/repositories/auth.repository";

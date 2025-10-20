@@ -9,7 +9,7 @@ import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { ValidationError } from "@/domain/errors/validation-error";
 import { LoginDto } from "@/domain/auth/dtos/login.dto";
 import { LogoutDto } from "@/domain/auth/dtos/logout.dto";
-import { UpdateUserDto } from "@/domain/dtos/update-user.dto";
+import { UpdateUserDto } from "@/domain/user/dtos/update-user.dto";
 import { RequestResetPasswordEmailDto } from "@/domain/auth/dtos/request-reset-password-email.dto";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { TRawJson } from "@/domain/interfaces/general.interfaces";

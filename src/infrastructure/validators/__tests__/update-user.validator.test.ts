@@ -1,11 +1,11 @@
 import { UpdateUserValidator } from "../update-user.validator";
-import { UpdateUserDto } from "@/domain/dtos/update-user.dto";
+import { UpdateUserDto } from "@/domain/user/dtos/update-user.dto";
 import globalStrings from "@/config/strings/global.strings.json";
 import { ValidationError } from "@/domain/errors/validation-error";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 
 // Mock UpdateUserDto
-jest.mock("@/domain/dtos/update-user.dto");
+jest.mock("@/domain/user/dtos/update-user.dto");
 
 const MockedUpdateUserDto = UpdateUserDto as jest.MockedClass<
   typeof UpdateUserDto

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { AuthController } from "../controller";
 import { RegisterDto } from "@/domain/auth/dtos/register.dto";
 import { LoginDto } from "@/domain/auth/dtos/login.dto";
-import { UpdateUserDto } from "@/domain/dtos/update-user.dto";
+import { UpdateUserDto } from "@/domain/user/dtos/update-user.dto";
 import { RequestResetPasswordEmailDto } from "@/domain/auth/dtos/request-reset-password-email.dto";
 import { AuthRepository } from "@/domain/auth/repositories/auth.repository";
 import { RegisterUser } from "@/domain/auth/use-cases/register-user";

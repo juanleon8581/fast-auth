@@ -1,7 +1,7 @@
 import { RegisterDto } from "@/domain/auth/dtos/register.dto";
 import { LoginDto } from "@/domain/auth/dtos/login.dto";
 import { LogoutDto } from "@/domain/auth/dtos/logout.dto";
-import { UpdateUserDto } from "@/domain/dtos/update-user.dto";
+import { UpdateUserDto } from "@/domain/user/dtos/update-user.dto";
 import { UserEntity } from "@/domain/entities/user.entity";
 import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
 
