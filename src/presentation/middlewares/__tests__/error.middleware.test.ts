@@ -2,10 +2,10 @@ import { Request, Response, NextFunction } from "express";
 import { ErrorMiddleware } from "../error.middleware";
 import { ErrorHandler } from "@/domain/errors/error-handler";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
-import { LoggerService } from "@/infrastructure/services/logger.service";
+import { LoggerService } from "@/infrastructure/services/logger/logger.service";
 
 // Mock LoggerService to prevent real DB calls via CreateLog
-jest.mock("@/infrastructure/services/logger.service", () => ({
+jest.mock("@/infrastructure/services/logger/logger.service", () => ({
   LoggerService: {
     logWarn: jest.fn(),
     logError: jest.fn(),

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ErrorHandler } from "@/domain/errors/error-handler";
-import { LoggerService } from "@/infrastructure/services/logger.service";
+import { LoggerService } from "@/infrastructure/services/logger/logger.service";
 
 export class ErrorMiddleware {
   private static readonly serviceNameForLogger = "error-middleware";

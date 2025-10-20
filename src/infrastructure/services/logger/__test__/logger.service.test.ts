@@ -1,4 +1,4 @@
-import { LoggerService } from "../logger.service";
+import { LoggerService } from "@/infrastructure/services/logger/logger.service";
 
 // Mocks
 jest.mock("@/config/envs", () => ({

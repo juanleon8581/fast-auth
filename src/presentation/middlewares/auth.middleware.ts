@@ -4,7 +4,7 @@ import { TextEncoder } from "util";
 import envs from "../../config/envs";
 import { UnauthorizedError } from "@/domain/errors/unauthorized-error";
 import { ERRORS } from "@/config/strings/global.strings.json";
-import { LoggerService } from "@/infrastructure/services/logger.service";
+import { LoggerService } from "@/infrastructure/services/logger/logger.service";
 
 /**
  * Authentication middleware that validates JWT Bearer tokens

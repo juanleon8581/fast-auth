@@ -1,4 +1,4 @@
-import { LogDatasource } from "../persistence/datasource/log.datasource";
+import { LogDatasource } from "@/infrastructure/persistence/datasource/log.datasource";
 import { TypeGuardsUtils } from "@/utils/type-guards.utils";
 import { CreateLogDto } from "@/domain/log/dtos/create-log.dto";
 import { CreateLog } from "@/domain/log/use-cases/create-log";
@@ -11,7 +11,7 @@ import {
   IErrorlogData,
   IGenericLog,
   IInfoLogData,
-} from "./logger.service.interfaces";
+} from "./interfaces/logger.service.interfaces";
 
 export class LoggerService {
   private static logDatasource = LogDatasource.getInstance();

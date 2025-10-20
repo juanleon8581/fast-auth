@@ -7,8 +7,8 @@ import { jwtVerify } from "jose";
 jest.mock("jose", () => ({ jwtVerify: jest.fn() }));
 
 // Mock LoggerService to assert debug logging on success
-import { LoggerService } from "@/infrastructure/services/logger.service";
-jest.mock("@/infrastructure/services/logger.service", () => ({
+import { LoggerService } from "@/infrastructure/services/logger/logger.service";
+jest.mock("@/infrastructure/services/logger/logger.service", () => ({
   LoggerService: {
     logDebug: jest.fn(),
   },
