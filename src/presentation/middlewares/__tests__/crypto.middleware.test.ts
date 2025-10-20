@@ -55,12 +55,15 @@ describe("CryptoMiddleware.decrypt", () => {
       encryptedPayload: "a",
       encryption: { iv: "b", wrappedKey: "c" },
     } as any;
-    jest.doMock("@/infrastructure/validators/encrypted-body.validator", () => ({
-      __esModule: true,
-      EncryptedBodyValidator: {
-        validate: jest.fn().mockReturnValue(dtoMock),
-      },
-    }));
+    jest.doMock(
+      "@/infrastructure/services/crypto/validators/encrypted-body.validator",
+      () => ({
+        __esModule: true,
+        EncryptedBodyValidator: {
+          validate: jest.fn().mockReturnValue(dtoMock),
+        },
+      }),
+    );
 
     const { CryptoMiddleware } = require("../crypto.middleware");
 

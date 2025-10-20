@@ -2,7 +2,7 @@ import { z } from "zod";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import type { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 import { EncryptedBodyDto } from "@/domain/crypto/dtos/encrypted-body.dto";
-import { processValidationError } from "./utils/processError.validator";
+import { processValidationError } from "@/infrastructure/validators/utils/processError.validator";
 
 // Base64url regex: URL-safe base64 without padding
 const BASE64URL_REGEX = /^[A-Za-z0-9_-]+$/;

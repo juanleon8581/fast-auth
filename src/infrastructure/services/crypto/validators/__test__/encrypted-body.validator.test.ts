@@ -1,4 +1,4 @@
-import { EncryptedBodyValidator } from "@/infrastructure/validators/encrypted-body.validator";
+import { EncryptedBodyValidator } from "@/infrastructure/services/crypto/validators/encrypted-body.validator";
 import { EncryptedBodyDto } from "@/domain/crypto/dtos/encrypted-body.dto";
 import { ValidationError } from "@/domain/errors/validation-error";
 
