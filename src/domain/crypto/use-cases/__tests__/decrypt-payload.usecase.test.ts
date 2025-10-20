@@ -1,5 +1,5 @@
-import { DecryptPayloadUseCase } from "@/domain/use-cases/decrypt-payload.usecase";
-import { CryptoRepository } from "@/domain/repositories/crypto.repository";
+import { DecryptPayloadUseCase } from "@/domain/crypto/use-cases/decrypt-payload.usecase";
+import { CryptoRepository } from "@/domain/crypto/repositories/crypto.repository";
 import { EncryptedBodyDto } from "@/domain/crypto/dtos/encrypted-body.dto";
 
 class MockCryptoRepository extends CryptoRepository {

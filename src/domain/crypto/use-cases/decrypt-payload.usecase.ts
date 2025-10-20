@@ -1,6 +1,6 @@
-import { EncryptedBodyDto } from "../crypto/dtos/encrypted-body.dto";
-import { TRawJson } from "../shared/interfaces/general.interfaces";
-import { CryptoRepository } from "../repositories/crypto.repository";
+import { EncryptedBodyDto } from "@/domain/crypto/dtos/encrypted-body.dto";
+import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
+import { CryptoRepository } from "@/domain/crypto/repositories/crypto.repository";
 
 interface IDecryptPayloadUseCase {
   execute(dto: EncryptedBodyDto, privateKey: Buffer): Promise<TRawJson>;

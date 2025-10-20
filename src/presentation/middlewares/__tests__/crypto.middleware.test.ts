@@ -42,7 +42,7 @@ describe("CryptoMiddleware.decrypt", () => {
     // Mock DecryptPayloadUseCase to return payload
     const decryptedPayload = { user: "john" };
     const executeMock = jest.fn().mockResolvedValue(decryptedPayload);
-    jest.doMock("@/domain/use-cases/decrypt-payload.usecase", () => ({
+    jest.doMock("@/domain/crypto/use-cases/decrypt-payload.usecase", () => ({
       __esModule: true,
       DecryptPayloadUseCase: class {
         constructor() {}
@@ -101,7 +101,7 @@ describe("CryptoMiddleware.decrypt", () => {
 
     // Keep other modules real but ensure use-case would not be invoked
     const usecaseModule = jest.createMockFromModule(
-      "@/domain/use-cases/decrypt-payload.usecase",
+      "@/domain/crypto/use-cases/decrypt-payload.usecase",
     ) as any;
     usecaseModule.DecryptPayloadUseCase = class {
       execute() {
@@ -109,7 +109,7 @@ describe("CryptoMiddleware.decrypt", () => {
       }
     };
     jest.doMock(
-      "@/domain/use-cases/decrypt-payload.usecase",
+      "@/domain/crypto/use-cases/decrypt-payload.usecase",
       () => usecaseModule,
     );
 

@@ -1,4 +1,4 @@
-import { TRawJson } from "../shared/interfaces/general.interfaces";
+import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 
 export abstract class CryptoRepository {
   abstract encryptPassPhrase(passphrase: string, key: Buffer): Buffer;

@@ -9,7 +9,7 @@ import { CryptoAdapter } from "../adapters/crypto.adapter";
 import envs from "@/config/envs";
 import { KeyExportOptions } from "crypto";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
-import { CryptoRepository } from "@/domain/repositories/crypto.repository";
+import { CryptoRepository } from "@/domain/crypto/repositories/crypto.repository";
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 import cryptoConfig from "@/config/crypto.config";
 
