@@ -1,4 +1,4 @@
-import { CryptoAdapter } from "@/infrastructure/adapters/crypto.adapter";
+import { CryptoAdapter } from "@/infrastructure/services/crypto/adapter/crypto.adapter";
 import { ValidationError } from "@/domain/errors/validation-error";
 import { webcrypto } from "node:crypto";
 
@@ -57,10 +57,12 @@ describe("CryptoAdapter - comprehensive", () => {
   });
 
   it("importPublicKey throws when base64url string is empty", async () => {
-    await expect(adapter.importPublicKey(""))
-      .rejects.toBeInstanceOf(ValidationError);
-    await expect(adapter.importPublicKey(""))
-      .rejects.toThrow("Base64url string is required");
+    await expect(adapter.importPublicKey("")).rejects.toBeInstanceOf(
+      ValidationError,
+    );
+    await expect(adapter.importPublicKey("")).rejects.toThrow(
+      "Base64url string is required",
+    );
   });
 
   it("wrapKey and unwrapKey round-trip produces a working symmetric key", async () => {

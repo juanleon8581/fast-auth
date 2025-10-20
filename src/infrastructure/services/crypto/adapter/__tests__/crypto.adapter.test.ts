@@ -1,4 +1,4 @@
-import { CryptoAdapter } from "@/infrastructure/adapters/crypto.adapter";
+import { CryptoAdapter } from "@/infrastructure/services/crypto/adapter/crypto.adapter";
 
 describe("CryptoAdapter - RSA key generation and DER export", () => {
   it("generateKeyPair returns extractable keys and exports DER", async () => {

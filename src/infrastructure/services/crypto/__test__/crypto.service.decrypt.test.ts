@@ -1,4 +1,4 @@
-import { CryptoAdapter } from "@/infrastructure/adapters/crypto.adapter";
+import { CryptoAdapter } from "@/infrastructure/services/crypto/adapter/crypto.adapter";
 import { CryptoService } from "@/infrastructure/services/crypto/crypto.service";
 
 describe("CryptoService - decryptPayload end-to-end", () => {

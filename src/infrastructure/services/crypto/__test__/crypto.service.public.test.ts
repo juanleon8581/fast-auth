@@ -1,6 +1,9 @@
 // Removed unused BadRequestError import
 
 describe("CryptoService - public key retrieval and key generation", () => {
+  const cryptoAdapterPath =
+    "@/infrastructure/services/crypto/adapter/crypto.adapter";
+
   beforeEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
@@ -90,7 +93,7 @@ describe("CryptoService - public key retrieval and key generation", () => {
       readFileSync: jest.fn(),
     }));
     // Mock adapter to avoid real crypto work
-    jest.doMock("@/infrastructure/adapters/crypto.adapter", () => ({
+    jest.doMock(cryptoAdapterPath, () => ({
       __esModule: true,
       CryptoAdapter: class {
         async generateKeyPair() {
@@ -137,7 +140,7 @@ describe("CryptoService - public key retrieval and key generation", () => {
       readdirSync: jest.fn(),
       readFileSync: jest.fn(),
     }));
-    jest.doMock("@/infrastructure/adapters/crypto.adapter", () => ({
+    jest.doMock(cryptoAdapterPath, () => ({
       __esModule: true,
       CryptoAdapter: class {
         async generateKeyPair() {
@@ -191,7 +194,7 @@ describe("CryptoService - public key retrieval and key generation", () => {
       readdirSync: jest.fn(),
       readFileSync: jest.fn(),
     }));
-    jest.doMock("@/infrastructure/adapters/crypto.adapter", () => ({
+    jest.doMock(cryptoAdapterPath, () => ({
       __esModule: true,
       CryptoAdapter: class {
         async generateKeyPair() {

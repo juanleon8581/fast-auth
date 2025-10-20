@@ -5,7 +5,7 @@ import {
   readdirSync,
   writeFileSync,
 } from "fs";
-import { CryptoAdapter } from "@/infrastructure/adapters/crypto.adapter";
+import { CryptoAdapter } from "@/infrastructure/services/crypto/adapter/crypto.adapter";
 import envs from "@/config/envs";
 import { KeyExportOptions } from "crypto";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
