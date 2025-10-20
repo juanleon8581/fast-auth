@@ -14,8 +14,8 @@ jest.mock("@/domain/use-cases/create-log", () => ({
   })),
 }));
 
-jest.mock("@/domain/dtos/create-log.dto", () => {
-  const actual = jest.requireActual("@/domain/dtos/create-log.dto");
+jest.mock("@/domain/log/dtos/create-log.dto", () => {
+  const actual = jest.requireActual("@/domain/log/dtos/create-log.dto");
   return {
     __esModule: true,
     ...actual,

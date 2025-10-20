@@ -1,4 +1,4 @@
-import { CreateLogDto } from "../dtos/create-log.dto";
+import { CreateLogDto } from "../log/dtos/create-log.dto";
 import { LogEntity } from "../entities/log.entity";
 
 export abstract class LogRepository {

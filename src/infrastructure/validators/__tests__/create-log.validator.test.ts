@@ -1,5 +1,5 @@
 import { CreateLogValidator } from "../create-log.validator";
-import { CreateLogDto } from "@/domain/dtos/create-log.dto";
+import { CreateLogDto } from "@/domain/log/dtos/create-log.dto";
 import { ValidationError } from "@/domain/errors/validation-error";
 
 describe("CreateLogValidator", () => {

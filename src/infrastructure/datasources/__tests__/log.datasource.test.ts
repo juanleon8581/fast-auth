@@ -1,7 +1,7 @@
 import { LogDatasource } from "../log.datasource";
 import { ValidationError } from "@/domain/errors/validation-error";
 import { LogEntity } from "@/domain/entities/log.entity";
-import { CreateLogDto } from "@/domain/dtos/create-log.dto";
+import { CreateLogDto } from "@/domain/log/dtos/create-log.dto";
 
 // Mock DatabaseClient to return a fake Prisma client
 const mockPrisma = {

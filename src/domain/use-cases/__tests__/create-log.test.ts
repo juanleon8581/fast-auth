@@ -1,7 +1,7 @@
 import { CreateLog } from "../create-log";
-import { LogRepository } from "../../repositories/log.repository";
-import { CreateLogDto } from "../../dtos/create-log.dto";
-import { LogEntity } from "../../entities/log.entity";
+import { LogRepository } from "@/domain/repositories/log.repository";
+import { CreateLogDto } from "@/domain/log/dtos/create-log.dto";
+import { LogEntity } from "@/domain/entities/log.entity";
 
 describe("CreateLog UseCase", () => {
   it("delegates to repository.createLog and returns LogEntity", async () => {
