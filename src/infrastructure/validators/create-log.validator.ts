@@ -1,7 +1,10 @@
 import { z } from "zod";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { CreateLogDto } from "@/domain/log/dtos/create-log.dto";
-import { LOG_LEVELS, type LogLevel } from "@/domain/interfaces/log.interfaces";
+import {
+  LOG_LEVELS,
+  type LogLevel,
+} from "@/domain/log/interfaces/log.interfaces";
 import type { TRawJson } from "@/domain/interfaces/general.interfaces";
 import { processValidationError } from "./utils/processError.validator";
 

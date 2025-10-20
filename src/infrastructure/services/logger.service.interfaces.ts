@@ -1,4 +1,4 @@
-import { LogLevel } from "@/domain/interfaces/log.interfaces";
+import { LogLevel } from "@/domain/log/interfaces/log.interfaces";
 import type { Request, Response } from "express";
 
 export interface IGenericLog {

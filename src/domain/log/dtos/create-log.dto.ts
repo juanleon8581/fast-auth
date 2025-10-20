@@ -1,6 +1,6 @@
 import { ERRORS } from "@/config/strings/global.strings.json";
 import { TRawJson } from "@/domain/interfaces/general.interfaces";
-import { LogLevel, LOG_LEVELS } from "@/domain/interfaces/log.interfaces";
+import { LogLevel, LOG_LEVELS } from "@/domain/log/interfaces/log.interfaces";
 
 interface ICreateLogDto {
   level: LogLevel;

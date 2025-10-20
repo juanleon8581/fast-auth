@@ -3,7 +3,7 @@ import {
   ILogData,
   LogLevel,
   LOG_LEVELS,
-} from "@/domain/interfaces/log.interfaces";
+} from "@/domain/log/interfaces/log.interfaces";
 import { ERRORS } from "@/config/strings/global.strings.json";
 
 export class LogEntity implements ILogData {
