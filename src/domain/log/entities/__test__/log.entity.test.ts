@@ -1,4 +1,4 @@
-import { LogEntity } from "../log.entity";
+import { LogEntity } from "@/domain/log/entities/log.entity";
 import { ERRORS } from "@/config/strings/global.strings.json";
 
 describe("LogEntity", () => {

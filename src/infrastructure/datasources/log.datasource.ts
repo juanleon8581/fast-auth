@@ -1,5 +1,5 @@
 import { LogRepository } from "@/domain/log/repositories/log.repository";
-import { LogEntity } from "@/domain/entities/log.entity";
+import { LogEntity } from "@/domain/log/entities/log.entity";
 import { CreateLogDto } from "@/domain/log/dtos/create-log.dto";
 import { DatabaseClient } from "../config/database.client";
 import { BadRequestError } from "@/domain/errors/bad-request-error";

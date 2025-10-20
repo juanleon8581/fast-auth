@@ -1,6 +1,6 @@
 import { GetLogs } from "@/domain/log/use-cases/get-logs";
 import { LogRepository } from "@/domain/log/repositories/log.repository";
-import { LogEntity } from "@/domain/entities/log.entity";
+import { LogEntity } from "@/domain/log/entities/log.entity";
 
 describe("GetLogs UseCase", () => {
   const sample = new LogEntity("INFO", "m", new Date(), "id");

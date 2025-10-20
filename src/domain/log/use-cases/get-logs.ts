@@ -1,4 +1,4 @@
-import { LogEntity } from "@/domain/entities/log.entity";
+import { LogEntity } from "@/domain/log/entities/log.entity";
 import { LogRepository } from "@/domain/log/repositories/log.repository";
 
 interface IGetLogsUseCase {

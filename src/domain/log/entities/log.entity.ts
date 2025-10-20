@@ -1,5 +1,9 @@
-import { TRawJson } from "../interfaces/general.interfaces";
-import { ILogData, LogLevel, LOG_LEVELS } from "../interfaces/log.interfaces";
+import { TRawJson } from "@/domain/interfaces/general.interfaces";
+import {
+  ILogData,
+  LogLevel,
+  LOG_LEVELS,
+} from "@/domain/interfaces/log.interfaces";
 import { ERRORS } from "@/config/strings/global.strings.json";
 
 export class LogEntity implements ILogData {
