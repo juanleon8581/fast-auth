@@ -11,11 +11,11 @@ import { UpdateUser } from "@/domain/user/use-cases/update-user";
 import { UpdateUserPassword } from "@/domain/user/use-cases/update-user-password";
 import { RequestResetPasswordEmail } from "@/domain/auth/use-cases/request-reset-password-email";
 import { LogoutAuth } from "@/domain/auth/use-cases/logout-user";
-import { RegisterValidator } from "@/infrastructure/validators/register.validator";
-import { LoginValidator } from "@/infrastructure/validators/login.validator";
+import { RegisterValidator } from "@/infrastructure/external/auth/validators/register.validator";
+import { LoginValidator } from "@/infrastructure/external/auth/validators/login.validator";
 import { UpdateUserValidator } from "@/infrastructure/validators/update-user.validator";
-import { RequestResetPasswordEmailValidator } from "@/infrastructure/validators/request-reset-password-email.validator";
-import { LogoutValidator } from "@/infrastructure/validators/logout.validator";
+import { RequestResetPasswordEmailValidator } from "@/infrastructure/external/auth/validators/request-reset-password-email.validator";
+import { LogoutValidator } from "@/infrastructure/external/auth/validators/logout.validator";
 import { UserEntity } from "@/domain/user/entities/user.entity";
 import { AuthUserEntity } from "@/domain/auth/entities/auth-user.entity";
 
@@ -26,11 +26,13 @@ jest.mock("@/domain/user/use-cases/update-user");
 jest.mock("@/domain/user/use-cases/update-user-password");
 jest.mock("@/domain/auth/use-cases/request-reset-password-email");
 jest.mock("@/domain/auth/use-cases/logout-user");
-jest.mock("@/infrastructure/validators/register.validator");
-jest.mock("@/infrastructure/validators/login.validator");
+jest.mock("@/infrastructure/external/auth/validators/register.validator");
+jest.mock("@/infrastructure/external/auth/validators/login.validator");
 jest.mock("@/infrastructure/validators/update-user.validator");
-jest.mock("@/infrastructure/validators/request-reset-password-email.validator");
-jest.mock("@/infrastructure/validators/logout.validator");
+jest.mock(
+  "@/infrastructure/external/auth/validators/request-reset-password-email.validator",
+);
+jest.mock("@/infrastructure/external/auth/validators/logout.validator");
 
 describe("AuthController", () => {
   let authController: AuthController;

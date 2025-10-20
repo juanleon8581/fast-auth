@@ -8,7 +8,7 @@ import {
 } from "@/config/regex/validations.regex";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
-import { processValidationError } from "./utils/processError.validator";
+import { processValidationError } from "../../../validators/utils/processError.validator";
 
 const { VALIDATION } = globalStrings.ERRORS.AUTH.REGISTER;
 
