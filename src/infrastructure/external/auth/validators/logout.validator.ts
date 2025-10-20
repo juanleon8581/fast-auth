@@ -6,7 +6,7 @@ import { LogoutDto } from "@/domain/auth/dtos/logout.dto";
 import type { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 
 import globalStrings from "@/config/strings/global.strings.json";
-import { processValidationError } from "../../../validators/utils/processError.validator";
+import { processValidationError } from "../../../helpers/validators/processError.validator";
 
 const { VALIDATION } = globalStrings.ERRORS.AUTH.LOGOUT;
 

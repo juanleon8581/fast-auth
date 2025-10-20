@@ -6,7 +6,7 @@ import {
   type LogLevel,
 } from "@/domain/log/interfaces/log.interfaces";
 import type { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
-import { processValidationError } from "@/infrastructure/validators/utils/processError.validator";
+import { processValidationError } from "@/infrastructure/helpers/validators/processError.validator";
 
 const createLogSchema = z.object({
   level: z
