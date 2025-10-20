@@ -8,7 +8,7 @@ jest.mock("@/config/envs", () => ({
 
 const mockExecute = jest.fn().mockResolvedValue(undefined);
 
-jest.mock("@/domain/use-cases/create-log", () => ({
+jest.mock("@/domain/log/use-cases/create-log", () => ({
   CreateLog: jest.fn().mockImplementation(() => ({
     execute: mockExecute,
   })),

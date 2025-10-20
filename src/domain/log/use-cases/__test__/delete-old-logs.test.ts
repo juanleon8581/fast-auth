@@ -1,5 +1,5 @@
-import { DeleteOldLogs } from "../delete-old-logs";
-import { LogRepository } from "../../repositories/log.repository";
+import { DeleteOldLogs } from "@/domain/log/use-cases/delete-old-logs";
+import { LogRepository } from "@/domain/repositories/log.repository";
 
 describe("DeleteOldLogs UseCase", () => {
   it("delegates to repository.deleteOldLogs and returns count", async () => {

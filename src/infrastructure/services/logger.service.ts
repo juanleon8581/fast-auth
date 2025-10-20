@@ -1,7 +1,7 @@
 import { LogDatasource } from "../datasources/log.datasource";
 import { TypeGuardsUtils } from "@/utils/type-guards.utils";
 import { CreateLogDto } from "@/domain/log/dtos/create-log.dto";
-import { CreateLog } from "@/domain/use-cases/create-log";
+import { CreateLog } from "@/domain/log/use-cases/create-log";
 import { ILogData, PROD_LOG_LEVELS } from "@/domain/interfaces/log.interfaces";
 import envs from "@/config/envs";
 import {

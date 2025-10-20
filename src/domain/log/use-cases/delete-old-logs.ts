@@ -1,4 +1,4 @@
-import { LogRepository } from "../repositories/log.repository";
+import { LogRepository } from "@/domain/repositories/log.repository";
 
 interface IDeleteOldLogsUseCase {
   execute(olderThanDays: number): Promise<number>;
