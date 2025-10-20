@@ -2,7 +2,7 @@ import { RegisterDto } from "@/domain/auth/dtos/register.dto";
 import { AuthUserEntity } from "@/domain/auth/entities/auth-user.entity";
 import { UserEntity } from "@/domain/user/entities/user.entity";
 import { AuthRepository } from "@/domain/auth/repositories/auth.repository";
-import { AuthClient } from "../config/auth.client";
+import { AuthClient } from "../external/auth/auth.client";
 import { ERRORS } from "@/config/strings/global.strings.json";
 import { DatasourceUserDto } from "../dtos/datasource-user.dto";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
