@@ -7,8 +7,8 @@ import { RequestResetPasswordEmailDto } from "@/domain/auth/dtos/request-reset-p
 import { AuthRepository } from "@/domain/auth/repositories/auth.repository";
 import { RegisterUser } from "@/domain/auth/use-cases/register-user";
 import { LoginUser } from "@/domain/auth/use-cases/login-user";
-import { UpdateUser } from "@/domain/use-cases/update-user";
-import { UpdateUserPassword } from "@/domain/use-cases/update-user-password";
+import { UpdateUser } from "@/domain/user/use-cases/update-user";
+import { UpdateUserPassword } from "@/domain/user/use-cases/update-user-password";
 import { RequestResetPasswordEmail } from "@/domain/auth/use-cases/request-reset-password-email";
 import { LogoutAuth } from "@/domain/auth/use-cases/logout-user";
 import { RegisterValidator } from "@/infrastructure/validators/register.validator";
@@ -22,8 +22,8 @@ import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
 // Mock dependencies
 jest.mock("@/domain/auth/use-cases/register-user");
 jest.mock("@/domain/auth/use-cases/login-user");
-jest.mock("@/domain/use-cases/update-user");
-jest.mock("@/domain/use-cases/update-user-password");
+jest.mock("@/domain/user/use-cases/update-user");
+jest.mock("@/domain/user/use-cases/update-user-password");
 jest.mock("@/domain/auth/use-cases/request-reset-password-email");
 jest.mock("@/domain/auth/use-cases/logout-user");
 jest.mock("@/infrastructure/validators/register.validator");

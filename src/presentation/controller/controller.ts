@@ -9,8 +9,8 @@ import { ResponseHelper } from "@/presentation/utils/response-helper";
 
 import { Request, Response, NextFunction } from "express";
 import { UpdateUserValidator } from "@/infrastructure/validators/update-user.validator";
-import { UpdateUser } from "@/domain/use-cases/update-user";
-import { UpdateUserPassword } from "@/domain/use-cases/update-user-password";
+import { UpdateUser } from "@/domain/user/use-cases/update-user";
+import { UpdateUserPassword } from "@/domain/user/use-cases/update-user-password";
 
 import { RequestResetPasswordEmailValidator } from "@/infrastructure/validators/request-reset-password-email.validator";
 import { CryptoService } from "@/infrastructure/services/crypto.service";
