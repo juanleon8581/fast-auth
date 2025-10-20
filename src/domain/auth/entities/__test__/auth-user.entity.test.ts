@@ -1,5 +1,5 @@
 import { AuthUserEntity } from "@/domain/auth/entities/auth-user.entity";
-import { UserEntity } from "@/domain/entities/user.entity";
+import { UserEntity } from "@/domain/user/entities/user.entity";
 import { clearAllMocks } from "@/config/tests/test-utils";
 
 describe("AuthUserEntity", () => {

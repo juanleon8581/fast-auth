@@ -16,7 +16,7 @@ import { LoginValidator } from "@/infrastructure/validators/login.validator";
 import { UpdateUserValidator } from "@/infrastructure/validators/update-user.validator";
 import { RequestResetPasswordEmailValidator } from "@/infrastructure/validators/request-reset-password-email.validator";
 import { LogoutValidator } from "@/infrastructure/validators/logout.validator";
-import { UserEntity } from "@/domain/entities/user.entity";
+import { UserEntity } from "@/domain/user/entities/user.entity";
 import { AuthUserEntity } from "@/domain/auth/entities/auth-user.entity";
 
 // Mock dependencies

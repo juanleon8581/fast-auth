@@ -1,6 +1,6 @@
 import { UpdateUserDto } from "@/domain/user/dtos/update-user.dto";
 import { AuthUserEntity } from "@/domain/auth/entities/auth-user.entity";
-import { UserEntity } from "@/domain/entities/user.entity";
+import { UserEntity } from "@/domain/user/entities/user.entity";
 import { AuthRepository } from "@/domain/auth/repositories/auth.repository";
 
 interface IUpdateUserPasswordUseCase {

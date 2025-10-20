@@ -1,5 +1,5 @@
 import { IUserData } from "../user.interfaces";
-import { UserEntity } from "../../entities/user.entity";
+import { UserEntity } from "@/domain/user/entities/user.entity";
 
 describe("User Interfaces", () => {
   describe("IUserData", () => {

@@ -1,7 +1,7 @@
 import { AuthDatasource } from "../auth.datasource";
 import { AuthClient } from "@/infrastructure/config/auth.client";
 import { LoginDto } from "@/domain/auth/dtos/login.dto";
-import { UserEntity } from "@/domain/entities/user.entity";
+import { UserEntity } from "@/domain/user/entities/user.entity";
 import { AuthUserEntity } from "@/domain/auth/entities/auth-user.entity";
 import { DatasourceUserDto } from "@/infrastructure/dtos/datasource-user.dto";
 import {
@@ -15,7 +15,7 @@ import {
 
 // Mock dependencies
 jest.mock("@/infrastructure/config/auth.client");
-jest.mock("@/domain/entities/user.entity");
+jest.mock("@/domain/user/entities/user.entity");
 jest.mock("@/domain/auth/entities/auth-user.entity");
 jest.mock("@/infrastructure/dtos/datasource-user.dto");
 

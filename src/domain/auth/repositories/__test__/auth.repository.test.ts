@@ -1,7 +1,7 @@
 import { AuthRepository } from "../auth.repository";
-import { RegisterDto } from "../../dtos/register.dto";
-import { AuthUserEntity } from "../../entities/auth-user.entity";
-import { UserEntity } from "../../../entities/user.entity";
+import { RegisterDto } from "@/domain/auth/dtos/register.dto";
+import { AuthUserEntity } from "@/domain/auth/entities/auth-user.entity";
+import { UserEntity } from "@/domain/user/entities/user.entity";
 import { LoginDto } from "@/domain/auth/dtos/login.dto";
 import { LogoutDto } from "@/domain/auth/dtos/logout.dto";
 import { RequestResetPasswordEmailDto } from "@/domain/auth/dtos/request-reset-password-email.dto";
