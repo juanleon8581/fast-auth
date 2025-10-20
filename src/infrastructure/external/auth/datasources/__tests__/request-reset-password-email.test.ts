@@ -1,4 +1,4 @@
-import { AuthDatasource } from "@/infrastructure/datasources/auth.datasource";
+import { AuthDatasource } from "@/infrastructure/external/auth/datasources/auth.datasource";
 import { AuthClient } from "@/infrastructure/external/auth/auth.client";
 import { RequestResetPasswordEmailDto } from "@/domain/auth/dtos/request-reset-password-email.dto";
 import { BadRequestError } from "@/domain/errors/bad-request-error";

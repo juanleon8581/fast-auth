@@ -1,4 +1,4 @@
-import { AuthDatasource } from "@/infrastructure/datasources/auth.datasource";
+import { AuthDatasource } from "@/infrastructure/external/auth/datasources/auth.datasource";
 import { AuthClient } from "@/infrastructure/external/auth/auth.client";
 import { LoginDto } from "@/domain/auth/dtos/login.dto";
 import { UserEntity } from "@/domain/user/entities/user.entity";

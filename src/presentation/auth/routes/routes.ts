@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { AuthDatasource } from "@/infrastructure/datasources/auth.datasource";
+import { AuthDatasource } from "@/infrastructure/external/auth/datasources/auth.datasource";
 import { AuthClient } from "@/infrastructure/external/auth/auth.client";
 import { AuthController } from "@/presentation/controller/controller";
 import { AuthMiddleware } from "@/presentation/middlewares/auth.middleware";
