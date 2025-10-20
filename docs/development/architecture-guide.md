@@ -39,24 +39,40 @@ The project follows Clean Architecture principles, organizing code in layers wit
 
 ```
 src/
-├── domain/                     # Enterprise Business Rules
-│   ├── entities/               # Domain entities
-│   ├── dtos/                   # Data Transfer Objects
-│   └── interfaces/             # Domain contracts
-├── application/                # Application Business Rules
-│   ├── use-cases/             # Use cases
-│   ├── interfaces/            # Application contracts
-│   └── validators/            # Business validators
+├── domain/                     # Business logic (feature-first)
+│   ├── auth/                   # Authentication domain module
+│   │   ├── dtos/               # DTOs (explicit imports)
+│   │   ├── entities/           # Entities
+│   │   ├── interfaces/         # Contracts
+│   │   ├── repositories/       # Repository contracts
+│   │   └── use-cases/          # Use cases
+│   ├── user/                   # User domain module
+│   ├── crypto/                 # Cross-cutting cryptography contracts & use cases
+│   ├── log/                    # Logging contracts & use cases
+│   └── shared/                 # Shared interfaces, errors, types
 ├── presentation/               # Interface Adapters
-│   ├── controllers/           # HTTP controllers
-│   ├── routes/               # Route definitions
-│   ├── middleware/           # Application middleware
-│   └── validators/           # Input validators
-└── infrastructure/            # Frameworks & Drivers
-    ├── config/               # Configurations
-    ├── database/             # Data access
-    ├── services/             # External services
-    └── utils/                # Utilities
+│   ├── controllers/            # HTTP controllers
+│   ├── routes/                 # Route definitions
+│   ├── middleware/             # Application middleware
+│   └── validators/             # Input validators
+└── infrastructure/             # Frameworks & Drivers
+    ├── config/                 # Configurations
+    ├── datasources/            # Data access implementations
+    ├── services/               # External services
+    └── validators/             # Infrastructure validators
+```
+
+#### Import Policy (No Barrels)
+- Use explicit per-file imports only; barrel files (`index.ts`) are prohibited.
+- Prefer `@/domain/<feature>/<type>/<file>` paths for clarity.
+- Cross-cutting modules (`crypto`, `log`) must not depend on business features.
+- Shared contracts reside in `src/domain/shared` and are safe to import across features.
+
+Example:
+```ts
+import { LogoutDto } from "@/domain/auth/dtos/logout.dto";
+import { UpdateUser } from "@/domain/user/use-cases/update-user";
+import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 ```
 
 ## Implemented Design Patterns
