@@ -1,5 +1,5 @@
 import { TRawJson } from "@/domain/interfaces/general.interfaces";
-import { IUserData } from "@/domain/interfaces/user.interfaces";
+import { IUserData } from "@/domain/user/interfaces/user.interfaces";
 import { ERRORS } from "@/config/strings/global.strings.json";
 
 export class UserEntity implements IUserData {
