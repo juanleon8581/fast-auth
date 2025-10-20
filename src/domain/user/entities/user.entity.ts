@@ -1,4 +1,4 @@
-import { TRawJson } from "@/domain/interfaces/general.interfaces";
+import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 import { IUserData } from "@/domain/user/interfaces/user.interfaces";
 import { ERRORS } from "@/config/strings/global.strings.json";
 

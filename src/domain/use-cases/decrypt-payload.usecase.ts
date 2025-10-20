@@ -1,5 +1,5 @@
 import { EncryptedBodyDto } from "../dtos/encrypted-body.dto";
-import { TRawJson } from "../interfaces/general.interfaces";
+import { TRawJson } from "../shared/interfaces/general.interfaces";
 import { CryptoRepository } from "../repositories/crypto.repository";
 
 interface IDecryptPayloadUseCase {

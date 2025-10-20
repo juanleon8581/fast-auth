@@ -1,4 +1,4 @@
-import { TRawJson } from "../../interfaces/general.interfaces";
+import { TRawJson } from "../../shared/interfaces/general.interfaces";
 import { ERRORS } from "@/config/strings/global.strings.json";
 
 interface IRequestResetPasswordEmailDto {

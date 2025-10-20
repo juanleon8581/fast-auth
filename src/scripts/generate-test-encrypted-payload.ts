@@ -1,7 +1,7 @@
 import { existsSync, readdirSync } from "fs";
 import { CryptoService } from "../infrastructure/services/crypto.service";
 import { CryptoAdapter } from "../infrastructure/adapters/crypto.adapter";
-import { TRawJson } from "@/domain/interfaces/general.interfaces";
+import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 
 async function generateEncryptedPayload(payload: TRawJson) {
   const cryptoService = CryptoService.getInstance();

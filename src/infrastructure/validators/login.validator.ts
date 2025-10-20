@@ -3,7 +3,7 @@ import { BadRequestError } from "@/domain/errors/bad-request-error";
 
 import { LoginDto } from "@/domain/auth/dtos/login.dto";
 
-import type { TRawJson } from "@/domain/interfaces/general.interfaces";
+import type { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 
 import { SECURE_PASSWORD_REGEX } from "@/config/regex/validations.regex";
 import globalStrings from "@/config/strings/global.strings.json";

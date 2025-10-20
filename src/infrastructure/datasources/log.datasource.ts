@@ -6,7 +6,7 @@ import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { ValidationError } from "@/domain/errors/validation-error";
 import type { LogLevel } from "@/domain/log/interfaces/log.interfaces";
 import { LOG_LEVELS } from "@/domain/log/interfaces/log.interfaces";
-import { TRawJson } from "@/domain/interfaces/general.interfaces";
+import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 import { $Enums } from "@prisma/client";
 
 // Type for Prisma Log model

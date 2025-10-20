@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { config } from "dotenv";
 import { resolve } from "path";
-import { TEnvironment } from "@/domain/interfaces/environtments.interfaces";
+import { TEnvironment } from "@/domain/shared/interfaces/environtments.interfaces";
 
 // Load environment variables
 config();

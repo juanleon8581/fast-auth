@@ -1,4 +1,4 @@
-import { TRawJson } from "@/domain/interfaces/general.interfaces";
+import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 import { ERRORS } from "@/config/strings/global.strings.json";
 
 interface IUpdateUserDto {

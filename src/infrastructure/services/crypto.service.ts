@@ -10,7 +10,7 @@ import envs from "@/config/envs";
 import { KeyExportOptions } from "crypto";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { CryptoRepository } from "@/domain/repositories/crypto.repository";
-import { TRawJson } from "@/domain/interfaces/general.interfaces";
+import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 import cryptoConfig from "@/config/crypto.config";
 
 export class CryptoService implements CryptoRepository {

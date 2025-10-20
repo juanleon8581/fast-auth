@@ -9,7 +9,7 @@ import {
 } from "@/config/regex/validations.regex";
 import { processValidationError } from "./utils/processError.validator";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
-import { TRawJson } from "@/domain/interfaces/general.interfaces";
+import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 
 const { VALIDATION } = globalStrings.ERRORS.AUTH.UPDATE_USER;
 const { VALIDATION: VALIDATION_GENERAL } = globalStrings.ERRORS.AUTH.REGISTER;

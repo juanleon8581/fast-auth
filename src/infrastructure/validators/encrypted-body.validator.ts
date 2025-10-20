@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
-import type { TRawJson } from "@/domain/interfaces/general.interfaces";
+import type { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 import { EncryptedBodyDto } from "@/domain/dtos/encrypted-body.dto";
 import { processValidationError } from "./utils/processError.validator";
 
