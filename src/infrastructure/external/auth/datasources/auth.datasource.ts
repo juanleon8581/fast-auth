@@ -4,7 +4,7 @@ import { UserEntity } from "@/domain/user/entities/user.entity";
 import { AuthRepository } from "@/domain/auth/repositories/auth.repository";
 import { AuthClient } from "@/infrastructure/external/auth/auth.client";
 import { ERRORS } from "@/config/strings/global.strings.json";
-import { DatasourceUserDto } from "@/infrastructure/dtos/datasource-user.dto";
+import { DatasourceUserDto } from "@/infrastructure/external/auth/mappers/datasource-user.dto";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { ValidationError } from "@/domain/errors/validation-error";
 import { LoginDto } from "@/domain/auth/dtos/login.dto";
