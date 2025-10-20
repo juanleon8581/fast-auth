@@ -1,9 +1,9 @@
 import { RegisterValidator } from "../register.validator";
-import { RegisterDto } from "@/domain/dtos/register.dto";
+import { RegisterDto } from "@/domain/auth/dtos/register.dto";
 import globalStrings from "@/config/strings/global.strings.json";
 
 // Mock RegisterDto
-jest.mock("@/domain/dtos/register.dto");
+jest.mock("@/domain/auth/dtos/register.dto");
 
 const MockedRegisterDto = RegisterDto as jest.MockedClass<typeof RegisterDto>;
 const { DATA_VALIDATION } = globalStrings.ERRORS;

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { RequestResetPasswordEmailDto } from "@/domain/dtos/request-reset-password-email.dto";
+import { RequestResetPasswordEmailDto } from "@/domain/auth/dtos/request-reset-password-email.dto";
 import globalStrings from "@/config/strings/global.strings.json";
 import { EMAIL_BASIC_REGEX, URL_REGEX } from "@/config/regex/validations.regex";
 import { BadRequestError } from "@/domain/errors/bad-request-error";

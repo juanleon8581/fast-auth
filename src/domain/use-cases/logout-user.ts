@@ -1,4 +1,4 @@
-import { LogoutDto } from "../dtos/logout.dto";
+import { LogoutDto } from "../auth/dtos/logout.dto";
 import { AuthRepository } from "../repositories/auth.repository";
 
 interface LogoutAuthUseCase {

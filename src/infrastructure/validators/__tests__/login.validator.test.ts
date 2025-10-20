@@ -1,5 +1,5 @@
 import { LoginValidator } from "../login.validator";
-import { LoginDto } from "@/domain/dtos/login.dto";
+import { LoginDto } from "@/domain/auth/dtos/login.dto";
 import { ValidationError } from "@/domain/errors/validation-error";
 import globalStrings from "@/config/strings/global.strings.json";
 

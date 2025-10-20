@@ -1,9 +1,9 @@
 import { RequestResetPasswordEmailValidator } from "../request-reset-password-email.validator";
-import { RequestResetPasswordEmailDto } from "@/domain/dtos/request-reset-password-email.dto";
+import { RequestResetPasswordEmailDto } from "@/domain/auth/dtos/request-reset-password-email.dto";
 import globalStrings from "@/config/strings/global.strings.json";
 
 // Mock RequestResetPasswordEmailDto
-jest.mock("@/domain/dtos/request-reset-password-email.dto");
+jest.mock("@/domain/auth/dtos/request-reset-password-email.dto");
 
 const MockedRequestResetPasswordEmailDto =
   RequestResetPasswordEmailDto as jest.MockedClass<

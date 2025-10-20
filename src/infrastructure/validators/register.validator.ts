@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { RegisterDto } from "@/domain/dtos/register.dto";
+import { RegisterDto } from "@/domain/auth/dtos/register.dto";
 import globalStrings from "@/config/strings/global.strings.json";
 import {
   EMAIL_BASIC_REGEX,

@@ -1,6 +1,6 @@
 import { AuthDatasource } from "../auth.datasource";
 import { AuthClient } from "@/infrastructure/config/auth.client";
-import { RequestResetPasswordEmailDto } from "@/domain/dtos/request-reset-password-email.dto";
+import { RequestResetPasswordEmailDto } from "@/domain/auth/dtos/request-reset-password-email.dto";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { ERRORS } from "@/config/strings/global.strings.json";
 

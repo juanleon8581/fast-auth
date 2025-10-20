@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 
-import { LogoutDto } from "@/domain/dtos/logout.dto";
+import { LogoutDto } from "@/domain/auth/dtos/logout.dto";
 
 import type { TRawJson } from "@/domain/interfaces/general.interfaces";
 

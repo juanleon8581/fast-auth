@@ -1,4 +1,4 @@
-import { LoginDto } from "../dtos/login.dto";
+import { LoginDto } from "../auth/dtos/login.dto";
 import { AuthUserEntity } from "../entities/auth-user.entity";
 import { AuthRepository } from "../repositories/auth.repository";
 

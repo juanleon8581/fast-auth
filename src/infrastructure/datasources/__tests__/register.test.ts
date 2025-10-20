@@ -1,6 +1,6 @@
 import { AuthDatasource } from "../auth.datasource";
 import { AuthClient } from "@/infrastructure/config/auth.client";
-import { RegisterDto } from "@/domain/dtos/register.dto";
+import { RegisterDto } from "@/domain/auth/dtos/register.dto";
 import { UserEntity } from "@/domain/entities/user.entity";
 import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
 import { DatasourceUserDto } from "@/infrastructure/dtos/datasource-user.dto";

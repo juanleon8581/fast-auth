@@ -1,7 +1,7 @@
-import { LoginDto } from "../dtos/login.dto";
-import { LogoutDto } from "../dtos/logout.dto";
-import { RegisterDto } from "../dtos/register.dto";
-import { RequestResetPasswordEmailDto } from "../dtos/request-reset-password-email.dto";
+import { LoginDto } from "../auth/dtos/login.dto";
+import { LogoutDto } from "../auth/dtos/logout.dto";
+import { RegisterDto } from "../auth/dtos/register.dto";
+import { RequestResetPasswordEmailDto } from "../auth/dtos/request-reset-password-email.dto";
 import { UpdateUserDto } from "../dtos/update-user.dto";
 import { AuthUserEntity } from "../entities/auth-user.entity";
 import { UserEntity } from "../entities/user.entity";

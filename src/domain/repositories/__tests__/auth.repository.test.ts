@@ -1,10 +1,10 @@
 import { AuthRepository } from "../auth.repository";
-import { RegisterDto } from "../../dtos/register.dto";
+import { RegisterDto } from "../../auth/dtos/register.dto";
 import { AuthUserEntity } from "../../entities/auth-user.entity";
 import { UserEntity } from "../../entities/user.entity";
-import { LoginDto } from "@/domain/dtos/login.dto";
-import { LogoutDto } from "@/domain/dtos/logout.dto";
-import { RequestResetPasswordEmailDto } from "@/domain/dtos/request-reset-password-email.dto";
+import { LoginDto } from "@/domain/auth/dtos/login.dto";
+import { LogoutDto } from "@/domain/auth/dtos/logout.dto";
+import { RequestResetPasswordEmailDto } from "@/domain/auth/dtos/request-reset-password-email.dto";
 import { UpdateUserDto } from "@/domain/dtos/update-user.dto";
 
 // Concrete implementation for testing
