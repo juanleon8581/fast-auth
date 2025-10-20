@@ -1,5 +1,5 @@
-import { CreateLogDto } from "../log/dtos/create-log.dto";
-import { LogEntity } from "../entities/log.entity";
+import { CreateLogDto } from "@/domain/log/dtos/create-log.dto";
+import { LogEntity } from "@/domain/entities/log.entity";
 
 export abstract class LogRepository {
   abstract createLog(dto: CreateLogDto): Promise<LogEntity>;

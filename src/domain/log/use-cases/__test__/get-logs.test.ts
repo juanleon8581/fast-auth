@@ -1,5 +1,5 @@
-import { GetLogs } from "../get-logs";
-import { LogRepository } from "@/domain/repositories/log.repository";
+import { GetLogs } from "@/domain/log/use-cases/get-logs";
+import { LogRepository } from "@/domain/log/repositories/log.repository";
 import { LogEntity } from "@/domain/entities/log.entity";
 
 describe("GetLogs UseCase", () => {

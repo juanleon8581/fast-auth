@@ -1,6 +1,6 @@
 import { CreateLogDto } from "@/domain/log/dtos/create-log.dto";
 import { LogEntity } from "@/domain/entities/log.entity";
-import { LogRepository } from "@/domain/repositories/log.repository";
+import { LogRepository } from "@/domain/log/repositories/log.repository";
 
 interface ICreateLogUseCase {
   execute(dto: CreateLogDto): Promise<LogEntity>;

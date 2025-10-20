@@ -1,5 +1,5 @@
 import { LogEntity } from "@/domain/entities/log.entity";
-import { LogRepository } from "@/domain/repositories/log.repository";
+import { LogRepository } from "@/domain/log/repositories/log.repository";
 
 interface IGetLogsUseCase {
   getByUserId(userId: string, limit?: number): Promise<LogEntity[]>;

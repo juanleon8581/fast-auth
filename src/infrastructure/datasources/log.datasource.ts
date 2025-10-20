@@ -1,4 +1,4 @@
-import { LogRepository } from "@/domain/repositories/log.repository";
+import { LogRepository } from "@/domain/log/repositories/log.repository";
 import { LogEntity } from "@/domain/entities/log.entity";
 import { CreateLogDto } from "@/domain/log/dtos/create-log.dto";
 import { DatabaseClient } from "../config/database.client";
