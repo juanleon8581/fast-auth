@@ -1,4 +1,4 @@
-import { AuthRepository } from "@/domain/repositories/auth.repository";
+import { AuthRepository } from "@/domain/auth/repositories/auth.repository";
 import { LoginUser } from "@/domain/auth/use-cases/login-user";
 import { RegisterUser } from "@/domain/auth/use-cases/register-user";
 import { LogoutAuth } from "@/domain/auth/use-cases/logout-user";

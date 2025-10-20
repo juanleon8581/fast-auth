@@ -1,10 +1,10 @@
-import { LoginDto } from "../auth/dtos/login.dto";
-import { LogoutDto } from "../auth/dtos/logout.dto";
-import { RegisterDto } from "../auth/dtos/register.dto";
-import { RequestResetPasswordEmailDto } from "../auth/dtos/request-reset-password-email.dto";
-import { UpdateUserDto } from "../dtos/update-user.dto";
-import { AuthUserEntity } from "../entities/auth-user.entity";
-import { UserEntity } from "../entities/user.entity";
+import { LoginDto } from "@/domain/auth/dtos/login.dto";
+import { LogoutDto } from "@/domain/auth/dtos/logout.dto";
+import { RegisterDto } from "@/domain/auth/dtos/register.dto";
+import { RequestResetPasswordEmailDto } from "@/domain/auth/dtos/request-reset-password-email.dto";
+import { UpdateUserDto } from "@/domain/dtos/update-user.dto";
+import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
+import { UserEntity } from "@/domain/entities/user.entity";
 
 export abstract class AuthRepository {
   abstract register(dto: RegisterDto): Promise<UserEntity | AuthUserEntity>;

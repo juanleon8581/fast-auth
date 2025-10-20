@@ -1,7 +1,7 @@
 import { UpdateUserDto } from "@/domain/dtos/update-user.dto";
 import { AuthUserEntity } from "../entities/auth-user.entity";
 import { UserEntity } from "../entities/user.entity";
-import { AuthRepository } from "../repositories/auth.repository";
+import { AuthRepository } from "@/domain/auth/repositories/auth.repository";
 
 interface IUpdateUserPasswordUseCase {
   execute(dto: UpdateUserDto): Promise<UserEntity | AuthUserEntity>;

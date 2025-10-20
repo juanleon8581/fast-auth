@@ -1,6 +1,6 @@
 import { LoginDto } from "@/domain/auth/dtos/login.dto";
 import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
-import { AuthRepository } from "@/domain/repositories/auth.repository";
+import { AuthRepository } from "@/domain/auth/repositories/auth.repository";
 
 interface ILoginUserUseCase {
   execute(dto: LoginDto): Promise<AuthUserEntity>;

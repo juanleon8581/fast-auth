@@ -5,7 +5,7 @@ import { RequestResetPasswordEmailDto } from "@/domain/auth/dtos/request-reset-p
 import { UpdateUserDto } from "@/domain/dtos/update-user.dto";
 import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
 import { UserEntity } from "@/domain/entities/user.entity";
-import { AuthRepository } from "@/domain/repositories/auth.repository";
+import { AuthRepository } from "@/domain/auth/repositories/auth.repository";
 
 /**
  * Mock implementation of AuthRepository for testing purposes.
