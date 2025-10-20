@@ -1,6 +1,6 @@
 import { CreateLogValidator } from "./validators/create-log.validator";
 import { LogDatasource } from "./datasources/log.datasource";
-import { DatabaseClient } from "./config/database.client";
+import { DatabaseClient } from "@/infrastructure/persistence/database.client";
 import { CreateLogDto } from "@/domain/log/dtos/create-log.dto";
 
 /**

@@ -1,7 +1,7 @@
 import { LogRepository } from "@/domain/log/repositories/log.repository";
 import { LogEntity } from "@/domain/log/entities/log.entity";
 import { CreateLogDto } from "@/domain/log/dtos/create-log.dto";
-import { DatabaseClient } from "../config/database.client";
+import { DatabaseClient } from "@/infrastructure/persistence/database.client";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { ValidationError } from "@/domain/errors/validation-error";
 import type { LogLevel } from "@/domain/log/interfaces/log.interfaces";

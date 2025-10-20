@@ -12,7 +12,7 @@ const mockPrisma = {
   },
 };
 
-jest.mock("@/infrastructure/config/database.client", () => ({
+jest.mock("@/infrastructure/persistence/database.client", () => ({
   DatabaseClient: {
     create: jest.fn(() => mockPrisma),
   },
