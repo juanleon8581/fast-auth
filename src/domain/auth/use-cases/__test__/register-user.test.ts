@@ -1,8 +1,8 @@
 import { RegisterUser } from "../register-user";
-import { RegisterDto } from "../../auth/dtos/register.dto";
-import { AuthUserEntity } from "../../entities/auth-user.entity";
-import { UserEntity } from "../../entities/user.entity";
-import { MockAuthRepository } from "../../../config/__tests__/mocks/auth-repository.mock";
+import { RegisterDto } from "../../dtos/register.dto";
+import { AuthUserEntity } from "../../../entities/auth-user.entity";
+import { UserEntity } from "../../../entities/user.entity";
+import { MockAuthRepository } from "../../../../config/__tests__/mocks/auth-repository.mock";
 
 describe("RegisterUser", () => {
   let registerUser: RegisterUser;

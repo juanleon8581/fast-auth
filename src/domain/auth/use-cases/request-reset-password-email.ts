@@ -1,5 +1,5 @@
-import { RequestResetPasswordEmailDto } from "../auth/dtos/request-reset-password-email.dto";
-import { AuthRepository } from "../repositories/auth.repository";
+import { RequestResetPasswordEmailDto } from "@/domain/auth/dtos/request-reset-password-email.dto";
+import { AuthRepository } from "@/domain/repositories/auth.repository";
 
 interface IRequestResetPasswordEmailUseCase {
   execute(dto: RequestResetPasswordEmailDto): Promise<void>;

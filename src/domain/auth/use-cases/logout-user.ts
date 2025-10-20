@@ -1,5 +1,5 @@
-import { LogoutDto } from "../auth/dtos/logout.dto";
-import { AuthRepository } from "../repositories/auth.repository";
+import { LogoutDto } from "@/domain/auth/dtos/logout.dto";
+import { AuthRepository } from "@/domain/repositories/auth.repository";
 
 interface LogoutAuthUseCase {
   execute(dto: LogoutDto): Promise<void>;

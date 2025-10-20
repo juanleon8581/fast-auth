@@ -1,6 +1,6 @@
 import { LogoutAuth } from "../logout-user";
 import { LogoutDto } from "@/domain/auth/dtos/logout.dto";
-import { MockAuthRepository } from "../../../config/__tests__/mocks/auth-repository.mock";
+import { MockAuthRepository } from "../../../../config/__tests__/mocks/auth-repository.mock";
 
 describe("LogoutAuth", () => {
   let logoutAuth: LogoutAuth;

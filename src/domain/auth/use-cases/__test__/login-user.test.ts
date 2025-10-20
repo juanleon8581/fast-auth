@@ -2,7 +2,7 @@ import { LoginUser } from "../login-user";
 import { LoginDto } from "@/domain/auth/dtos/login.dto";
 import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
 import { UserEntity } from "@/domain/entities/user.entity";
-import { MockAuthRepository } from "../../../config/__tests__/mocks/auth-repository.mock";
+import { MockAuthRepository } from "@/config/__tests__/mocks/auth-repository.mock";
 
 describe("LoginUser", () => {
   let loginUser: LoginUser;
