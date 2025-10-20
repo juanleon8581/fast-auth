@@ -8,7 +8,7 @@ import { LogoutValidator } from "@/infrastructure/external/auth/validators/logou
 import { ResponseHelper } from "@/presentation/utils/response-helper";
 
 import { Request, Response, NextFunction } from "express";
-import { UpdateUserValidator } from "@/infrastructure/validators/update-user.validator";
+import { UpdateUserValidator } from "@/infrastructure/external/auth/validators/update-user.validator";
 import { UpdateUser } from "@/domain/user/use-cases/update-user";
 import { UpdateUserPassword } from "@/domain/user/use-cases/update-user-password";
 

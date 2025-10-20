@@ -7,7 +7,7 @@ import {
   PHONE_INTERNATIONAL_REGEX,
   NAME_LASTNAME_REGEX,
 } from "@/config/regex/validations.regex";
-import { processValidationError } from "./utils/processError.validator";
+import { processValidationError } from "@/infrastructure/validators/utils/processError.validator";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 

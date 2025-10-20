@@ -13,7 +13,7 @@ import { RequestResetPasswordEmail } from "@/domain/auth/use-cases/request-reset
 import { LogoutAuth } from "@/domain/auth/use-cases/logout-user";
 import { RegisterValidator } from "@/infrastructure/external/auth/validators/register.validator";
 import { LoginValidator } from "@/infrastructure/external/auth/validators/login.validator";
-import { UpdateUserValidator } from "@/infrastructure/validators/update-user.validator";
+import { UpdateUserValidator } from "@/infrastructure/external/auth/validators/update-user.validator";
 import { RequestResetPasswordEmailValidator } from "@/infrastructure/external/auth/validators/request-reset-password-email.validator";
 import { LogoutValidator } from "@/infrastructure/external/auth/validators/logout.validator";
 import { UserEntity } from "@/domain/user/entities/user.entity";
@@ -28,7 +28,7 @@ jest.mock("@/domain/auth/use-cases/request-reset-password-email");
 jest.mock("@/domain/auth/use-cases/logout-user");
 jest.mock("@/infrastructure/external/auth/validators/register.validator");
 jest.mock("@/infrastructure/external/auth/validators/login.validator");
-jest.mock("@/infrastructure/validators/update-user.validator");
+jest.mock("@/infrastructure/external/auth/validators/update-user.validator");
 jest.mock(
   "@/infrastructure/external/auth/validators/request-reset-password-email.validator",
 );
