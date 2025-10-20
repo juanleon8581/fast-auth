@@ -1,8 +1,8 @@
 import type {
   IAuthUserEntity,
   IAuthUserEntityFromRaw,
-} from "../interfaces/auth-user.interfaces";
-import { UserEntity } from "./user.entity";
+} from "@/domain/auth/interfaces/auth-user.interfaces";
+import { UserEntity } from "@/domain/entities/user.entity";
 
 export class AuthUserEntity {
   private constructor(

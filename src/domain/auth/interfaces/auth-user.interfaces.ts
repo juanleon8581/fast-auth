@@ -1,5 +1,5 @@
-import type { UserEntity } from "../entities/user.entity";
-import { TRawJson } from "./general.interfaces";
+import type { UserEntity } from "@/domain/entities/user.entity";
+import { TRawJson } from "@/domain/interfaces/general.interfaces";
 
 export interface IAuthUserEntityFromRaw {
   user: UserEntity;

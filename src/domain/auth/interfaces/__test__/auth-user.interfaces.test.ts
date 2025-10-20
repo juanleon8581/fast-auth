@@ -2,8 +2,8 @@ import {
   IAuthUserEntityFromRaw,
   IAuthUserEntity,
 } from "../auth-user.interfaces";
-import { UserEntity } from "../../entities/user.entity";
-import { AuthUserEntity } from "../../entities/auth-user.entity";
+import { UserEntity } from "@/domain/entities/user.entity";
+import { AuthUserEntity } from "@/domain/entities/auth-user.entity";
 
 describe("Auth User Interfaces", () => {
   let mockUser: UserEntity;
