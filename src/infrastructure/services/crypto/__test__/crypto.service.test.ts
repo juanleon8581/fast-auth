@@ -1,5 +1,5 @@
 import { CryptoAdapter } from "@/infrastructure/adapters/crypto.adapter";
-import { CryptoService } from "@/infrastructure/services/crypto.service";
+import { CryptoService } from "@/infrastructure/services/crypto/crypto.service";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 
 describe("CryptoService - passphrase protect/unprotect", () => {

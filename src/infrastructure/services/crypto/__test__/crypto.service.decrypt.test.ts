@@ -1,5 +1,5 @@
 import { CryptoAdapter } from "@/infrastructure/adapters/crypto.adapter";
-import { CryptoService } from "@/infrastructure/services/crypto.service";
+import { CryptoService } from "@/infrastructure/services/crypto/crypto.service";
 
 describe("CryptoService - decryptPayload end-to-end", () => {
   it("decryptPayload returns original JSON payload", async () => {

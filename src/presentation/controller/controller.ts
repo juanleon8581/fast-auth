@@ -13,7 +13,7 @@ import { UpdateUser } from "@/domain/user/use-cases/update-user";
 import { UpdateUserPassword } from "@/domain/user/use-cases/update-user-password";
 
 import { RequestResetPasswordEmailValidator } from "@/infrastructure/external/auth/validators/request-reset-password-email.validator";
-import { CryptoService } from "@/infrastructure/services/crypto.service";
+import { CryptoService } from "@/infrastructure/services/crypto/crypto.service";
 import { RequestResetPasswordEmail } from "@/domain/auth/use-cases/request-reset-password-email";
 
 export class AuthController {

@@ -7,47 +7,68 @@ describe("CryptoService - public key retrieval and key generation", () => {
   });
 
   it("getLatestPublicKeyBase64url throws when keys directory missing", () => {
-    jest.doMock("@/config/envs", () => ({ __esModule: true, default: { PASSPHRASE: "pass" } }));
+    jest.doMock("@/config/envs", () => ({
+      __esModule: true,
+      default: { PASSPHRASE: "pass" },
+    }));
     jest.doMock("fs", () => ({
       __esModule: true,
       existsSync: jest.fn().mockReturnValue(false),
       readdirSync: jest.fn(),
       readFileSync: jest.fn(),
     }));
-    const { CryptoService } = require("@/infrastructure/services/crypto.service");
+    const {
+      CryptoService,
+    } = require("@/infrastructure/services/crypto/crypto.service");
     const service = CryptoService.getInstance();
-    expect(() => service.getLatestPublicKeyBase64url()).toThrow(/Keys directory not found/);
+    expect(() => service.getLatestPublicKeyBase64url()).toThrow(
+      /Keys directory not found/,
+    );
   });
 
   it("getLatestPublicKeyBase64url throws when no public key files", () => {
-    jest.doMock("@/config/envs", () => ({ __esModule: true, default: { PASSPHRASE: "pass" } }));
+    jest.doMock("@/config/envs", () => ({
+      __esModule: true,
+      default: { PASSPHRASE: "pass" },
+    }));
     jest.doMock("fs", () => ({
       __esModule: true,
       existsSync: jest.fn().mockReturnValue(true),
       readdirSync: jest.fn().mockReturnValue(["private-001.der", "notes.txt"]),
       readFileSync: jest.fn(),
     }));
-    const { CryptoService } = require("@/infrastructure/services/crypto.service");
+    const {
+      CryptoService,
+    } = require("@/infrastructure/services/crypto/crypto.service");
     const service = CryptoService.getInstance();
-    expect(() => service.getLatestPublicKeyBase64url()).toThrow(/No public key found/);
+    expect(() => service.getLatestPublicKeyBase64url()).toThrow(
+      /No public key found/,
+    );
   });
 
   it("getLatestPublicKeyBase64url returns base64url of latest public key", () => {
-    jest.doMock("@/config/envs", () => ({ __esModule: true, default: { PASSPHRASE: "pass" } }));
+    jest.doMock("@/config/envs", () => ({
+      __esModule: true,
+      default: { PASSPHRASE: "pass" },
+    }));
     const der = Buffer.from("public-der-bytes");
     jest.doMock("fs", () => ({
       __esModule: true,
       existsSync: jest.fn().mockReturnValue(true),
-      readdirSync: jest.fn().mockReturnValue([
-        "public-2025-10-07-v1.der",
-        "public-2025-10-08-v1.der",
-      ]),
+      readdirSync: jest
+        .fn()
+        .mockReturnValue([
+          "public-2025-10-07-v1.der",
+          "public-2025-10-08-v1.der",
+        ]),
       readFileSync: jest.fn().mockImplementation((p: string) => {
         if (String(p).includes("2025-10-08")) return der;
         return Buffer.from("unexpected");
       }),
     }));
-    const { CryptoService } = require("@/infrastructure/services/crypto.service");
+    const {
+      CryptoService,
+    } = require("@/infrastructure/services/crypto/crypto.service");
     const service = CryptoService.getInstance();
     const base64url = service.getLatestPublicKeyBase64url();
     expect(base64url).toBe(der.toString("base64url"));
@@ -55,7 +76,9 @@ describe("CryptoService - public key retrieval and key generation", () => {
 
   it("generateKeyPair skips when today's files already exist", async () => {
     // existsSync returns true for public/private paths to trigger skip
-    const existsSync = jest.fn((p: string) => /public-|private-/.test(String(p)) || false);
+    const existsSync = jest.fn(
+      (p: string) => /public-|private-/.test(String(p)) || false,
+    );
     const mkdirSync = jest.fn();
     const writeFileSync = jest.fn();
     jest.doMock("fs", () => ({
@@ -73,13 +96,22 @@ describe("CryptoService - public key retrieval and key generation", () => {
         async generateKeyPair() {
           return { publicKey: {} as any, privateKey: {} as any };
         }
-        async exportPublicKeyDer() { return Buffer.from("pub-der"); }
-        async exportPrivateKeyDer() { return Buffer.from("priv-der"); }
+        async exportPublicKeyDer() {
+          return Buffer.from("pub-der");
+        }
+        async exportPrivateKeyDer() {
+          return Buffer.from("priv-der");
+        }
       },
     }));
     // Mock envs
-    jest.doMock("@/config/envs", () => ({ __esModule: true, default: { PASSPHRASE: "pass" } }));
-    const { CryptoService } = require("@/infrastructure/services/crypto.service");
+    jest.doMock("@/config/envs", () => ({
+      __esModule: true,
+      default: { PASSPHRASE: "pass" },
+    }));
+    const {
+      CryptoService,
+    } = require("@/infrastructure/services/crypto/crypto.service");
     const service = CryptoService.getInstance();
     const spyProtect = jest
       .spyOn(CryptoService.prototype, "encryptPassPhrase")
@@ -111,13 +143,22 @@ describe("CryptoService - public key retrieval and key generation", () => {
         async generateKeyPair() {
           return { publicKey: {} as any, privateKey: {} as any };
         }
-        async exportPublicKeyDer() { return Buffer.from("pub-der"); }
-        async exportPrivateKeyDer() { return Buffer.from("priv-der"); }
+        async exportPublicKeyDer() {
+          return Buffer.from("pub-der");
+        }
+        async exportPrivateKeyDer() {
+          return Buffer.from("priv-der");
+        }
       },
     }));
-    jest.doMock("@/config/envs", () => ({ __esModule: true, default: { PASSPHRASE: "pass" } }));
+    jest.doMock("@/config/envs", () => ({
+      __esModule: true,
+      default: { PASSPHRASE: "pass" },
+    }));
 
-    const { CryptoService } = require("@/infrastructure/services/crypto.service");
+    const {
+      CryptoService,
+    } = require("@/infrastructure/services/crypto/crypto.service");
     const service = CryptoService.getInstance();
     jest
       .spyOn(CryptoService.prototype, "encryptPassPhrase")
@@ -139,7 +180,9 @@ describe("CryptoService - public key retrieval and key generation", () => {
   it("generateKeyPair throws BadRequestError on IO error", async () => {
     const existsSync = jest.fn().mockReturnValue(false);
     const mkdirSync = jest.fn();
-    const writeFileSync = jest.fn(() => { throw new Error("IO"); });
+    const writeFileSync = jest.fn(() => {
+      throw new Error("IO");
+    });
     jest.doMock("fs", () => ({
       __esModule: true,
       existsSync,
@@ -151,21 +194,32 @@ describe("CryptoService - public key retrieval and key generation", () => {
     jest.doMock("@/infrastructure/adapters/crypto.adapter", () => ({
       __esModule: true,
       CryptoAdapter: class {
-        async generateKeyPair() { return { publicKey: {} as any, privateKey: {} as any }; }
-        async exportPublicKeyDer() { return Buffer.from("pub-der"); }
-        async exportPrivateKeyDer() { return Buffer.from("priv-der"); }
+        async generateKeyPair() {
+          return { publicKey: {} as any, privateKey: {} as any };
+        }
+        async exportPublicKeyDer() {
+          return Buffer.from("pub-der");
+        }
+        async exportPrivateKeyDer() {
+          return Buffer.from("priv-der");
+        }
       },
     }));
-    jest.doMock("@/config/envs", () => ({ __esModule: true, default: { PASSPHRASE: "pass" } }));
+    jest.doMock("@/config/envs", () => ({
+      __esModule: true,
+      default: { PASSPHRASE: "pass" },
+    }));
 
-    const { CryptoService } = require("@/infrastructure/services/crypto.service");
+    const {
+      CryptoService,
+    } = require("@/infrastructure/services/crypto/crypto.service");
     const service = CryptoService.getInstance();
     jest
       .spyOn(CryptoService.prototype, "encryptPassPhrase")
       .mockReturnValue(Buffer.from("protected"));
 
     await expect(service.generateKeyPair()).rejects.toEqual(
-      expect.objectContaining({ name: "BadRequestError" })
+      expect.objectContaining({ name: "BadRequestError" }),
     );
   });
 });

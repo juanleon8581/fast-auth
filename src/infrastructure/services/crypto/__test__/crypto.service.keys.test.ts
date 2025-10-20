@@ -16,7 +16,9 @@ describe("CryptoService - getLatestPrivateKeyBase64url", () => {
       readFileSync: jest.fn(),
     }));
 
-    const { CryptoService } = require("@/infrastructure/services/crypto.service");
+    const {
+      CryptoService,
+    } = require("@/infrastructure/services/crypto/crypto.service");
     const service = CryptoService.getInstance();
 
     await expect(service.getLatestPrivateKeyBase64url()).rejects.toThrow(
@@ -36,7 +38,9 @@ describe("CryptoService - getLatestPrivateKeyBase64url", () => {
       readFileSync: jest.fn(),
     }));
 
-    const { CryptoService } = require("@/infrastructure/services/crypto.service");
+    const {
+      CryptoService,
+    } = require("@/infrastructure/services/crypto/crypto.service");
     const service = CryptoService.getInstance();
 
     await expect(service.getLatestPrivateKeyBase64url()).rejects.toThrow(
@@ -49,11 +53,13 @@ describe("CryptoService - getLatestPrivateKeyBase64url", () => {
     jest.doMock("fs", () => ({
       __esModule: true,
       existsSync: jest.fn().mockReturnValue(true),
-      readdirSync: jest.fn().mockReturnValue([
-        "private-001.der",
-        "private-002.der",
-        "public-abc.der",
-      ]),
+      readdirSync: jest
+        .fn()
+        .mockReturnValue([
+          "private-001.der",
+          "private-002.der",
+          "public-abc.der",
+        ]),
       readFileSync: jest.fn().mockImplementation((p: string) => {
         if (String(p).includes("private-002.der")) return derProtected;
         return Buffer.from("unexpected");
@@ -66,13 +72,19 @@ describe("CryptoService - getLatestPrivateKeyBase64url", () => {
       default: { PASSPHRASE: "test-passphrase" },
     }));
 
-    const { CryptoService } = require("@/infrastructure/services/crypto.service");
+    const {
+      CryptoService,
+    } = require("@/infrastructure/services/crypto/crypto.service");
     const service = CryptoService.getInstance();
 
     // Spy and stub decryptPassPhrase to avoid actual crypto
     const decrypted = Buffer.from("decrypted-der");
     const spy = jest
-      .spyOn(require("@/infrastructure/services/crypto.service").CryptoService.prototype, "decryptPassPhrase")
+      .spyOn(
+        require("@/infrastructure/services/crypto/crypto.service").CryptoService
+          .prototype,
+        "decryptPassPhrase",
+      )
       .mockResolvedValue(decrypted);
 
     const result = await service.getLatestPrivateKeyBase64url();

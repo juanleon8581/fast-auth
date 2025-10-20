@@ -1,6 +1,6 @@
 import { existsSync, readdirSync } from "fs";
-import { CryptoService } from "../infrastructure/services/crypto.service";
-import { CryptoAdapter } from "../infrastructure/adapters/crypto.adapter";
+import { CryptoService } from "@/infrastructure/services/crypto/crypto.service";
+import { CryptoAdapter } from "@/infrastructure/adapters/crypto.adapter";
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 
 async function generateEncryptedPayload(payload: TRawJson) {

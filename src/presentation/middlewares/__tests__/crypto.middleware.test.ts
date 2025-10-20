@@ -30,7 +30,7 @@ describe("CryptoMiddleware.decrypt", () => {
     const getInstanceMock = {
       getLatestPrivateKeyBase64url: jest.fn().mockResolvedValue(privateKeyDer),
     } as any;
-    jest.doMock("@/infrastructure/services/crypto.service", () => ({
+    jest.doMock("@/infrastructure/services/crypto/crypto.service", () => ({
       __esModule: true,
       CryptoService: class {
         static getInstance() {
