@@ -1,5 +1,5 @@
 import { EncryptedBodyValidator } from "@/infrastructure/validators/encrypted-body.validator";
-import { EncryptedBodyDto } from "@/domain/dtos/encrypted-body.dto";
+import { EncryptedBodyDto } from "@/domain/crypto/dtos/encrypted-body.dto";
 import { ValidationError } from "@/domain/errors/validation-error";
 
 describe("EncryptedBodyValidator", () => {

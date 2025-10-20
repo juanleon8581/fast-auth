@@ -1,4 +1,4 @@
-import { EncryptedBodyDto } from "@/domain/dtos/encrypted-body.dto";
+import { EncryptedBodyDto } from "@/domain/crypto/dtos/encrypted-body.dto";
 import { ERRORS } from "@/config/strings/global.strings.json";
 
 describe("EncryptedBodyDto", () => {

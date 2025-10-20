@@ -1,4 +1,4 @@
-import { EncryptedBodyDto } from "../dtos/encrypted-body.dto";
+import { EncryptedBodyDto } from "../crypto/dtos/encrypted-body.dto";
 import { TRawJson } from "../shared/interfaces/general.interfaces";
 import { CryptoRepository } from "../repositories/crypto.repository";
 

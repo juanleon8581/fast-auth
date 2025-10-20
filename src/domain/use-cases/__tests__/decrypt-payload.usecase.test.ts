@@ -1,6 +1,6 @@
 import { DecryptPayloadUseCase } from "@/domain/use-cases/decrypt-payload.usecase";
 import { CryptoRepository } from "@/domain/repositories/crypto.repository";
-import { EncryptedBodyDto } from "@/domain/dtos/encrypted-body.dto";
+import { EncryptedBodyDto } from "@/domain/crypto/dtos/encrypted-body.dto";
 
 class MockCryptoRepository extends CryptoRepository {
   encryptPassPhrase(): Buffer {
@@ -19,10 +19,7 @@ class MockCryptoRepository extends CryptoRepository {
     return Promise.resolve(Buffer.alloc(0));
   }
   decryptPayload = jest
-    .fn<
-      Promise<Record<string, unknown>>,
-      [string, string, string, Buffer]
-    >()
+    .fn<Promise<Record<string, unknown>>, [string, string, string, Buffer]>()
     .mockResolvedValue({ ok: true });
 }
 
