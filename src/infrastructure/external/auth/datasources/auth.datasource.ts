@@ -4,7 +4,7 @@ import { UserEntity } from "@/domain/user/entities/user.entity";
 import { AuthRepository } from "@/domain/auth/repositories/auth.repository";
 import { AuthClient } from "@/infrastructure/external/auth/auth.client";
 import { ERRORS } from "@/config/strings/global.strings.json";
-import { DatasourceUserDto } from "@/infrastructure/external/auth/mappers/datasource-user.dto";
+import { DatasourceUserMapper } from "@/infrastructure/external/auth/mappers/datasource-user.mapper";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { ValidationError } from "@/domain/errors/validation-error";
 import { LoginDto } from "@/domain/auth/dtos/login.dto";
@@ -38,12 +38,12 @@ export class AuthDatasource implements AuthRepository {
     if (!data.user || !data.session)
       throw new BadRequestError(ERRORS.AUTH.LOGIN.USER_NOT_FOUND);
 
-    const [errorDto, datasourceUserDto] = DatasourceUserDto.createFrom(
+    const [errorDto, datasourceUserMapper] = DatasourceUserMapper.createFrom(
       data.user,
     );
 
     if (errorDto) throw new ValidationError(errorDto);
-    const user = UserEntity.createFrom(datasourceUserDto!);
+    const user = UserEntity.createFrom(datasourceUserMapper!);
 
     const { data: refreshData, error: refreshError } =
       await authClient.auth.refreshSession({
@@ -89,11 +89,11 @@ export class AuthDatasource implements AuthRepository {
     if (!data.user)
       throw new BadRequestError(ERRORS.AUTH.REGISTER.USER_NO_CREATED);
 
-    const [errorDto, datasourceUserDto] = DatasourceUserDto.createFrom(
+    const [errorDto, datasourceUserMapper] = DatasourceUserMapper.createFrom(
       data.user,
     );
     if (errorDto) throw new ValidationError(errorDto);
-    const user = UserEntity.createFrom(datasourceUserDto!);
+    const user = UserEntity.createFrom(datasourceUserMapper!);
     if (!data.session) return user;
     const authUser = AuthUserEntity.createFrom({
       user,
@@ -120,12 +120,12 @@ export class AuthDatasource implements AuthRepository {
     if (!data.session)
       throw new BadRequestError(ERRORS.AUTH.LOGIN.USER_NOT_FOUND);
 
-    const [errorDto, datasourceUserDto] = DatasourceUserDto.createFrom(
+    const [errorDto, datasourceUserMapper] = DatasourceUserMapper.createFrom(
       data.user,
     );
 
     if (errorDto) throw new ValidationError(errorDto);
-    const user = UserEntity.createFrom(datasourceUserDto!);
+    const user = UserEntity.createFrom(datasourceUserMapper!);
 
     const authUser = AuthUserEntity.createFrom({
       user,
@@ -194,12 +194,12 @@ export class AuthDatasource implements AuthRepository {
       throw new BadRequestError(ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED);
     }
 
-    const [errorDto, datasourceUserDto] = DatasourceUserDto.createFrom(
+    const [errorDto, datasourceUserMapper] = DatasourceUserMapper.createFrom(
       data.user,
     );
 
     if (errorDto) throw new ValidationError(errorDto);
-    const user = UserEntity.createFrom(datasourceUserDto!);
+    const user = UserEntity.createFrom(datasourceUserMapper!);
 
     return AuthUserEntity.createFrom({
       user,
@@ -238,12 +238,12 @@ export class AuthDatasource implements AuthRepository {
       throw new BadRequestError(ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED);
     }
 
-    const [errorDto, datasourceUserDto] = DatasourceUserDto.createFrom(
+    const [errorDto, datasourceUserMapper] = DatasourceUserMapper.createFrom(
       data.user,
     );
 
     if (errorDto) throw new ValidationError(errorDto);
-    const user = UserEntity.createFrom(datasourceUserDto!);
+    const user = UserEntity.createFrom(datasourceUserMapper!);
 
     return AuthUserEntity.createFrom({
       user,
@@ -261,9 +261,12 @@ export class AuthDatasource implements AuthRepository {
       //* Create a new and unique instance of AuthClient for this request
       const authClient = new this.client().create();
 
-      const { error } = await authClient.auth.resetPasswordForEmail(dto.email, {
-        redirectTo: dto.redirectTo,
-      });
+      const { error } = await authClient.auth.resetPasswordForEmail(
+        dto.email,
+        {
+          redirectTo: dto.redirectTo,
+        },
+      );
 
       if (error) {
         throw new BadRequestError(
@@ -276,6 +279,7 @@ export class AuthDatasource implements AuthRepository {
       if (error instanceof BadRequestError) {
         throw error;
       }
+
       throw new BadRequestError(
         ERRORS.AUTH.REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT,
       );

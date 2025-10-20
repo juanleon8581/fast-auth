@@ -3,12 +3,12 @@ import { AuthClient } from "@/infrastructure/external/auth/auth.client";
 import { LoginDto } from "@/domain/auth/dtos/login.dto";
 import { UserEntity } from "@/domain/user/entities/user.entity";
 import { AuthUserEntity } from "@/domain/auth/entities/auth-user.entity";
-import { DatasourceUserDto } from "@/infrastructure/external/auth/mappers/datasource-user.dto";
+import { DatasourceUserMapper } from "@/infrastructure/external/auth/mappers/datasource-user.mapper";
 import {
   createMockLoginDto,
   createMockUser,
   createMockSession,
-  createMockDatasourceUserDto,
+  createMockDatasourceUserMapper,
   createMockUserEntity,
   createMockAuthUserEntity,
 } from "@/config/__tests__/__helpers__/auth-datasource.helpers";
@@ -17,13 +17,13 @@ import {
 jest.mock("@/infrastructure/external/auth/auth.client");
 jest.mock("@/domain/user/entities/user.entity");
 jest.mock("@/domain/auth/entities/auth-user.entity");
-jest.mock("@/infrastructure/external/auth/mappers/datasource-user.dto");
+jest.mock("@/infrastructure/external/auth/mappers/datasource-user.mapper");
 
 const MockedAuthClient = AuthClient as jest.MockedClass<typeof AuthClient>;
 const MockedUserEntity = UserEntity as jest.MockedClass<typeof UserEntity>;
 const MockedAuthUserEntity = AuthUserEntity as jest.MockedClass<any>;
-const MockedDatasourceUserDto = DatasourceUserDto as jest.MockedClass<
-  typeof DatasourceUserDto
+const MockedDatasourceUserMapper = DatasourceUserMapper as jest.MockedClass<
+  typeof DatasourceUserMapper
 >;
 
 describe("AuthDatasource - Login Functionality", () => {
@@ -70,14 +70,14 @@ describe("AuthDatasource - Login Functionality", () => {
           error: null,
         });
 
-        const mockDatasourceUserDto = createMockDatasourceUserDto();
-        (MockedDatasourceUserDto.createFrom as jest.Mock).mockReturnValue([
-          undefined,
-          mockDatasourceUserDto,
-        ]);
-
+        const mockDatasourceUserMapper = createMockDatasourceUserMapper();
         const mockUserEntity = createMockUserEntity();
         const mockAuthUserEntity = createMockAuthUserEntity();
+
+        (MockedDatasourceUserMapper.createFrom as jest.Mock).mockReturnValue([
+          undefined,
+          mockDatasourceUserMapper,
+        ]);
 
         (MockedUserEntity.createFrom as jest.Mock).mockReturnValue(
           mockUserEntity,
@@ -111,10 +111,10 @@ describe("AuthDatasource - Login Functionality", () => {
         expect(mockAuthClient.create).toHaveBeenCalledTimes(1);
       });
 
-      it("should create DatasourceUserDto from Supabase user", async () => {
+      it("should create DatasourceUserMapper from Supabase user", async () => {
         await authDatasource.login(mockLoginDto);
 
-        expect(MockedDatasourceUserDto.createFrom).toHaveBeenCalledWith({
+        expect(MockedDatasourceUserMapper.createFrom).toHaveBeenCalledWith({
           id: "user-123",
           email: "john.doe@example.com",
           user_metadata: {
@@ -181,7 +181,7 @@ describe("AuthDatasource - Login Functionality", () => {
         );
       });
 
-      it("should handle DatasourceUserDto creation failure", async () => {
+      it("should handle DatasourceUserMapper creation failure", async () => {
         const mockUser = createMockUser();
         const mockSession = createMockSession();
 
@@ -190,7 +190,7 @@ describe("AuthDatasource - Login Functionality", () => {
           error: null,
         });
 
-        (MockedDatasourceUserDto.createFrom as jest.Mock).mockImplementation(
+        (MockedDatasourceUserMapper.createFrom as jest.Mock).mockImplementation(
           () => {
             throw new Error("Invalid user data");
           },
@@ -217,13 +217,13 @@ describe("AuthDatasource - Login Functionality", () => {
           error: null,
         });
 
-        const mockDatasourceUserDto = createMockDatasourceUserDto();
+        const mockDatasourceUserMapper = createMockDatasourceUserMapper();
         const mockUserEntity = createMockUserEntity();
         const mockAuthUserEntity = createMockAuthUserEntity();
 
-        (MockedDatasourceUserDto.createFrom as jest.Mock).mockReturnValue([
+        (MockedDatasourceUserMapper.createFrom as jest.Mock).mockReturnValue([
           undefined,
-          mockDatasourceUserDto,
+          mockDatasourceUserMapper,
         ]);
         (MockedUserEntity.createFrom as jest.Mock).mockReturnValue(
           mockUserEntity,
@@ -261,7 +261,7 @@ describe("AuthDatasource - Login Functionality", () => {
         error: null,
       });
 
-      const mockDatasourceUserDto = {
+      const mockDatasourceUserMapper = {
         id: "user-123",
         email: "john.doe@example.com",
         name: "John Doe",
@@ -269,19 +269,19 @@ describe("AuthDatasource - Login Functionality", () => {
         created_at: new Date(),
       };
 
-      (MockedDatasourceUserDto.createFrom as jest.Mock).mockReturnValue([
+      (MockedDatasourceUserMapper.createFrom as jest.Mock).mockReturnValue([
         undefined,
-        mockDatasourceUserDto,
+        mockDatasourceUserMapper,
       ]);
       MockedUserEntity.mockImplementation(() => ({}) as UserEntity);
       MockedAuthUserEntity.mockImplementation(() => ({}) as AuthUserEntity);
 
       await authDatasource.login(mockLoginDto);
 
-      // Verify the flow: AuthClient -> Supabase -> DatasourceUserDto -> UserEntity -> AuthUserEntity
+      // Verify the flow: AuthClient -> Supabase -> DatasourceUserMapper -> UserEntity -> AuthUserEntity
       expect(mockAuthClient.create).toHaveBeenCalled();
       expect(mockSupabaseClient.auth.signInWithPassword).toHaveBeenCalled();
-      expect(MockedDatasourceUserDto.createFrom).toHaveBeenCalled();
+      expect(MockedDatasourceUserMapper.createFrom).toHaveBeenCalled();
       expect(MockedUserEntity.createFrom).toHaveBeenCalled();
       expect(MockedAuthUserEntity.createFrom).toHaveBeenCalled();
     });

@@ -1,11 +1,11 @@
-import { DatasourceUserDto } from "../datasource-user.dto";
+import { DatasourceUserMapper } from "../datasource-user.mapper";
 import type { User } from "@supabase/supabase-js";
 import { ERRORS } from "@/config/strings/global.strings.json";
 
-describe("DatasourceUserDto", () => {
+describe("DatasourceUserMapper", () => {
   describe("constructor", () => {
-    it("should create DatasourceUserDto instance with all properties", () => {
-      const dto = new DatasourceUserDto(
+    it("should create DatasourceUserMapper instance with all properties", () => {
+      const dto = new DatasourceUserMapper(
         "user-123",
         "test@example.com",
         "John Doe",
@@ -20,8 +20,8 @@ describe("DatasourceUserDto", () => {
       expect(dto.phone).toBe("+1234567890");
     });
 
-    it("should create DatasourceUserDto instance without optional phone", () => {
-      const dto = new DatasourceUserDto(
+    it("should create DatasourceUserMapper instance without optional phone", () => {
+      const dto = new DatasourceUserMapper(
         "user-123",
         "test@example.com",
         "John Doe",
@@ -36,7 +36,7 @@ describe("DatasourceUserDto", () => {
     });
 
     it("should freeze the instance to prevent modifications", () => {
-      const dto = new DatasourceUserDto(
+      const dto = new DatasourceUserMapper(
         "user-123",
         "test@example.com",
         "John Doe",
@@ -52,7 +52,7 @@ describe("DatasourceUserDto", () => {
     });
 
     it("should have readonly properties", () => {
-      const dto = new DatasourceUserDto(
+      const dto = new DatasourceUserMapper(
         "user-123",
         "test@example.com",
         "John Doe",
@@ -67,7 +67,7 @@ describe("DatasourceUserDto", () => {
 
   describe("createFrom static method", () => {
     describe("successful creation", () => {
-      it("should create DatasourceUserDto from valid Supabase User with email verified", () => {
+      it("should create DatasourceUserMapper from valid Supabase User with email verified", () => {
         const mockUser = {
           id: "user-123",
           email: "test@example.com",
@@ -78,10 +78,10 @@ describe("DatasourceUserDto", () => {
           },
         } as unknown as User;
 
-        const [error, dto] = DatasourceUserDto.createFrom(mockUser);
+        const [error, dto] = DatasourceUserMapper.createFrom(mockUser);
 
         expect(error).toBeUndefined();
-        expect(dto).toBeInstanceOf(DatasourceUserDto);
+        expect(dto).toBeInstanceOf(DatasourceUserMapper);
         expect(dto?.id).toBe("user-123");
         expect(dto?.email).toBe("test@example.com");
         expect(dto?.name).toBe("John Doe");
@@ -89,7 +89,7 @@ describe("DatasourceUserDto", () => {
         expect(dto?.phone).toBe("+1234567890");
       });
 
-      it("should create DatasourceUserDto from valid Supabase User with email not verified", () => {
+      it("should create DatasourceUserMapper from valid Supabase User with email not verified", () => {
         const mockUser = {
           id: "user-456",
           email: "unverified@example.com",
@@ -100,10 +100,10 @@ describe("DatasourceUserDto", () => {
           },
         } as unknown as User;
 
-        const [error, dto] = DatasourceUserDto.createFrom(mockUser);
+        const [error, dto] = DatasourceUserMapper.createFrom(mockUser);
 
         expect(error).toBeUndefined();
-        expect(dto).toBeInstanceOf(DatasourceUserDto);
+        expect(dto).toBeInstanceOf(DatasourceUserMapper);
         expect(dto?.id).toBe("user-456");
         expect(dto?.email).toBe("unverified@example.com");
         expect(dto?.name).toBe("Jane Smith");
@@ -122,7 +122,7 @@ describe("DatasourceUserDto", () => {
           },
         } as unknown as User;
 
-        const [error, dto] = DatasourceUserDto.createFrom(mockUser);
+        const [error, dto] = DatasourceUserMapper.createFrom(mockUser);
 
         expect(error).toBeUndefined();
         expect(dto?.phone).toBeUndefined();
@@ -139,7 +139,7 @@ describe("DatasourceUserDto", () => {
           },
         } as unknown as User;
 
-        const [error, dto] = DatasourceUserDto.createFrom(mockUser);
+        const [error, dto] = DatasourceUserMapper.createFrom(mockUser);
 
         expect(error).toBe(ERRORS.AUTH.LOGIN.INVALID_DATA_RECEIVED);
         expect(dto).toBeUndefined();
@@ -154,7 +154,7 @@ describe("DatasourceUserDto", () => {
           },
         } as unknown as User;
 
-        const [error, dto] = DatasourceUserDto.createFrom(mockUser);
+        const [error, dto] = DatasourceUserMapper.createFrom(mockUser);
 
         expect(error).toBe(ERRORS.AUTH.LOGIN.INVALID_DATA_RECEIVED);
         expect(dto).toBeUndefined();
@@ -167,7 +167,7 @@ describe("DatasourceUserDto", () => {
           user_metadata: {},
         } as unknown as User;
 
-        const [error, dto] = DatasourceUserDto.createFrom(mockUser);
+        const [error, dto] = DatasourceUserMapper.createFrom(mockUser);
 
         expect(error).toBe(ERRORS.AUTH.LOGIN.INVALID_DATA_RECEIVED);
         expect(dto).toBeUndefined();
@@ -179,7 +179,7 @@ describe("DatasourceUserDto", () => {
           email: "test@example.com",
         } as unknown as User;
 
-        const [error, dto] = DatasourceUserDto.createFrom(mockUser);
+        const [error, dto] = DatasourceUserMapper.createFrom(mockUser);
 
         expect(error).toBe(ERRORS.AUTH.LOGIN.INVALID_DATA_RECEIVED);
         expect(dto).toBeUndefined();
@@ -194,7 +194,7 @@ describe("DatasourceUserDto", () => {
           },
         } as unknown as User;
 
-        const [error, dto] = DatasourceUserDto.createFrom(mockUser);
+        const [error, dto] = DatasourceUserMapper.createFrom(mockUser);
 
         expect(error).toBe(ERRORS.AUTH.LOGIN.INVALID_DATA_RECEIVED);
         expect(dto).toBeUndefined();
@@ -209,7 +209,7 @@ describe("DatasourceUserDto", () => {
           },
         } as unknown as User;
 
-        const [error, dto] = DatasourceUserDto.createFrom(mockUser);
+        const [error, dto] = DatasourceUserMapper.createFrom(mockUser);
 
         expect(error).toBe(ERRORS.AUTH.LOGIN.INVALID_DATA_RECEIVED);
         expect(dto).toBeUndefined();
@@ -223,7 +223,7 @@ describe("DatasourceUserDto", () => {
           email: "test@example.com",
         } as unknown as User;
 
-        const result = DatasourceUserDto.createFrom(mockUser);
+        const result = DatasourceUserMapper.createFrom(mockUser);
 
         expect(Array.isArray(result)).toBe(true);
         expect(result.length).toBe(1);
@@ -239,19 +239,19 @@ describe("DatasourceUserDto", () => {
           },
         } as unknown as User;
 
-        const result = DatasourceUserDto.createFrom(mockUser);
+        const result = DatasourceUserMapper.createFrom(mockUser);
 
         expect(Array.isArray(result)).toBe(true);
         expect(result.length).toBe(2);
         expect(result[0]).toBeUndefined();
-        expect(result[1]).toBeInstanceOf(DatasourceUserDto);
+        expect(result[1]).toBeInstanceOf(DatasourceUserMapper);
       });
     });
   });
 
   describe("interface compliance", () => {
-    it("should implement IDatasourceUserDto interface", () => {
-      const dto = new DatasourceUserDto(
+    it("should implement IDatasourceUserMapper interface", () => {
+      const dto = new DatasourceUserMapper(
         "user-123",
         "test@example.com",
         "John Doe",
@@ -274,7 +274,7 @@ describe("DatasourceUserDto", () => {
     });
 
     it("should handle optional phone property correctly", () => {
-      const dtoWithPhone = new DatasourceUserDto(
+      const dtoWithPhone = new DatasourceUserMapper(
         "user-123",
         "test@example.com",
         "John Doe",
@@ -282,7 +282,7 @@ describe("DatasourceUserDto", () => {
         "+1234567890",
       );
 
-      const dtoWithoutPhone = new DatasourceUserDto(
+      const dtoWithoutPhone = new DatasourceUserMapper(
         "user-456",
         "test2@example.com",
         "Jane Doe",
@@ -305,7 +305,7 @@ describe("DatasourceUserDto", () => {
         },
       } as unknown as User;
 
-      const [error, dto] = DatasourceUserDto.createFrom(mockUser);
+      const [error, dto] = DatasourceUserMapper.createFrom(mockUser);
 
       expect(error).toBeUndefined();
       expect(dto?.name).toBe(longName);
@@ -321,7 +321,7 @@ describe("DatasourceUserDto", () => {
         },
       } as unknown as User;
 
-      const [error, dto] = DatasourceUserDto.createFrom(mockUser);
+      const [error, dto] = DatasourceUserMapper.createFrom(mockUser);
 
       expect(error).toBeUndefined();
       expect(dto?.name).toBe(specialName);
@@ -337,7 +337,7 @@ describe("DatasourceUserDto", () => {
         },
       } as unknown as User;
 
-      const [error, dto] = DatasourceUserDto.createFrom(mockUser);
+      const [error, dto] = DatasourceUserMapper.createFrom(mockUser);
 
       expect(error).toBeUndefined();
       expect(dto?.email_verified).toBe(true);

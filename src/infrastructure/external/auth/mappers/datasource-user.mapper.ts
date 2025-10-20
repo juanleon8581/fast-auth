@@ -1,7 +1,7 @@
 import type { User } from "@supabase/supabase-js";
 import { ERRORS } from "@/config/strings/global.strings.json";
 
-interface IDatasourceUserDto {
+interface IDatasourceUserMapper {
   id: string;
   email: string;
   name: string;
@@ -9,7 +9,7 @@ interface IDatasourceUserDto {
   phone?: string;
 }
 
-export class DatasourceUserDto implements IDatasourceUserDto {
+export class DatasourceUserMapper implements IDatasourceUserMapper {
   constructor(
     public readonly id: string,
     public readonly email: string,
@@ -20,13 +20,13 @@ export class DatasourceUserDto implements IDatasourceUserDto {
     Object.freeze(this);
   }
 
-  private static create(props: IDatasourceUserDto): DatasourceUserDto {
+  private static create(props: IDatasourceUserMapper): DatasourceUserMapper {
     const { id, email, name, email_verified, phone } = props;
 
-    return new DatasourceUserDto(id, email, name, email_verified, phone);
+    return new DatasourceUserMapper(id, email, name, email_verified, phone);
   }
 
-  static createFrom = (raw: User): [string?, DatasourceUserDto?] => {
+  static createFrom = (raw: User): [string?, DatasourceUserMapper?] => {
     const { id, email, email_confirmed_at, phone } = raw;
     const name = raw.user_metadata?.display_name;
 
@@ -35,7 +35,7 @@ export class DatasourceUserDto implements IDatasourceUserDto {
 
     return [
       undefined,
-      DatasourceUserDto.create({
+      DatasourceUserMapper.create({
         id,
         email,
         name,

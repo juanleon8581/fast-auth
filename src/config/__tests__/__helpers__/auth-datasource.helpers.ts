@@ -52,7 +52,7 @@ export const createMockSession = () => ({
   refresh_token: "refresh-token-123",
 });
 
-export const createMockDatasourceUserDto = () => ({
+export const createMockDatasourceUserMapper = () => ({
   id: "user-123",
   email: "john.doe@example.com",
   name: "John Doe",
@@ -93,20 +93,20 @@ export const TEST_SCENARIOS = {
   SUCCESSFUL_REGISTRATION: {
     user: createMockUser(),
     session: createMockSession(),
-    datasourceUserDto: createMockDatasourceUserDto(),
+    datasourceUserDto: createMockDatasourceUserMapper(),
     userEntity: createMockUserEntity(),
     authUserEntity: createMockAuthUserEntity(),
   },
   REGISTRATION_WITHOUT_SESSION: {
     user: createMockUserWithoutSession(),
     session: null,
-    datasourceUserDto: createMockDatasourceUserDto(),
+    datasourceUserDto: createMockDatasourceUserMapper(),
     userEntity: createMockUserEntity(),
   },
   SUCCESSFUL_LOGIN: {
     user: createMockUser(),
     session: createMockSession(),
-    datasourceUserDto: createMockDatasourceUserDto(),
+    datasourceUserDto: createMockDatasourceUserMapper(),
     userEntity: createMockUserEntity(),
     authUserEntity: createMockAuthUserEntity(),
   },

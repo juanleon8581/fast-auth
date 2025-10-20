@@ -3,7 +3,7 @@ import { AuthClient } from "@/infrastructure/external/auth/auth.client";
 import { UpdateUserDto } from "@/domain/user/dtos/update-user.dto";
 import { UserEntity } from "@/domain/user/entities/user.entity";
 import { AuthUserEntity } from "@/domain/auth/entities/auth-user.entity";
-import { DatasourceUserDto } from "@/infrastructure/external/auth/mappers/datasource-user.dto";
+import { DatasourceUserMapper } from "@/infrastructure/external/auth/mappers/datasource-user.mapper";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { ValidationError } from "@/domain/errors/validation-error";
 import { ERRORS } from "@/config/strings/global.strings.json";
@@ -11,12 +11,12 @@ import { ERRORS } from "@/config/strings/global.strings.json";
 // Mock dependencies
 jest.mock("@/infrastructure/external/auth/auth.client");
 jest.mock("@/domain/user/entities/user.entity");
-jest.mock("@/infrastructure/external/auth/mappers/datasource-user.dto");
+jest.mock("@/infrastructure/external/auth/mappers/datasource-user.mapper");
 
 const MockedAuthClient = AuthClient as jest.MockedClass<typeof AuthClient>;
 const MockedUserEntity = UserEntity as jest.MockedClass<typeof UserEntity>;
-const MockedDatasourceUserDto = DatasourceUserDto as jest.MockedClass<
-  typeof DatasourceUserDto
+const MockedDatasourceUserMapper = DatasourceUserMapper as jest.MockedClass<
+  typeof DatasourceUserMapper
 >;
 
 describe("AuthDatasource - UpdateUser Functionality", () => {
@@ -59,7 +59,7 @@ describe("AuthDatasource - UpdateUser Functionality", () => {
 
     // Mock static methods to return simple values
     (MockedUserEntity.createFrom as jest.Mock).mockReturnValue(mockUserEntity);
-    (MockedDatasourceUserDto.createFrom as jest.Mock).mockReturnValue([
+    (MockedDatasourceUserMapper.createFrom as jest.Mock).mockReturnValue([
       undefined,
       { id: "user-123" },
     ]);
@@ -215,13 +215,13 @@ describe("AuthDatasource - UpdateUser Functionality", () => {
         ).rejects.toThrow(BadRequestError);
       });
 
-      it("should handle DatasourceUserDto creation failure", async () => {
+      it("should handle DatasourceUserMapper creation failure", async () => {
         mockSupabaseClient.auth.updateUser.mockResolvedValue({
           data: { user: { id: "user-123" } },
           error: null,
         });
 
-        (MockedDatasourceUserDto.createFrom as jest.Mock).mockReturnValue([
+        (MockedDatasourceUserMapper.createFrom as jest.Mock).mockReturnValue([
           "Invalid user data",
           undefined,
         ]);
