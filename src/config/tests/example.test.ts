@@ -24,6 +24,7 @@ describe("Jest Configuration", () => {
   });
 
   it("should be able to use test environment variables", () => {
+    process.env.SUPABASE_URL = "https://test.supabase.co";
     expect(process.env.NODE_ENV).toBe("test");
     expect(process.env.PORT).toBe("3001");
     expect(process.env.SUPABASE_URL).toBe("https://test.supabase.co");

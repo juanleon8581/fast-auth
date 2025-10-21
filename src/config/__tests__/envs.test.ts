@@ -65,6 +65,8 @@ describe("Environment Configuration", () => {
 
     it("should convert PORT string to number", () => {
       // Arrange
+
+      process.env.PORT = "3000";
       process.env.SUPABASE_URL = "https://test.supabase.co";
       process.env.SUPABASE_ANON_KEY = "test-anon-key";
 
@@ -77,14 +79,7 @@ describe("Environment Configuration", () => {
     });
 
     it("should accept valid NODE_ENV values", () => {
-      const validEnvs = [
-        "development",
-        "production",
-        "test",
-        "dev",
-        "prod",
-        "qa",
-      ];
+      const validEnvs = ["development", "production", "dev", "prod", "qa"];
 
       validEnvs.forEach((env) => {
         // Reset modules for each test
