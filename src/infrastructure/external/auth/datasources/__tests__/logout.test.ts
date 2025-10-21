@@ -1,7 +1,7 @@
 import { AuthDatasource } from "@/infrastructure/external/auth/datasources/auth.datasource";
 import { AuthClient } from "@/infrastructure/external/auth/auth.client";
 import { LogoutDto } from "@/domain/auth/dtos/logout.dto";
-import { createMockLogoutDto } from "@/config/__tests__/__helpers__/auth-datasource.helpers";
+import { createMockLogoutDto } from "@/config/tests/__helpers__/auth-datasource.helpers";
 
 // Mock dependencies
 jest.mock("@/infrastructure/external/auth/auth.client");

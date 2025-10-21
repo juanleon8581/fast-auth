@@ -12,7 +12,7 @@ import {
   createMockDatasourceUserMapper,
   createMockUserEntity,
   createMockAuthUserEntity,
-} from "@/config/__tests__/__helpers__/auth-datasource.helpers";
+} from "@/config/tests/__helpers__/auth-datasource.helpers";
 
 // Mock dependencies
 jest.mock("@/infrastructure/external/auth/auth.client");

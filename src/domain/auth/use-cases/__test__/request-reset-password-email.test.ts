@@ -1,6 +1,6 @@
 import { RequestResetPasswordEmail } from "../request-reset-password-email";
 import { RequestResetPasswordEmailDto } from "../../dtos/request-reset-password-email.dto";
-import { MockAuthRepository } from "../../../../config/__tests__/mocks/auth-repository.mock";
+import { MockAuthRepository } from "../../../../config/tests/__mocks__/auth-repository.mock";
 
 describe("RequestResetPasswordEmail", () => {
   let requestResetPasswordEmail: RequestResetPasswordEmail;
