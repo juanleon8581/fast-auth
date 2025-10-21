@@ -56,19 +56,42 @@ src/
 │   ├── middleware/             # Application middleware
 │   └── validators/             # Input validators
 └── infrastructure/             # Frameworks & Drivers
-    ├── config/                 # Configurations
-    ├── datasources/            # Data access implementations
-    ├── services/               # External services
-    └── validators/             # Infrastructure validators
+    ├── external/
+    │   └── auth/               # External Auth capability (driver + datasource)
+    │       ├── auth.client.ts  # Driver for external provider (Supabase SDK)
+    │       ├── datasources/
+    │       ├── mappers/
+    │       └── validators/
+    ├── persistence/            # ORM/database client + datasources
+    │   ├── database.client.ts  # Driver for database (Prisma client)
+    │   ├── datasource/
+    │   │   └── log.datasource.ts
+    │   └── mappers/
+    ├── services/               # Cross-cutting infra services
+    │   ├── crypto/
+    │   │   ├── adapter/
+    │   │   ├── crypto.service.ts
+    │   │   └── validators/
+    │   └── logger/
+    │       ├── adapter/
+    │       ├── interfaces/
+    │       ├── logger.service.ts
+    │       └── validators/
+    └── helpers/
+        └── validators/
+            └── processError.validator.ts
 ```
 
 #### Import Policy (No Barrels)
+
 - Use explicit per-file imports only; barrel files (`index.ts`) are prohibited.
 - Prefer `@/domain/<feature>/<type>/<file>` paths for clarity.
 - Cross-cutting modules (`crypto`, `log`) must not depend on business features.
 - Shared contracts reside in `src/domain/shared` and are safe to import across features.
+- Infrastructure depends on domain contracts only; avoid direct cross-imports between `external/`, `persistence/`, and `services` (they interact via use cases and domain contracts).
 
 Example:
+
 ```ts
 import { LogoutDto } from "@/domain/auth/dtos/logout.dto";
 import { UpdateUser } from "@/domain/user/use-cases/update-user";
@@ -289,6 +312,26 @@ export class SendWelcomeEmailHandler
       event.eventData.email,
       event.eventData.userId,
     );
+  }
+}
+
+export class SendOrderConfirmationHandler
+  implements EventHandler<OrderCreatedEvent>
+{
+  constructor(
+    private emailService: EmailService,
+    private userRepository: UserRepository,
+  ) {}
+
+  async handle(event: OrderCreatedEvent): Promise<void> {
+    const user = await this.userRepository.findById(event.customerId);
+    if (user) {
+      await this.emailService.sendOrderConfirmation(
+        user.email,
+        event.orderId,
+        event.amount,
+      );
+    }
   }
 }
 ```
