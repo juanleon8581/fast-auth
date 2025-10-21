@@ -1,4 +1,4 @@
-import { LogDatasource } from "@/infrastructure/persistence/datasource/log.datasource";
+import { LogDatasource } from "@/infrastructure/persistence/datasources/log.datasource";
 import { TypeGuardsUtils } from "@/utils/type-guards.utils";
 import { CreateLogDto } from "@/domain/log/dtos/create-log.dto";
 import { CreateLog } from "@/domain/log/use-cases/create-log";
