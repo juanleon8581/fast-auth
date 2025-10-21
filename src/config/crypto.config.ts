@@ -1,4 +1,4 @@
-import { TEnvironment } from "@/domain/shared/interfaces/environtments.interfaces";
+import { TEnvironment } from "@/domain/shared/interfaces/environments.interfaces";
 
 interface ICryptoConfig {
   keysPath: string; // Path to the directory containing encryption keys
