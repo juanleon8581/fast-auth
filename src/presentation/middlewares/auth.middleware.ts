@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { jwtVerify } from "jose";
 import { TextEncoder } from "util";
-import envs from "../../config/envs";
+
 import { UnauthorizedError } from "@/domain/errors/unauthorized-error";
 import { ERRORS } from "@/config/strings/global.strings.json";
 import { LoggerService } from "@/infrastructure/services/logger/logger.service";
+import envs from "@/infrastructure/config/environment/envs";
 
 /**
  * Authentication middleware that validates JWT Bearer tokens
