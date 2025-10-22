@@ -1,16 +1,10 @@
 import { AuthClient, AuthClientType } from "../auth.client";
 import { createClient } from "@supabase/supabase-js";
-import envs from "@/config/envs";
+import envs from "@/infrastructure/config/environment/envs";
 
 // Mock Supabase client
 jest.mock("@supabase/supabase-js", () => ({
   createClient: jest.fn(),
-}));
-
-// Mock envs
-jest.mock("@/config/envs", () => ({
-  SUPABASE_URL: "https://test.supabase.co",
-  SUPABASE_ANON_KEY: "test-anon-key",
 }));
 
 const mockCreateClient = createClient as jest.MockedFunction<

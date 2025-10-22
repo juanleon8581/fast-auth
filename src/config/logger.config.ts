@@ -1,5 +1,5 @@
 import winston from "winston";
-import envs from "./envs";
+import envs from "@/infrastructure/config/environment/envs";
 
 // Define log levels matching our domain interfaces
 const logLevels = {

@@ -10,10 +10,6 @@ describe("CryptoService - public key retrieval and key generation", () => {
   });
 
   it("getLatestPublicKeyBase64url throws when keys directory missing", () => {
-    jest.doMock("@/config/envs", () => ({
-      __esModule: true,
-      default: { PASSPHRASE: "pass" },
-    }));
     jest.doMock("fs", () => ({
       __esModule: true,
       existsSync: jest.fn().mockReturnValue(false),
@@ -30,10 +26,6 @@ describe("CryptoService - public key retrieval and key generation", () => {
   });
 
   it("getLatestPublicKeyBase64url throws when no public key files", () => {
-    jest.doMock("@/config/envs", () => ({
-      __esModule: true,
-      default: { PASSPHRASE: "pass" },
-    }));
     jest.doMock("fs", () => ({
       __esModule: true,
       existsSync: jest.fn().mockReturnValue(true),
@@ -50,10 +42,6 @@ describe("CryptoService - public key retrieval and key generation", () => {
   });
 
   it("getLatestPublicKeyBase64url returns base64url of latest public key", () => {
-    jest.doMock("@/config/envs", () => ({
-      __esModule: true,
-      default: { PASSPHRASE: "pass" },
-    }));
     const der = Buffer.from("public-der-bytes");
     jest.doMock("fs", () => ({
       __esModule: true,
@@ -107,11 +95,7 @@ describe("CryptoService - public key retrieval and key generation", () => {
         }
       },
     }));
-    // Mock envs
-    jest.doMock("@/config/envs", () => ({
-      __esModule: true,
-      default: { PASSPHRASE: "pass" },
-    }));
+
     const {
       CryptoService,
     } = require("@/infrastructure/services/crypto/crypto.service");
@@ -153,10 +137,6 @@ describe("CryptoService - public key retrieval and key generation", () => {
           return Buffer.from("priv-der");
         }
       },
-    }));
-    jest.doMock("@/config/envs", () => ({
-      __esModule: true,
-      default: { PASSPHRASE: "pass" },
     }));
 
     const {
@@ -207,10 +187,6 @@ describe("CryptoService - public key retrieval and key generation", () => {
           return Buffer.from("priv-der");
         }
       },
-    }));
-    jest.doMock("@/config/envs", () => ({
-      __esModule: true,
-      default: { PASSPHRASE: "pass" },
     }));
 
     const {

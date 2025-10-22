@@ -1,11 +1,5 @@
 import { LoggerService } from "@/infrastructure/services/logger/logger.service";
 
-// Mocks
-jest.mock("@/config/envs", () => ({
-  __esModule: true,
-  default: { NODE_ENV: "dev" },
-}));
-
 const mockExecute = jest.fn().mockResolvedValue(undefined);
 
 jest.mock("@/domain/log/use-cases/create-log", () => ({
@@ -136,11 +130,8 @@ describe("LoggerService", () => {
   });
 
   it("skips non-prod levels when NODE_ENV=prod", () => {
+    process.env.NODE_ENV = "prod";
     jest.resetModules();
-    jest.doMock("@/config/envs", () => ({
-      __esModule: true,
-      default: { NODE_ENV: "prod" },
-    }));
     jest.isolateModules(() => {
       const { LoggerService: ProdLogger } = require("../logger.service");
       const req = makeReq();

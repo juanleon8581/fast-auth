@@ -1,5 +1,5 @@
 import cryptoConfig from "@/config/crypto.config";
-import envs from "@/config/envs";
+import envs from "@/infrastructure/config/environment/envs";
 import { DecryptPayloadUseCase } from "@/domain/crypto/use-cases/decrypt-payload.usecase";
 import { CryptoService } from "@/infrastructure/services/crypto/crypto.service";
 import { EncryptedBodyValidator } from "@/infrastructure/services/crypto/validators/encrypted-body.validator";

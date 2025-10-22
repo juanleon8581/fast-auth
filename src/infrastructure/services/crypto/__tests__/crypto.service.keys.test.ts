@@ -5,10 +5,6 @@ describe("CryptoService - getLatestPrivateKeyBase64url", () => {
   });
 
   it("throws when keys directory is missing", async () => {
-    jest.doMock("@/config/envs", () => ({
-      __esModule: true,
-      default: { PASSPHRASE: "test-passphrase" },
-    }));
     jest.doMock("fs", () => ({
       __esModule: true,
       existsSync: jest.fn().mockReturnValue(false),
@@ -27,10 +23,6 @@ describe("CryptoService - getLatestPrivateKeyBase64url", () => {
   });
 
   it("throws when no private key files found", async () => {
-    jest.doMock("@/config/envs", () => ({
-      __esModule: true,
-      default: { PASSPHRASE: "test-passphrase" },
-    }));
     jest.doMock("fs", () => ({
       __esModule: true,
       existsSync: jest.fn().mockReturnValue(true),
@@ -64,12 +56,6 @@ describe("CryptoService - getLatestPrivateKeyBase64url", () => {
         if (String(p).includes("private-002.der")) return derProtected;
         return Buffer.from("unexpected");
       }),
-    }));
-
-    // Mock envs for passphrase usage
-    jest.doMock("@/config/envs", () => ({
-      __esModule: true,
-      default: { PASSPHRASE: "test-passphrase" },
     }));
 
     const {

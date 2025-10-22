@@ -6,7 +6,7 @@ import {
   ILogData,
   PROD_LOG_LEVELS,
 } from "@/domain/log/interfaces/log.interfaces";
-import envs from "@/config/envs";
+import envs from "@/infrastructure/config/environment/envs";
 import {
   IErrorlogData,
   IGenericLog,

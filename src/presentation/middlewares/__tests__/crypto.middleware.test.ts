@@ -16,15 +16,6 @@ describe("CryptoMiddleware.decrypt", () => {
       },
     }));
 
-    // Mock envs
-    jest.doMock("@/config/envs", () => ({
-      __esModule: true,
-      default: {
-        NODE_ENV: "test",
-        PASSPHRASE: "very-secure-passphrase",
-      },
-    }));
-
     // Mock CryptoService to avoid filesystem
     const privateKeyDer = Buffer.from("pkcs8-der");
     const getInstanceMock = {
@@ -90,15 +81,6 @@ describe("CryptoMiddleware.decrypt", () => {
         cryptoEnvironment: ["prod", "qa"],
         forceEncrypt: false,
         disabledEncrypt: true,
-      },
-    }));
-
-    // Mock envs to a non-encrypted env
-    jest.doMock("@/config/envs", () => ({
-      __esModule: true,
-      default: {
-        NODE_ENV: "dev",
-        PASSPHRASE: "very-secure-passphrase",
       },
     }));
 

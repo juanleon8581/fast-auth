@@ -1,6 +1,5 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import envs from "@/config/envs";
-
+import envs from "@/infrastructure/config/environment/envs";
 export type AuthClientType = SupabaseClient;
 
 export class AuthClient {
