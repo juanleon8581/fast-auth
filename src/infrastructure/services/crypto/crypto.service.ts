@@ -11,7 +11,7 @@ import { KeyExportOptions } from "crypto";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { CryptoRepository } from "@/domain/crypto/repositories/crypto.repository";
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
-import cryptoConfig from "@/config/crypto.config";
+import cryptoConfig from "@/infrastructure/config/crypto/crypto.config";
 
 export class CryptoService implements CryptoRepository {
   private readonly cryptoAdapter: CryptoAdapter = new CryptoAdapter();

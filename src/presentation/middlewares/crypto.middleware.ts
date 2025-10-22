@@ -1,4 +1,4 @@
-import cryptoConfig from "@/config/crypto.config";
+import cryptoConfig from "@/infrastructure/config/crypto/crypto.config";
 import envs from "@/infrastructure/config/environment/envs";
 import { DecryptPayloadUseCase } from "@/domain/crypto/use-cases/decrypt-payload.usecase";
 import { CryptoService } from "@/infrastructure/services/crypto/crypto.service";

@@ -6,7 +6,7 @@ describe("CryptoMiddleware.decrypt", () => {
 
   it("when encryption enabled, decrypts body and calls next", async () => {
     // Mock config to force encryption
-    jest.doMock("@/config/crypto.config", () => ({
+    jest.doMock("@/infrastructure/config/crypto/crypto.config", () => ({
       __esModule: true,
       default: {
         keysPath: "./.keys",
@@ -74,7 +74,7 @@ describe("CryptoMiddleware.decrypt", () => {
 
   it("when encryption disabled, skips decryption and calls next", async () => {
     // Mock config to disable encryption and not force
-    jest.doMock("@/config/crypto.config", () => ({
+    jest.doMock("@/infrastructure/config/crypto/crypto.config", () => ({
       __esModule: true,
       default: {
         keysPath: "./.keys",
