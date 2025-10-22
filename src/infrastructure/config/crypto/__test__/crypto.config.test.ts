@@ -27,13 +27,7 @@ describe("crypto.config.test", () => {
 
   describe("CryptoConfig – Environment values are compatible", () => {
     it("should include only valid TEnvironment values in cryptoEnvironment", () => {
-      const validEnvironments: TEnvironment[] = [
-        "prod",
-        "qa",
-        "dev",
-        "production",
-        "development",
-      ];
+      const validEnvironments: TEnvironment[] = ["prod", "qa", "dev"];
 
       expect(
         cryptoConfig.cryptoEnvironment.every((env: TEnvironment) =>
@@ -46,14 +40,6 @@ describe("crypto.config.test", () => {
       expect(uniqueEnvironments.size).toBe(
         cryptoConfig.cryptoEnvironment.length,
       );
-    });
-    it("should not include long-form names (e.g., 'production', 'development') in cryptoEnvironment", () => {
-      const longFormNames: TEnvironment[] = ["production", "development"];
-      expect(
-        cryptoConfig.cryptoEnvironment.every(
-          (env: TEnvironment) => !longFormNames.includes(env),
-        ),
-      ).toBe(true);
     });
   });
 

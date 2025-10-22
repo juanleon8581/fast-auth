@@ -5,8 +5,6 @@ import { EnvValidator, type IEnv } from "./env.validator";
 
 export class EnvConfig {
   private static readonly _envMap: Record<string, TEnvironment> = {
-    development: "dev",
-    production: "prod",
     qa: "qa",
     dev: "dev",
     prod: "prod",

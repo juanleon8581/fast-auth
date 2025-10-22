@@ -57,13 +57,6 @@ describe("EnvConfig test suite", () => {
       expect(envs.NODE_ENV).toBe("dev");
     });
 
-    it("should map 'production' to 'prod'", () => {
-      process.env = { ...mockEnv };
-      process.env.NODE_ENV = "production";
-      const envs = EnvConfig.loadEnvConfig();
-      expect(envs.NODE_ENV).toBe("prod");
-    });
-
     it("should map 'qa' to 'qa'", () => {
       process.env = { ...mockEnv };
       process.env.NODE_ENV = "qa";
@@ -155,19 +148,6 @@ describe("EnvConfig test suite", () => {
       expect(process.env.NODE_ENV).toBeUndefined();
       const defaultEnv = EnvConfig.getCurrentEnv();
       expect(defaultEnv).toBe("dev");
-    });
-
-    it("should normalize supported long-form names to short-form: development → dev, production → prod", () => {
-      process.env = { ...mockEnv };
-      const longFormEnvs: TEnvironment[] = ["development", "production"];
-      const shortFormEnvs: TEnvironment[] = ["dev", "prod"];
-      longFormEnvs.forEach((env, index) => {
-        process.env.NODE_ENV = env;
-        const normalizedEnv = EnvConfig.getCurrentEnv();
-        const shortFormEnv = shortFormEnvs[index];
-
-        expect(normalizedEnv).toEqual(shortFormEnv);
-      });
     });
 
     it("should accept already short-form names: dev, prod, qa", () => {

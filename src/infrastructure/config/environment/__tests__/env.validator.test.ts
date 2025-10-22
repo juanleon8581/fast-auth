@@ -100,13 +100,7 @@ describe("env.validator.test", () => {
     });
 
     it("should accept NODE_ENV among: dev, prod, qa, development, production", () => {
-      const validEnvs: TEnvironment[] = [
-        "dev",
-        "prod",
-        "qa",
-        "development",
-        "production",
-      ];
+      const validEnvs: TEnvironment[] = ["dev", "prod", "qa"];
 
       validEnvs.forEach((env) => {
         process.env.NODE_ENV = env;

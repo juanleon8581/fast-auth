@@ -1,13 +1,7 @@
 import { TEnvironment } from "@/domain/shared/interfaces/environments.interfaces";
 import { z } from "zod";
 
-const environmentsArray: TEnvironment[] = [
-  "dev",
-  "prod",
-  "qa",
-  "development",
-  "production",
-];
+const environmentsArray: TEnvironment[] = ["dev", "prod", "qa"];
 
 const envSchema = z.object({
   NODE_ENV: z.enum(environmentsArray, {
