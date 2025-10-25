@@ -64,12 +64,12 @@ const transports: winston.transport[] = [
   // Console transport
   new winston.transports.Console({
     format: consoleFormat,
-    level: envs.NODE_ENV === "production" ? "info" : "debug",
+    level: envs.NODE_ENV === "prod" ? "info" : "debug",
   }),
 ];
 
 // Add file transport for production
-if (envs.NODE_ENV === "production") {
+if (envs.NODE_ENV === "prod") {
   transports.push(
     new winston.transports.File({
       filename: "logs/error.log",
@@ -92,7 +92,7 @@ if (envs.NODE_ENV === "production") {
 // Create winston logger instance
 const logger = winston.createLogger({
   levels: logLevels,
-  level: envs.NODE_ENV === "production" ? "info" : "debug",
+  level: envs.NODE_ENV === "prod" ? "info" : "debug",
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.errors({ stack: true }),
@@ -103,7 +103,7 @@ const logger = winston.createLogger({
 });
 
 // Handle uncaught exceptions and unhandled rejections
-if (envs.NODE_ENV === "production") {
+if (envs.NODE_ENV === "prod") {
   logger.exceptions.handle(
     new winston.transports.File({ filename: "logs/exceptions.log" }),
   );
