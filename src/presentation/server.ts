@@ -2,11 +2,11 @@ import express, { Router, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import swaggerUi from "swagger-ui-express";
-import getSwaggerSpec from "@/infrastructure/services/logger/adapter/swagger.config";
 import { ErrorMiddleware } from "./middlewares/error.middleware";
 import { RequestIdMiddleware } from "./middlewares/request-id.middleware";
 import { ResponseHelper } from "./utils/response-helper";
 import { NotFoundError } from "@/domain/errors/not-found-error";
+import getSwaggerSpec from "@/infrastructure/config/adapter/swagger.config";
 
 interface IOptions {
   port: number;
