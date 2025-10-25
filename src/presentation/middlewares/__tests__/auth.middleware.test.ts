@@ -6,13 +6,18 @@ import { jwtVerify } from "jose";
 // Mock jose with explicit jwtVerify function
 jest.mock("jose", () => ({ jwtVerify: jest.fn() }));
 
-// Mock LoggerService to assert debug logging on success
-import { LoggerService } from "@/infrastructure/services/logger/logger.service";
-jest.mock("@/infrastructure/services/logger/logger.service", () => ({
-  LoggerService: {
-    logDebug: jest.fn(),
-  },
-}));
+// Mock LoggerService using the reusable mock
+jest.mock("@/infrastructure/services/logger/logger.service", () => {
+  // Import the reusable mock
+  const mockModule = jest.requireActual("@/infrastructure/services/logger/__mocks__/logger.service");
+  return {
+    __esModule: true,
+    default: mockModule.default,
+  };
+});
+
+// Import helpers after mocking
+import { getMockLogger, getLoggerServiceMock, resetLoggerServiceMock } from "@/infrastructure/services/logger/__mocks__/logger.service";
 
 describe("AuthMiddleware", () => {
   let mockReq: Partial<Request>;
@@ -35,6 +40,7 @@ describe("AuthMiddleware", () => {
     } as Partial<Response>;
 
     jest.clearAllMocks();
+    resetLoggerServiceMock(); // Reset the reusable mock
     process.env.JWT_SECRET =
       process.env.JWT_SECRET || "abcdefghijklmnopqrstuvwxyz012345"; // ensure length >= 32
   });
@@ -109,6 +115,10 @@ describe("AuthMiddleware", () => {
         mockNext,
       );
 
+      // Use the reusable mock helpers
+      const mockLogger = getMockLogger();
+      const loggerServiceMock = getLoggerServiceMock();
+
       expect(mockNext).toHaveBeenCalledTimes(1);
       expect(mockStatus).not.toHaveBeenCalled();
       expect(mockJson).not.toHaveBeenCalled();
@@ -119,9 +129,12 @@ describe("AuthMiddleware", () => {
       expect(calls[0][1]).toBeInstanceOf(Uint8Array);
       expect(calls[0][2]).toEqual({ algorithms: ["HS256"] });
 
-      // Assert LoggerService.logDebug called
-      expect(LoggerService.logDebug as jest.Mock).toHaveBeenCalledTimes(1);
-      const logArg = (LoggerService.logDebug as jest.Mock).mock.calls[0][0];
+      // Assert LoggerService constructor was called
+      expect(loggerServiceMock).toHaveBeenCalledTimes(1);
+      
+      // Assert LoggerService.debug called using reusable mock
+      expect(mockLogger.debug).toHaveBeenCalledTimes(1);
+      const logArg = (mockLogger.debug as jest.Mock).mock.calls[0][0];
       expect(logArg.service).toBe("auth-middleware");
     });
 

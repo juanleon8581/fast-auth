@@ -4,7 +4,7 @@ import { TextEncoder } from "util";
 
 import { UnauthorizedError } from "@/domain/errors/unauthorized-error";
 import { ERRORS } from "@/config/strings/global.strings.json";
-import { LoggerService } from "@/infrastructure/services/logger/logger.service";
+import LoggerService from "@/infrastructure/services/logger/logger.service";
 import envs from "@/infrastructure/config/environment/envs";
 
 /**
@@ -25,6 +25,8 @@ export class AuthMiddleware {
     try {
       // Extract Authorization header
       const authHeader = req.headers.authorization;
+
+      const logger = new LoggerService().logger;
 
       if (!authHeader) {
         next(
@@ -72,7 +74,7 @@ export class AuthMiddleware {
         });
 
         // Log successful authentication
-        LoggerService.logDebug({
+        logger.debug({
           message: "JWT token verified successfully",
           req,
           service: AuthMiddleware.serviceNameForLogger,
