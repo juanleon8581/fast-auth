@@ -1,6 +1,10 @@
 import mockEnv from "@/config/tests/__mocks__/env.mock";
 import { EnvValidator } from "../env.validator";
 import { TEnvironment } from "@/domain/shared/interfaces/environments.interfaces";
+import {
+  TLogLevels,
+  TLogTransport,
+} from "@/domain/shared/interfaces/logger.interfaces";
 
 describe("env.validator.test", () => {
   beforeEach(() => {
@@ -164,6 +168,64 @@ describe("env.validator.test", () => {
       process.env.PORT = " 8080 ";
       const envs = EnvValidator.validate(process.env);
       expect(envs.PORT).toBe(8080);
+    });
+  });
+
+  describe("Logger configuration - LOG_TRANSPORT 🧾", () => {
+    it("should default LOG_TRANSPORT to console", () => {
+      delete process.env.LOG_TRANSPORT;
+      const envs = EnvValidator.validate(process.env);
+      expect(envs.LOG_TRANSPORT).toBe("console");
+    });
+
+    it("should accept LOG_TRANSPORT among: console, file, http", () => {
+      const validTransports: TLogTransport[] = ["console", "file", "all"];
+
+      validTransports.forEach((transport) => {
+        process.env.LOG_TRANSPORT = transport;
+        const envs = EnvValidator.validate(process.env);
+        expect(envs.LOG_TRANSPORT).toBe(transport);
+      });
+    });
+
+    it("should reject invalid LOG_TRANSPORT values", () => {
+      process.env.LOG_TRANSPORT = "invalid";
+      expect(() => EnvValidator.validate(process.env)).toThrow(
+        "LOG_TRANSPORT must be one of the following: console, file, all",
+      );
+    });
+  });
+
+  describe("Logger configuration - LOG_LEVEL 🧾", () => {
+    it("should default LOG_LEVEL to info", () => {
+      delete process.env.LOG_LEVEL;
+      const envs = EnvValidator.validate(process.env);
+      expect(envs.LOG_LEVEL).toBe("info");
+    });
+
+    it("should accept LOG_LEVEL among: error, warn, info, http, verbose, debug, silly", () => {
+      const validLevels: TLogLevels[] = [
+        "error",
+        "warn",
+        "info",
+        "http",
+        "verbose",
+        "debug",
+        "silly",
+      ];
+
+      validLevels.forEach((level) => {
+        process.env.LOG_LEVEL = level;
+        const envs = EnvValidator.validate(process.env);
+        expect(envs.LOG_LEVEL).toBe(level);
+      });
+    });
+
+    it("should reject invalid LOG_LEVEL values", () => {
+      process.env.LOG_LEVEL = "invalid";
+      expect(() => EnvValidator.validate(process.env)).toThrow(
+        "LOG_LEVEL must be one of the following: error, warn, info, http, verbose, debug, silly",
+      );
     });
   });
 });

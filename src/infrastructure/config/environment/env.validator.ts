@@ -20,6 +20,19 @@ const envSchema = z.object({
   PASSPHRASE: z
     .string({ message: "PASSPHRASE is required" })
     .min(12, { message: "PASSPHRASE must be at least 12 characters long" }),
+  LOG_TRANSPORT: z
+    .enum(["console", "file", "all"], {
+      message: "LOG_TRANSPORT must be one of the following: console, file, all",
+    })
+    .optional()
+    .default("console"),
+  LOG_LEVEL: z
+    .enum(["error", "warn", "info", "http", "verbose", "debug", "silly"], {
+      message:
+        "LOG_LEVEL must be one of the following: error, warn, info, http, verbose, debug, silly",
+    })
+    .optional()
+    .default("info"),
 });
 
 export type IEnv = z.infer<typeof envSchema>;

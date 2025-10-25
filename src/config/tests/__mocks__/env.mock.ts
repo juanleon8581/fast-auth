@@ -6,6 +6,8 @@ const mockEnv = {
   JWT_SECRET: "jwt-test-secret-with-at-least-32-characters-long",
   DATABASE_URL: "postgresql://test:test@localhost:5432/test",
   PASSPHRASE: "test-passphrase",
+  LOG_TRANSPORT: "console",
+  LOG_LEVEL: "info",
 };
 
 Object.freeze(mockEnv);

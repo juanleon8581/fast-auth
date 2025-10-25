@@ -15,6 +15,8 @@ jest.mock("../env.validator", () => ({
         JWT_SECRET: env.JWT_SECRET,
         DATABASE_URL: env.DATABASE_URL,
         PASSPHRASE: env.PASSPHRASE,
+        LOG_TRANSPORT: env.LOG_TRANSPORT,
+        LOG_LEVEL: env.LOG_LEVEL,
       };
       return envs;
     }),
