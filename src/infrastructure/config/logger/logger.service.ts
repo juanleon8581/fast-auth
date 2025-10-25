@@ -1,5 +1,5 @@
 import { createLogger, format, transports, addColors } from "winston";
-import type { Logger, LoggerOptions } from "winston";
+import type { Logger } from "winston";
 import envs from "../environment/envs";
 import type {
   TLogLevels,
@@ -49,12 +49,13 @@ class LoggerService {
   private static _logLevels = logLevels;
   private static _logColors = logColors;
 
-  constructor(options?: LoggerOptions) {
+  constructor() {
     this._logger = createLogger({
       levels: LoggerService._logLevels,
       level: this._getLogLevel(),
       transports: this._getTransporters(),
-      ...options,
+      exceptionHandlers: [new transports.File({ filename: "exception.log" })],
+      rejectionHandlers: [new transports.File({ filename: "rejections.log" })],
     });
     addColors(LoggerService._logColors);
   }
