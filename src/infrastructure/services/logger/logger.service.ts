@@ -1,117 +1,97 @@
-import { LogDatasource } from "@/infrastructure/persistence/datasources/log.datasource";
-import { TypeGuardsUtils } from "@/utils/type-guards.utils";
-import { CreateLogDto } from "@/domain/log/dtos/create-log.dto";
-import { CreateLog } from "@/domain/log/use-cases/create-log";
-import {
-  ILogData,
-  PROD_LOG_LEVELS,
-} from "@/domain/log/interfaces/log.interfaces";
-import envs from "@/infrastructure/config/environment/envs";
-import {
-  IErrorlogData,
-  IGenericLog,
-  IInfoLogData,
-} from "./interfaces/logger.service.interfaces";
+import { createLogger, format, transports, addColors } from "winston";
+import type { Logger } from "winston";
+import envs from "../../config/environment/envs";
+import type {
+  TLogLevels,
+  TLogTransport,
+} from "@/domain/shared/interfaces/logger.interfaces";
 
-export class LoggerService {
-  private static logDatasource = LogDatasource.getInstance();
+const logLevels: Record<TLogLevels, number> = {
+  error: 0,
+  warn: 1,
+  info: 2,
+  http: 3,
+  verbose: 4,
+  debug: 5,
+  silly: 6,
+};
 
-  private static executeLog(logData: ILogData) {
-    try {
-      if (envs.NODE_ENV === "prod" && !PROD_LOG_LEVELS.includes(logData.level))
-        return;
+const logColors: Record<TLogLevels, string> = {
+  error: "red",
+  warn: "yellow",
+  info: "green",
+  http: "magenta",
+  verbose: "cyan",
+  debug: "blue",
+  silly: "gray",
+};
 
-      const [dtoError, createLogDto] = CreateLogDto.createFrom(logData);
+const logTransports: Record<
+  TLogTransport,
+  (transports.ConsoleTransportInstance | transports.FileTransportInstance)[]
+> = {
+  console: [new transports.Console()],
+  file: [
+    new transports.File({
+      filename: "logs/combined.log",
+    }),
+  ],
+  all: [
+    new transports.Console(),
+    new transports.File({
+      filename: "logs/combined.log",
+    }),
+  ],
+};
 
-      if (dtoError) throw dtoError;
+class LoggerService {
+  private _logger: Logger;
+  private static _logLevels = logLevels;
+  private static _logColors = logColors;
 
-      new CreateLog(LoggerService.logDatasource)
-        .execute(createLogDto!)
-        .catch((error) => {
-          throw error;
-        });
-    } catch (error) {
-      console.error("Critical: Failed to log error", {
-        originalError: error,
-        requestId: logData.requestId,
-      });
+  constructor() {
+    this._logger = createLogger({
+      levels: LoggerService._logLevels,
+      level: this._getLogLevel(),
+      transports: this._getTransporters(),
+      exceptionHandlers: [new transports.File({ filename: "exception.log" })],
+      rejectionHandlers: [new transports.File({ filename: "rejections.log" })],
+    });
+    addColors(LoggerService._logColors);
+  }
+
+  get logger() {
+    return this._logger;
+  }
+
+  private _getLogLevel(): TLogLevels {
+    const envLogLevel = envs.NODE_ENV;
+
+    if (envLogLevel === "dev") {
+      return "silly";
     }
+    if (envLogLevel === "prod") {
+      return "info";
+    }
+    if (envLogLevel === "qa") {
+      return "http";
+    }
+
+    return "error";
   }
 
-  private static generateLogData(logData: IGenericLog): ILogData {
-    const { level, req, res, service, message, error, meta } = logData;
-    const log: ILogData = {
-      level,
-      message: TypeGuardsUtils.truncateStringByKB(message ?? "", 1),
-      timestamp: new Date(),
-      meta: {
-        method: req.method,
-        endpoint: req.path,
-        url: req.url,
-        userAgent: req.get?.("User-Agent")?.substring(0, 100),
-        ip: req.ip,
-        httpVersion: req.httpVersion,
-      },
-      service: service,
-      requestId: req.requestId,
-    };
-
-    if (meta) log.meta = { ...log.meta, ...meta };
-    if (res) log.meta = { ...log.meta, statusCode: res.statusCode };
-    if (error) log.error = TypeGuardsUtils.getAllErrorToString(error);
-
-    return log;
+  private _getTransporters() {
+    const logTransport = envs.LOG_TRANSPORT;
+    return logTransports[logTransport];
   }
 
-  static logError({ error, req, res, service }: IErrorlogData) {
-    const logData: ILogData = LoggerService.generateLogData({
-      level: "ERROR",
-      req,
-      res,
-      service,
-      message: TypeGuardsUtils.getErrorMessage(error),
-      error,
-    });
-
-    LoggerService.executeLog(logData);
-  }
-  static logWarn({ error, req, res, service }: IErrorlogData) {
-    const logData: ILogData = LoggerService.generateLogData({
-      level: "WARN",
-      req,
-      res,
-      service,
-      message: TypeGuardsUtils.getErrorMessage(error),
-      error,
-    });
-
-    LoggerService.executeLog(logData);
-  }
-
-  static logDebug({ message, req, res, service, meta }: IInfoLogData) {
-    const data: IGenericLog = {
-      level: "DEBUG",
-      req,
-      service,
-      message,
-    };
-    if (meta) data.meta = meta;
-    if (res) data.res = res;
-    const logData: ILogData = LoggerService.generateLogData(data);
-
-    LoggerService.executeLog(logData);
-  }
-
-  static logInfo({ message, req, res, service }: IInfoLogData) {
-    const data: IGenericLog = {
-      level: "INFO",
-      req,
-      service,
-      message,
-    };
-    if (res) data.res = res;
-    const logData: ILogData = LoggerService.generateLogData(data);
-
-    LoggerService.executeLog(logData);
+  private _getLogFormat() {
+    return format.combine(
+      format.timestamp(),
+      format.errors({ stack: true }),
+      format.json(),
+    );
   }
 }
+
+export default LoggerService;

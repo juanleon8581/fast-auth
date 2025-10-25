@@ -1,6 +1,6 @@
 import { createLogger, format, transports, addColors } from "winston";
 import type { Logger } from "winston";
-import envs from "../environment/envs";
+import envs from "../../config/environment/envs";
 import type {
   TLogLevels,
   TLogTransport,
