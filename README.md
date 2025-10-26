@@ -18,10 +18,8 @@ A backend API acting as a proxy for Supabase Auth, with encrypted request handli
 src/
 ├── app.ts
 ├── config/
-│   ├── crypto.config.ts
-│   ├── envs.ts
-│   ├── logger.config.ts
-│   └── strings/
+│   ├── strings/
+│   └── tests/
 ├── domain/                     # Business logic (feature-first)
 │   ├── auth/                   # Authentication feature
 │   │   ├── dtos/
@@ -32,7 +30,7 @@ src/
 │   ├── user/                   # User profile & updates
 │   ├── crypto/                 # Cross-cutting crypto contracts & use-cases
 │   ├── log/                    # Logging contracts & use-cases
-│   └── shared/                 # Shared interfaces, errors, types
+│   └── shared/                 # Shared interfaces, errors, types, validators
 ├── infrastructure/             # Frameworks & drivers (implementations)
 │   ├── external/
 │   │   └── auth/               # External Auth capability (driver + datasource)
@@ -59,12 +57,14 @@ src/
 │       └── validators/
 │           └── processError.validator.ts
 ├── presentation/               # HTTP layer
+│   ├── __tests__/
 │   ├── auth/
 │   ├── controller/
 │   ├── middlewares/
 │   ├── routes.ts
-│   └── server.ts
-└── generated/prisma/
+│   ├── server.ts
+│   └── utils/
+└── prisma/
 ```
 
 ### Import Policy
@@ -72,6 +72,7 @@ src/
 - Explicit per-file imports only; barrel files (`index.ts`) are not allowed.
 - Prefer `@/domain/<feature>/<type>/<file>` for clarity.
 - Infrastructure depends on domain contracts only; avoid cross-imports between `external/`, `persistence`, and `services` except via domain contracts.
+- Note: Barrels are also prohibited in `src/domain/shared/validators`; import per-file from `@/domain/shared/validators/<file>`.
 
 Examples:
 
@@ -79,6 +80,7 @@ Examples:
 import { LoginDto } from "@/domain/auth/dtos/login.dto";
 import { RegisterUser } from "@/domain/auth/use-cases/register-user";
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
+import { EMAIL_BASIC_REGEX } from "@/domain/shared/validators/regex.validators";
 ```
 
 ## 🛠️ Setup

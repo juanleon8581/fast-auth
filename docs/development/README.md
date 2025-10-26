@@ -23,6 +23,16 @@ The project follows Clean Architecture with three main layers:
 - **Repositories**: Abstract contracts for data access
 - **DTOs**: Data transfer objects
 - **Errors**: Custom error definitions
+- **Shared Validators**: Regex and input patterns under `src/domain/shared/validators`
+
+#### Import Policy (No Barrels)
+- Explicit per-file imports only; barrels (`index.ts`) are prohibited, including under `src/domain/shared/validators`.
+- Prefer `@/domain/<feature>/<type>/<file>` for clarity.
+
+Examples:
+```ts
+import { EMAIL_BASIC_REGEX } from "@/domain/shared/validators/regex.validators";
+```
 
 ### Infrastructure Layer (`src/infrastructure/`)
 
@@ -55,7 +65,7 @@ The project follows Clean Architecture with three main layers:
 
 1. Clone the repository
 2. Install dependencies: `pnpm install`
-3. Copy environment file: `cp .env.example .env`
+3. Copy environment file: `cp .env.example .env.dev`
 4. Start development server: `pnpm dev`
 5. Access API documentation: `http://localhost:3000/api-docs`
 

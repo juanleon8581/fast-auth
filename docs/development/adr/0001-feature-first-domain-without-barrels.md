@@ -76,6 +76,9 @@ import { RegisterUser } from "@/domain/auth/use-cases/register-user";
 // ✅ Shared contracts
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 
+// ✅ Shared validators (explicit file imports, no barrels)
+import { EMAIL_BASIC_REGEX } from "@/domain/shared/validators/regex.validators";
+
 // ❌ Barrel import — not allowed
 // import { LoginDto } from "@/domain/auth";
 ```

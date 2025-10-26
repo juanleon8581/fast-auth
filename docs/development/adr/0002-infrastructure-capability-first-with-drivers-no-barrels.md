@@ -73,7 +73,7 @@ Key points:
 
 - README and architecture guide updated to reflect the structure and boundaries.
 - Checklists for endpoints reference domain DTOs and infrastructure capability paths.
-- Path alias remains (`@` → `src/`); imports stay explicit.
+- Path alias remains (`@` → `src/`); imports stay explicit, including shared validators under `src/domain/shared/validators` (no barrels).
 
 ## Example Imports
 
