@@ -3,9 +3,9 @@ import { RegisterDto } from "@/domain/auth/dtos/register.dto";
 import globalStrings from "@/config/strings/global.strings.json";
 import {
   EMAIL_BASIC_REGEX,
-  NAME_LASTNAME_REGEX,
-  SECURE_PASSWORD_REGEX,
-} from "@/config/regex/validations.regex";
+  PERSON_NAME_PATTERN,
+  STRONG_PASSWORD_PATTERN,
+} from "@/domain/shared/validators/regex.validators";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 import { processValidationError } from "../../../helpers/validators/processError.validator";
@@ -17,13 +17,13 @@ const registerSchema = z.object({
     .string()
     .min(2, VALIDATION.NAME.MIN_LENGTH)
     .max(50, VALIDATION.NAME.MAX_LENGTH)
-    .regex(NAME_LASTNAME_REGEX, VALIDATION.NAME.INVALID_FORMAT),
+    .regex(PERSON_NAME_PATTERN, VALIDATION.NAME.INVALID_FORMAT),
 
   lastname: z
     .string()
     .min(2, VALIDATION.LASTNAME.MIN_LENGTH)
     .max(50, VALIDATION.LASTNAME.MAX_LENGTH)
-    .regex(NAME_LASTNAME_REGEX, VALIDATION.LASTNAME.INVALID_FORMAT),
+    .regex(PERSON_NAME_PATTERN, VALIDATION.LASTNAME.INVALID_FORMAT),
 
   email: z
     .email(VALIDATION.EMAIL.INVALID_FORMAT)
@@ -35,7 +35,7 @@ const registerSchema = z.object({
     .string()
     .min(8, VALIDATION.PASSWORD.MIN_LENGTH)
     .max(128, VALIDATION.PASSWORD.MAX_LENGTH)
-    .regex(SECURE_PASSWORD_REGEX, VALIDATION.PASSWORD.INVALID_FORMAT),
+    .regex(STRONG_PASSWORD_PATTERN, VALIDATION.PASSWORD.INVALID_FORMAT),
 });
 
 export class RegisterValidator {

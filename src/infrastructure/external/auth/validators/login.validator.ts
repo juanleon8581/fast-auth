@@ -5,7 +5,7 @@ import { LoginDto } from "@/domain/auth/dtos/login.dto";
 
 import type { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 
-import { SECURE_PASSWORD_REGEX } from "@/config/regex/validations.regex";
+import { STRONG_PASSWORD_PATTERN } from "@/domain/shared/validators/regex.validators";
 import globalStrings from "@/config/strings/global.strings.json";
 import { processValidationError } from "../../../helpers/validators/processError.validator";
 
@@ -17,7 +17,7 @@ const loginSchema = z.object({
     .string()
     .min(8, VALIDATION.PASSWORD.MIN_LENGTH)
     .max(128, VALIDATION.PASSWORD.MAX_LENGTH)
-    .regex(SECURE_PASSWORD_REGEX, VALIDATION.PASSWORD.INVALID_FORMAT),
+    .regex(STRONG_PASSWORD_PATTERN, VALIDATION.PASSWORD.INVALID_FORMAT),
 });
 
 type ILoginSchema = z.infer<typeof loginSchema>;

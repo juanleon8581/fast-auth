@@ -2,11 +2,11 @@ import { z } from "zod";
 import { UpdateUserDto } from "@/domain/user/dtos/update-user.dto";
 import globalStrings from "@/config/strings/global.strings.json";
 import {
-  SECURE_PASSWORD_REGEX,
+  STRONG_PASSWORD_PATTERN,
   EMAIL_BASIC_REGEX,
   PHONE_INTERNATIONAL_REGEX,
-  NAME_LASTNAME_REGEX,
-} from "@/config/regex/validations.regex";
+  PERSON_NAME_PATTERN,
+} from "@/domain/shared/validators/regex.validators";
 import { processValidationError } from "@/infrastructure/helpers/validators/processError.validator";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
@@ -39,7 +39,7 @@ const updateUserSchema = z
       .string()
       .min(8, VALIDATION.NEW_PASSWORD.MIN_LENGTH)
       .max(128, VALIDATION.NEW_PASSWORD.MAX_LENGTH)
-      .regex(SECURE_PASSWORD_REGEX, VALIDATION.NEW_PASSWORD.INVALID_FORMAT)
+      .regex(STRONG_PASSWORD_PATTERN, VALIDATION.NEW_PASSWORD.INVALID_FORMAT)
       .optional()
       .or(z.literal("")),
 
@@ -55,14 +55,14 @@ const updateUserSchema = z
       .string()
       .min(2, VALIDATION_GENERAL.NAME.MIN_LENGTH)
       .max(50, VALIDATION_GENERAL.NAME.MAX_LENGTH)
-      .regex(NAME_LASTNAME_REGEX, VALIDATION_GENERAL.NAME.INVALID_FORMAT)
+      .regex(PERSON_NAME_PATTERN, VALIDATION_GENERAL.NAME.INVALID_FORMAT)
       .optional(),
 
     lastname: z
       .string()
       .min(2, VALIDATION_GENERAL.LASTNAME.MIN_LENGTH)
       .max(50, VALIDATION_GENERAL.LASTNAME.MAX_LENGTH)
-      .regex(NAME_LASTNAME_REGEX, VALIDATION_GENERAL.LASTNAME.INVALID_FORMAT)
+      .regex(PERSON_NAME_PATTERN, VALIDATION_GENERAL.LASTNAME.INVALID_FORMAT)
       .optional(),
   })
 
