@@ -1,5 +1,5 @@
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 import { TRawJson } from "../../shared/interfaces/general.interfaces";
-import { ERRORS } from "@/config/strings/global.strings.json";
 
 interface ILoginDto {
   email: string;
@@ -23,7 +23,8 @@ export class LoginDto {
   static createFrom(data: TRawJson): [string?, LoginDto?] {
     const { email, password } = data;
 
-    if (!email || !password) return [ERRORS.DATA_VALIDATION.INVALID_DATA];
+    if (!email || !password)
+      return [ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA];
 
     return [undefined, LoginDto.create({ email, password })];
   }

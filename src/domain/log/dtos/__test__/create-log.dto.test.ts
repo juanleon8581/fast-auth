@@ -1,5 +1,5 @@
 import { CreateLogDto } from "../create-log.dto";
-import { ERRORS } from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
 describe("CreateLogDto", () => {
   it("createFrom returns dto for valid input", () => {
@@ -20,7 +20,7 @@ describe("CreateLogDto", () => {
       level: "BAD",
       message: "x",
     } as any);
-    expect(err).toBe(ERRORS.DATA_VALIDATION.INVALID_DATA);
+    expect(err).toBe(ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA);
   });
 
   it("non-object meta returns error", () => {
@@ -29,7 +29,7 @@ describe("CreateLogDto", () => {
       message: "x",
       meta: 123 as any,
     });
-    expect(err).toBe(ERRORS.DATA_VALIDATION.INVALID_DATA);
+    expect(err).toBe(ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA);
   });
 
   it("invalid string fields returns error", () => {
@@ -38,6 +38,6 @@ describe("CreateLogDto", () => {
       message: "x",
       userId: 123 as any,
     });
-    expect(err).toBe(ERRORS.DATA_VALIDATION.INVALID_DATA);
+    expect(err).toBe(ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA);
   });
 });

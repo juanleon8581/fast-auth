@@ -1,5 +1,5 @@
 import { TRawJson } from "../../shared/interfaces/general.interfaces";
-import { ERRORS } from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
 export class LogoutDto {
   constructor(
@@ -19,7 +19,7 @@ export class LogoutDto {
     const { sessionToken, refreshToken } = data;
 
     if (!sessionToken || !refreshToken)
-      return [ERRORS.DATA_VALIDATION.INVALID_DATA];
+      return [ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA];
 
     return [undefined, LogoutDto.create({ sessionToken, refreshToken })];
   }

@@ -1,6 +1,7 @@
 import { AuthUserEntity } from "@/domain/auth/entities/auth-user.entity";
 import { UserEntity } from "@/domain/user/entities/user.entity";
 import { clearAllMocks } from "@/config/tests/test-utils";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
 describe("AuthUserEntity", () => {
   afterEach(() => {
@@ -66,7 +67,7 @@ describe("AuthUserEntity", () => {
       expect(() => {
         // @ts-ignore
         AuthUserEntity.createFrom(invalidData);
-      }).toThrow("Invalid auth user data");
+      }).toThrow(ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA);
     });
 
     it("should throw error when access_token is missing", () => {
@@ -79,7 +80,7 @@ describe("AuthUserEntity", () => {
 
       expect(() => {
         AuthUserEntity.createFrom(invalidData);
-      }).toThrow("Invalid auth user data");
+      }).toThrow(ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA);
     });
 
     it("should throw error when refresh_token is missing", () => {
@@ -92,7 +93,7 @@ describe("AuthUserEntity", () => {
 
       expect(() => {
         AuthUserEntity.createFrom(invalidData);
-      }).toThrow("Invalid auth user data");
+      }).toThrow(ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA);
     });
 
     it("should throw error when access_token is empty string", () => {
@@ -106,7 +107,7 @@ describe("AuthUserEntity", () => {
 
       expect(() => {
         AuthUserEntity.createFrom(invalidData);
-      }).toThrow("Invalid auth user data");
+      }).toThrow(ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA);
     });
 
     it("should throw error when refresh_token is empty string", () => {
@@ -120,7 +121,7 @@ describe("AuthUserEntity", () => {
 
       expect(() => {
         AuthUserEntity.createFrom(invalidData);
-      }).toThrow("Invalid auth user data");
+      }).toThrow(ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA);
     });
 
     it("should throw error when user is not UserEntity instance", () => {
@@ -140,7 +141,7 @@ describe("AuthUserEntity", () => {
       expect(() => {
         // @ts-ignore
         AuthUserEntity.createFrom(invalidData);
-      }).toThrow("Invalid auth user data");
+      }).toThrow(ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA);
     });
 
     it("should throw error when tokens are null", () => {
@@ -155,7 +156,7 @@ describe("AuthUserEntity", () => {
       expect(() => {
         // @ts-ignore
         AuthUserEntity.createFrom(invalidData);
-      }).toThrow("Invalid auth user data");
+      }).toThrow(ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA);
     });
 
     it("should throw error when tokens are undefined", () => {
@@ -170,7 +171,7 @@ describe("AuthUserEntity", () => {
       expect(() => {
         // @ts-ignore
         AuthUserEntity.createFrom(invalidData);
-      }).toThrow("Invalid auth user data");
+      }).toThrow(ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA);
     });
 
     it("should handle extra properties in data", () => {

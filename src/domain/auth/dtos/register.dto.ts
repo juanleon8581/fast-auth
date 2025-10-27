@@ -1,4 +1,4 @@
-import { ERRORS } from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 import { TRawJson } from "../../shared/interfaces/general.interfaces";
 
 interface IRegisterDto {
@@ -26,7 +26,7 @@ export class RegisterDto {
     const { name, lastname, email, password } = props;
 
     if (!name || !lastname || !email || !password)
-      return [ERRORS.DATA_VALIDATION.INVALID_DATA];
+      return [ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA];
 
     return [undefined, RegisterDto.create({ name, lastname, email, password })];
   }

@@ -4,8 +4,7 @@ import {
   ISignature,
 } from "../interfaces/encrypted-body.interfaces";
 import { TRawJson } from "../../shared/interfaces/general.interfaces";
-
-import { ERRORS } from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
 export class EncryptedBodyDto {
   constructor(
@@ -26,13 +25,13 @@ export class EncryptedBodyDto {
     const { encryption, signature, encryptedPayload } = data;
 
     if (!encryption || !signature || !encryptedPayload)
-      return [ERRORS.DATA_VALIDATION.INVALID_DATA];
+      return [ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA];
 
     const encryptionIsValid = Object.values(encryption).every((value) => value);
     const signatureIsValid = Object.values(signature).every((value) => value);
 
     if (!encryptionIsValid || !signatureIsValid)
-      return [ERRORS.DATA_VALIDATION.INVALID_DATA];
+      return [ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA];
 
     return [
       undefined,

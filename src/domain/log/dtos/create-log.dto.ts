@@ -1,4 +1,4 @@
-import { ERRORS } from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 import { LogLevel, LOG_LEVELS } from "@/domain/log/interfaces/log.interfaces";
 
@@ -41,19 +41,19 @@ export class CreateLogDto {
     const { level, message, meta, service, userId, requestId, error } = props;
 
     if (!level || !message) {
-      return [ERRORS.DATA_VALIDATION.INVALID_DATA];
+      return [ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA];
     }
 
     if (!LOG_LEVELS.includes(level as LogLevel)) {
-      return [ERRORS.DATA_VALIDATION.INVALID_DATA];
+      return [ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA];
     }
 
     if (typeof message !== "string" || message.trim().length === 0) {
-      return [ERRORS.DATA_VALIDATION.INVALID_DATA];
+      return [ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA];
     }
 
     if (meta && typeof meta !== "object") {
-      return [ERRORS.DATA_VALIDATION.INVALID_DATA];
+      return [ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA];
     }
 
     const stringFields = [service, userId, requestId, error];
@@ -61,7 +61,7 @@ export class CreateLogDto {
       (field) => field && typeof field !== "string",
     );
     if (invalidStringFields.length > 0) {
-      return [ERRORS.DATA_VALIDATION.INVALID_DATA];
+      return [ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA];
     }
 
     return [

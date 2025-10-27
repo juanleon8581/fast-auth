@@ -1,5 +1,5 @@
 import { TRawJson } from "../../shared/interfaces/general.interfaces";
-import { ERRORS } from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
 interface IRequestResetPasswordEmailDto {
   email: string;
@@ -25,7 +25,7 @@ export class RequestResetPasswordEmailDto {
   static createFrom(data: TRawJson): [string?, RequestResetPasswordEmailDto?] {
     const { email, redirectTo } = data;
 
-    if (!email) return [ERRORS.DATA_VALIDATION.INVALID_DATA];
+    if (!email) return [ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA];
 
     return [
       undefined,

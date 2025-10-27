@@ -1,5 +1,5 @@
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
-import { ERRORS } from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
 interface IUpdateUserDto {
   sessionToken: string;
@@ -63,7 +63,7 @@ export class UpdateUserDto {
     } = json;
 
     if (!sessionToken || !refreshToken)
-      return [ERRORS.DATA_VALIDATION.INVALID_DATA];
+      return [ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA];
 
     return [
       undefined,

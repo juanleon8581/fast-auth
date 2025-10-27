@@ -8,6 +8,7 @@ export const ERROR_MESSAGES = {
     AUTHORIZATION_HEADER_REQUIRED: "Authorization header is required",
     INVALID_AUTHORIZATION_FORMAT: "Invalid authorization format",
     TOKEN_EXPIRED: "Token has expired",
+    DAYS_MUST_BE_GREATER_THAN_0: "Days must be greater than 0",
   },
   AUTH: {
     REFRESH_SESSION: {

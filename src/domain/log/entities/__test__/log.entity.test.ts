@@ -1,5 +1,5 @@
 import { LogEntity } from "@/domain/log/entities/log.entity";
-import { ERRORS } from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
 describe("LogEntity", () => {
   it("createFrom builds entity and freezes it", () => {
@@ -31,7 +31,7 @@ describe("LogEntity", () => {
 
   it("throws on missing required fields", () => {
     expect(() => LogEntity.createFrom({} as any)).toThrow(
-      ERRORS.DATA_VALIDATION.INVALID_DATA,
+      ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA,
     );
   });
 
@@ -43,7 +43,7 @@ describe("LogEntity", () => {
         message: "m",
         timestamp: new Date(),
       } as any),
-    ).toThrow(ERRORS.DATA_VALIDATION.INVALID_DATA);
+    ).toThrow(ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA);
   });
 
   it("throws on invalid timestamp", () => {
@@ -54,6 +54,6 @@ describe("LogEntity", () => {
         message: "m",
         timestamp: "not-a-date",
       }),
-    ).toThrow(ERRORS.DATA_VALIDATION.INVALID_DATA);
+    ).toThrow(ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA);
   });
 });

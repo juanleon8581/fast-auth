@@ -1,6 +1,6 @@
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 import { IUserData } from "@/domain/user/interfaces/user.interfaces";
-import { ERRORS } from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
 export class UserEntity implements IUserData {
   constructor(
@@ -27,15 +27,15 @@ export class UserEntity implements IUserData {
     const { id, email, name, email_verified, phone } = raw;
 
     if (!id || !email || !name) {
-      throw new Error(ERRORS.DATA_VALIDATION.INVALID_DATA);
+      throw new Error(ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA);
     }
 
     // Distinguish between missing and explicitly unverified email
     if (email_verified === undefined || email_verified === null) {
-      throw new Error(ERRORS.DATA_VALIDATION.INVALID_DATA);
+      throw new Error(ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA);
     }
     if (email_verified === false) {
-      throw new Error(ERRORS.DATA_VALIDATION.EMAIL_NOT_VERIFIED);
+      throw new Error(ERROR_MESSAGES.DATA_VALIDATION.EMAIL_NOT_VERIFIED);
     }
 
     return this.create({ id, email, name, email_verified, phone });
