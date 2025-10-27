@@ -1,12 +1,15 @@
 import { z } from "zod";
 import { RequestResetPasswordEmailDto } from "@/domain/auth/dtos/request-reset-password-email.dto";
-import globalStrings from "@/config/strings/global.strings.json";
-import { EMAIL_BASIC_REGEX, URL_REGEX } from "@/domain/shared/validators/regex.validators";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
+import {
+  EMAIL_BASIC_REGEX,
+  URL_REGEX,
+} from "@/domain/shared/validators/regex.validators";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 import { processValidationError } from "../../../helpers/validators/processError.validator";
 
-const { VALIDATION } = globalStrings.ERRORS.AUTH.REQUEST_RESET_PASSWORD_EMAIL;
+const { VALIDATION } = ERROR_MESSAGES.AUTH.REQUEST_RESET_PASSWORD_EMAIL;
 
 const requestResetPasswordEmailSchema = z.object({
   email: z

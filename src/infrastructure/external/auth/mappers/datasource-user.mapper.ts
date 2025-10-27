@@ -1,5 +1,5 @@
 import type { User } from "@supabase/supabase-js";
-import { ERRORS } from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
 interface IDatasourceUserMapper {
   id: string;
@@ -31,7 +31,7 @@ export class DatasourceUserMapper implements IDatasourceUserMapper {
     const name = raw.user_metadata?.display_name;
 
     if (!id || !email || !name)
-      return [ERRORS.AUTH.LOGIN.INVALID_DATA_RECEIVED];
+      return [ERROR_MESSAGES.AUTH.LOGIN.INVALID_DATA_RECEIVED];
 
     return [
       undefined,

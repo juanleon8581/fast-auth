@@ -1,6 +1,6 @@
 import { DatasourceUserMapper } from "../datasource-user.mapper";
 import type { User } from "@supabase/supabase-js";
-import { ERRORS } from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
 describe("DatasourceUserMapper", () => {
   describe("constructor", () => {
@@ -141,7 +141,7 @@ describe("DatasourceUserMapper", () => {
 
         const [error, dto] = DatasourceUserMapper.createFrom(mockUser);
 
-        expect(error).toBe(ERRORS.AUTH.LOGIN.INVALID_DATA_RECEIVED);
+        expect(error).toBe(ERROR_MESSAGES.AUTH.LOGIN.INVALID_DATA_RECEIVED);
         expect(dto).toBeUndefined();
       });
 
@@ -156,7 +156,7 @@ describe("DatasourceUserMapper", () => {
 
         const [error, dto] = DatasourceUserMapper.createFrom(mockUser);
 
-        expect(error).toBe(ERRORS.AUTH.LOGIN.INVALID_DATA_RECEIVED);
+        expect(error).toBe(ERROR_MESSAGES.AUTH.LOGIN.INVALID_DATA_RECEIVED);
         expect(dto).toBeUndefined();
       });
 
@@ -169,7 +169,7 @@ describe("DatasourceUserMapper", () => {
 
         const [error, dto] = DatasourceUserMapper.createFrom(mockUser);
 
-        expect(error).toBe(ERRORS.AUTH.LOGIN.INVALID_DATA_RECEIVED);
+        expect(error).toBe(ERROR_MESSAGES.AUTH.LOGIN.INVALID_DATA_RECEIVED);
         expect(dto).toBeUndefined();
       });
 
@@ -181,7 +181,7 @@ describe("DatasourceUserMapper", () => {
 
         const [error, dto] = DatasourceUserMapper.createFrom(mockUser);
 
-        expect(error).toBe(ERRORS.AUTH.LOGIN.INVALID_DATA_RECEIVED);
+        expect(error).toBe(ERROR_MESSAGES.AUTH.LOGIN.INVALID_DATA_RECEIVED);
         expect(dto).toBeUndefined();
       });
 
@@ -196,7 +196,7 @@ describe("DatasourceUserMapper", () => {
 
         const [error, dto] = DatasourceUserMapper.createFrom(mockUser);
 
-        expect(error).toBe(ERRORS.AUTH.LOGIN.INVALID_DATA_RECEIVED);
+        expect(error).toBe(ERROR_MESSAGES.AUTH.LOGIN.INVALID_DATA_RECEIVED);
         expect(dto).toBeUndefined();
       });
 
@@ -211,7 +211,7 @@ describe("DatasourceUserMapper", () => {
 
         const [error, dto] = DatasourceUserMapper.createFrom(mockUser);
 
-        expect(error).toBe(ERRORS.AUTH.LOGIN.INVALID_DATA_RECEIVED);
+        expect(error).toBe(ERROR_MESSAGES.AUTH.LOGIN.INVALID_DATA_RECEIVED);
         expect(dto).toBeUndefined();
       });
     });

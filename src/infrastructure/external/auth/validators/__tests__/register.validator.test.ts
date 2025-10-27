@@ -1,13 +1,13 @@
 import { RegisterValidator } from "../register.validator";
 import { RegisterDto } from "@/domain/auth/dtos/register.dto";
-import globalStrings from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
 // Mock RegisterDto
 jest.mock("@/domain/auth/dtos/register.dto");
 
 const MockedRegisterDto = RegisterDto as jest.MockedClass<typeof RegisterDto>;
-const { DATA_VALIDATION } = globalStrings.ERRORS;
-const { VALIDATION } = globalStrings.ERRORS.AUTH.REGISTER;
+const { DATA_VALIDATION } = ERROR_MESSAGES;
+const { VALIDATION } = ERROR_MESSAGES.AUTH.REGISTER;
 
 describe("RegisterValidator", () => {
   beforeEach(() => {

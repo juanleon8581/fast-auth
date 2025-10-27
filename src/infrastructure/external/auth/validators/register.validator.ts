@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { RegisterDto } from "@/domain/auth/dtos/register.dto";
-import globalStrings from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
+
 import {
   EMAIL_BASIC_REGEX,
   PERSON_NAME_PATTERN,
@@ -10,7 +11,7 @@ import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 import { processValidationError } from "../../../helpers/validators/processError.validator";
 
-const { VALIDATION } = globalStrings.ERRORS.AUTH.REGISTER;
+const { VALIDATION } = ERROR_MESSAGES.AUTH.REGISTER;
 
 const registerSchema = z.object({
   name: z

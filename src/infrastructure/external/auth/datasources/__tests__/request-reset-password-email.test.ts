@@ -2,7 +2,7 @@ import { AuthDatasource } from "@/infrastructure/external/auth/datasources/auth.
 import { AuthClient } from "@/infrastructure/external/auth/auth.client";
 import { RequestResetPasswordEmailDto } from "@/domain/auth/dtos/request-reset-password-email.dto";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
-import { ERRORS } from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
 // Mock dependencies
 jest.mock("@/infrastructure/external/auth/auth.client");
@@ -135,7 +135,7 @@ describe("AuthDatasource - RequestResetPasswordEmail Functionality", () => {
             mockRequestResetPasswordEmailDto,
           ),
         ).rejects.toThrow(
-          ERRORS.AUTH.REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT,
+          ERROR_MESSAGES.AUTH.REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT,
         );
       });
 
@@ -155,7 +155,7 @@ describe("AuthDatasource - RequestResetPasswordEmail Functionality", () => {
             mockRequestResetPasswordEmailDto,
           ),
         ).rejects.toThrow(
-          ERRORS.AUTH.REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT,
+          ERROR_MESSAGES.AUTH.REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT,
         );
       });
 
@@ -175,7 +175,7 @@ describe("AuthDatasource - RequestResetPasswordEmail Functionality", () => {
             mockRequestResetPasswordEmailDto,
           ),
         ).rejects.toThrow(
-          ERRORS.AUTH.REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT,
+          ERROR_MESSAGES.AUTH.REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT,
         );
       });
     });

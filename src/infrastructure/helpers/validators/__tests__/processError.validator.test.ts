@@ -2,9 +2,9 @@ import { z } from "zod";
 import { processValidationError } from "../processError.validator";
 import { ValidationError } from "@/domain/errors/validation-error";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
-import globalStrings from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
-const { DATA_VALIDATION } = globalStrings.ERRORS;
+const { DATA_VALIDATION } = ERROR_MESSAGES;
 
 describe("processValidationError", () => {
   it("should throw ValidationError when ZodError has issues", () => {

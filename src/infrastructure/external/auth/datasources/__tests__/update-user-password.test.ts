@@ -6,7 +6,7 @@ import { UserEntity } from "@/domain/user/entities/user.entity";
 import { DatasourceUserMapper } from "@/infrastructure/external/auth/mappers/datasource-user.mapper";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { ValidationError } from "@/domain/errors/validation-error";
-import { ERRORS } from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
 // Mock dependencies
 jest.mock("@/infrastructure/external/auth/auth.client");
@@ -136,7 +136,7 @@ describe("AuthDatasource - UpdateUserPassword Functionality", () => {
         ).rejects.toThrow(BadRequestError);
         await expect(
           authDatasource.updateUserPassword(invalidDto),
-        ).rejects.toThrow(ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED);
+        ).rejects.toThrow(ERROR_MESSAGES.AUTH.UPDATE_USER.USER_NOT_UPDATED);
       });
 
       it("should throw error when refreshToken is missing", async () => {

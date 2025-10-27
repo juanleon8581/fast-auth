@@ -3,7 +3,6 @@ import { AuthUserEntity } from "@/domain/auth/entities/auth-user.entity";
 import { UserEntity } from "@/domain/user/entities/user.entity";
 import { AuthRepository } from "@/domain/auth/repositories/auth.repository";
 import { AuthClient } from "@/infrastructure/external/auth/auth.client";
-import { ERRORS } from "@/config/strings/global.strings.json";
 import { DatasourceUserMapper } from "@/infrastructure/external/auth/mappers/datasource-user.mapper";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { ValidationError } from "@/domain/errors/validation-error";
@@ -13,6 +12,7 @@ import { UpdateUserDto } from "@/domain/user/dtos/update-user.dto";
 import { RequestResetPasswordEmailDto } from "@/domain/auth/dtos/request-reset-password-email.dto";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
 export class AuthDatasource implements AuthRepository {
   constructor(private readonly client: typeof AuthClient) {
@@ -36,7 +36,7 @@ export class AuthDatasource implements AuthRepository {
       );
     }
     if (!data.user || !data.session)
-      throw new BadRequestError(ERRORS.AUTH.LOGIN.USER_NOT_FOUND);
+      throw new BadRequestError(ERROR_MESSAGES.AUTH.LOGIN.USER_NOT_FOUND);
 
     const [errorDto, datasourceUserMapper] = DatasourceUserMapper.createFrom(
       data.user,
@@ -58,7 +58,9 @@ export class AuthDatasource implements AuthRepository {
       );
     }
     if (!refreshData.session)
-      throw new BadRequestError(ERRORS.AUTH.REFRESH_SESSION.SESSION_NOT_FOUND);
+      throw new BadRequestError(
+        ERROR_MESSAGES.AUTH.REFRESH_SESSION.SESSION_NOT_FOUND,
+      );
 
     return AuthUserEntity.createFrom({
       user,
@@ -87,7 +89,7 @@ export class AuthDatasource implements AuthRepository {
         error.status?.toString(),
       );
     if (!data.user)
-      throw new BadRequestError(ERRORS.AUTH.REGISTER.USER_NO_CREATED);
+      throw new BadRequestError(ERROR_MESSAGES.AUTH.REGISTER.USER_NO_CREATED);
 
     const [errorDto, datasourceUserMapper] = DatasourceUserMapper.createFrom(
       data.user,
@@ -118,7 +120,7 @@ export class AuthDatasource implements AuthRepository {
         error.status?.toString(),
       );
     if (!data.session)
-      throw new BadRequestError(ERRORS.AUTH.LOGIN.USER_NOT_FOUND);
+      throw new BadRequestError(ERROR_MESSAGES.AUTH.LOGIN.USER_NOT_FOUND);
 
     const [errorDto, datasourceUserMapper] = DatasourceUserMapper.createFrom(
       data.user,
@@ -140,7 +142,7 @@ export class AuthDatasource implements AuthRepository {
 
     // Validate that we have the required tokens
     if (!dto.sessionToken || !dto.refreshToken) {
-      throw new BadRequestError(ERRORS.AUTH.LOGOUT.USER_NOT_LOGGED_OUT);
+      throw new BadRequestError(ERROR_MESSAGES.AUTH.LOGOUT.USER_NOT_LOGGED_OUT);
     }
 
     await AuthDatasource.setSession(
@@ -164,7 +166,9 @@ export class AuthDatasource implements AuthRepository {
     const authClient = new this.client().create();
 
     if (!dto.sessionToken || !dto.refreshToken || dto.newPassword) {
-      throw new BadRequestError(ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED);
+      throw new BadRequestError(
+        ERROR_MESSAGES.AUTH.UPDATE_USER.USER_NOT_UPDATED,
+      );
     }
 
     const actualUserSession = await AuthDatasource.setSession(
@@ -191,7 +195,9 @@ export class AuthDatasource implements AuthRepository {
       );
     }
     if (!data.user) {
-      throw new BadRequestError(ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED);
+      throw new BadRequestError(
+        ERROR_MESSAGES.AUTH.UPDATE_USER.USER_NOT_UPDATED,
+      );
     }
 
     const [errorDto, datasourceUserMapper] = DatasourceUserMapper.createFrom(
@@ -214,7 +220,9 @@ export class AuthDatasource implements AuthRepository {
     const authClient = new this.client().create();
 
     if (!dto.sessionToken || !dto.refreshToken || !dto.newPassword) {
-      throw new BadRequestError(ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED);
+      throw new BadRequestError(
+        ERROR_MESSAGES.AUTH.UPDATE_USER.USER_NOT_UPDATED,
+      );
     }
 
     const actualUserSession = await AuthDatasource.setSession(
@@ -235,7 +243,9 @@ export class AuthDatasource implements AuthRepository {
       );
     }
     if (!data.user) {
-      throw new BadRequestError(ERRORS.AUTH.UPDATE_USER.USER_NOT_UPDATED);
+      throw new BadRequestError(
+        ERROR_MESSAGES.AUTH.UPDATE_USER.USER_NOT_UPDATED,
+      );
     }
 
     const [errorDto, datasourceUserMapper] = DatasourceUserMapper.createFrom(
@@ -261,16 +271,13 @@ export class AuthDatasource implements AuthRepository {
       //* Create a new and unique instance of AuthClient for this request
       const authClient = new this.client().create();
 
-      const { error } = await authClient.auth.resetPasswordForEmail(
-        dto.email,
-        {
-          redirectTo: dto.redirectTo,
-        },
-      );
+      const { error } = await authClient.auth.resetPasswordForEmail(dto.email, {
+        redirectTo: dto.redirectTo,
+      });
 
       if (error) {
         throw new BadRequestError(
-          ERRORS.AUTH.REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT,
+          ERROR_MESSAGES.AUTH.REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT,
           error.code,
           error.status?.toString(),
         );
@@ -281,7 +288,7 @@ export class AuthDatasource implements AuthRepository {
       }
 
       throw new BadRequestError(
-        ERRORS.AUTH.REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT,
+        ERROR_MESSAGES.AUTH.REQUEST_RESET_PASSWORD_EMAIL.EMAIL_NOT_SENT,
       );
     }
   }

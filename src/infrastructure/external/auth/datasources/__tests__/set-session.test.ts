@@ -5,7 +5,7 @@ import { UserEntity } from "@/domain/user/entities/user.entity";
 import { DatasourceUserMapper } from "@/infrastructure/external/auth/mappers/datasource-user.mapper";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { ValidationError } from "@/domain/errors/validation-error";
-import { ERRORS } from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 import {
   createMockUser,
   createMockSession,
@@ -217,7 +217,7 @@ describe("AuthDatasource - setSession Method", () => {
 
       await expect(
         setSessionMethod(mockSupabaseClient, sessionToken, refreshToken),
-      ).rejects.toThrow(ERRORS.AUTH.LOGIN.USER_NOT_FOUND);
+      ).rejects.toThrow(ERROR_MESSAGES.AUTH.LOGIN.USER_NOT_FOUND);
     });
 
     it("should throw BadRequestError when session is not found after setSession", async () => {
@@ -240,7 +240,7 @@ describe("AuthDatasource - setSession Method", () => {
 
       await expect(
         setSessionMethod(mockSupabaseClient, sessionToken, refreshToken),
-      ).rejects.toThrow(ERRORS.AUTH.LOGIN.USER_NOT_FOUND);
+      ).rejects.toThrow(ERROR_MESSAGES.AUTH.LOGIN.USER_NOT_FOUND);
     });
 
     it("should throw ValidationError when DatasourceUserMapper creation fails", async () => {
@@ -336,7 +336,7 @@ describe("AuthDatasource - setSession Method", () => {
 
       await expect(
         setSessionMethod(mockSupabaseClient, sessionToken, refreshToken),
-      ).rejects.toThrow(ERRORS.AUTH.REFRESH_SESSION.SESSION_NOT_FOUND);
+      ).rejects.toThrow(ERROR_MESSAGES.AUTH.REFRESH_SESSION.SESSION_NOT_FOUND);
     });
 
     it("should not call refreshSession if setSession fails", async () => {

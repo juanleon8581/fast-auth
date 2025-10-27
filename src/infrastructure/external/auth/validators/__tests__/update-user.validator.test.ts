@@ -1,6 +1,6 @@
 import { UpdateUserValidator } from "../update-user.validator";
 import { UpdateUserDto } from "@/domain/user/dtos/update-user.dto";
-import globalStrings from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 import { ValidationError } from "@/domain/errors/validation-error";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 
@@ -10,8 +10,8 @@ jest.mock("@/domain/user/dtos/update-user.dto");
 const MockedUpdateUserDto = UpdateUserDto as jest.MockedClass<
   typeof UpdateUserDto
 >;
-const { VALIDATION } = globalStrings.ERRORS.AUTH.UPDATE_USER;
-const { VALIDATION: REGISTER_VALIDATION } = globalStrings.ERRORS.AUTH.REGISTER;
+const { VALIDATION } = ERROR_MESSAGES.AUTH.UPDATE_USER;
+const { VALIDATION: REGISTER_VALIDATION } = ERROR_MESSAGES.AUTH.REGISTER;
 
 describe("UpdateUserValidator", () => {
   beforeEach(() => {

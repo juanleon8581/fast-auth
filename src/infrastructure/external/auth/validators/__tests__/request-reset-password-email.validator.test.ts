@@ -1,6 +1,6 @@
 import { RequestResetPasswordEmailValidator } from "../request-reset-password-email.validator";
 import { RequestResetPasswordEmailDto } from "@/domain/auth/dtos/request-reset-password-email.dto";
-import globalStrings from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
 // Mock RequestResetPasswordEmailDto
 jest.mock("@/domain/auth/dtos/request-reset-password-email.dto");
@@ -9,8 +9,8 @@ const MockedRequestResetPasswordEmailDto =
   RequestResetPasswordEmailDto as jest.MockedClass<
     typeof RequestResetPasswordEmailDto
   >;
-const { DATA_VALIDATION } = globalStrings.ERRORS;
-const { VALIDATION } = globalStrings.ERRORS.AUTH.REQUEST_RESET_PASSWORD_EMAIL;
+const { DATA_VALIDATION } = ERROR_MESSAGES;
+const { VALIDATION } = ERROR_MESSAGES.AUTH.REQUEST_RESET_PASSWORD_EMAIL;
 
 describe("RequestResetPasswordEmailValidator", () => {
   beforeEach(() => {

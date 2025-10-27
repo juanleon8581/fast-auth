@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { UpdateUserDto } from "@/domain/user/dtos/update-user.dto";
-import globalStrings from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 import {
   STRONG_PASSWORD_PATTERN,
   EMAIL_BASIC_REGEX,
@@ -11,8 +11,8 @@ import { processValidationError } from "@/infrastructure/helpers/validators/proc
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 
-const { VALIDATION } = globalStrings.ERRORS.AUTH.UPDATE_USER;
-const { VALIDATION: VALIDATION_GENERAL } = globalStrings.ERRORS.AUTH.REGISTER;
+const { VALIDATION } = ERROR_MESSAGES.AUTH.UPDATE_USER;
+const { VALIDATION: VALIDATION_GENERAL } = ERROR_MESSAGES.AUTH.REGISTER;
 
 const updateUserSchema = z
   .object({
