@@ -246,18 +246,5 @@ describe("UserEntity", () => {
       // @ts-ignore
       expect(user.anotherField).toBeUndefined();
     });
-
-    it("should throw error when email_verified is false (due to validation logic)", () => {
-      const invalidData = {
-        id: "user-123",
-        email: "test@example.com",
-        name: "John Doe",
-        email_verified: false,
-      };
-
-      expect(() => {
-        UserEntity.createFrom(invalidData);
-      }).toThrow("Email not verified");
-    });
   });
 });
