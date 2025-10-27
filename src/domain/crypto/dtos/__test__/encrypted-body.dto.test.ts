@@ -1,5 +1,5 @@
 import { EncryptedBodyDto } from "@/domain/crypto/dtos/encrypted-body.dto";
-import { ERRORS } from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
 describe("EncryptedBodyDto", () => {
   const validEncryption = {
@@ -65,7 +65,7 @@ describe("EncryptedBodyDto", () => {
 
     it("should return error string when required fields are missing", () => {
       const [error] = EncryptedBodyDto.createFrom({});
-      expect(error).toBe(ERRORS.DATA_VALIDATION.INVALID_DATA);
+      expect(error).toBe(ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA);
     });
   });
 });

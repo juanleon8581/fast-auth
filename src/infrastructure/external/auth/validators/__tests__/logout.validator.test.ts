@@ -1,9 +1,9 @@
 import { LogoutValidator } from "../logout.validator";
 import { LogoutDto } from "@/domain/auth/dtos/logout.dto";
 import { ValidationError } from "@/domain/errors/validation-error";
-import globalStrings from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
-const { VALIDATION } = globalStrings.ERRORS.AUTH.LOGOUT;
+const { VALIDATION } = ERROR_MESSAGES.AUTH.LOGOUT;
 
 describe("LogoutValidator", () => {
   describe("validate", () => {

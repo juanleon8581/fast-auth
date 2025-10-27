@@ -3,7 +3,7 @@ import { jwtVerify } from "jose";
 import { TextEncoder } from "util";
 
 import { UnauthorizedError } from "@/domain/errors/unauthorized-error";
-import { ERRORS } from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 import LoggerService from "@/infrastructure/services/logger/logger.service";
 import envs from "@/infrastructure/config/environment/envs";
 
@@ -31,7 +31,7 @@ export class AuthMiddleware {
       if (!authHeader) {
         next(
           new UnauthorizedError(
-            ERRORS.DATA_VALIDATION.AUTHORIZATION_HEADER_REQUIRED,
+            ERROR_MESSAGES.DATA_VALIDATION.AUTHORIZATION_HEADER_REQUIRED,
             "authorization",
             "MISSING_AUTH_HEADER",
           ),
@@ -92,7 +92,7 @@ export class AuthMiddleware {
           ) {
             next(
               new UnauthorizedError(
-                ERRORS.DATA_VALIDATION.TOKEN_EXPIRED,
+                ERROR_MESSAGES.DATA_VALIDATION.TOKEN_EXPIRED,
                 "token",
                 "TOKEN_EXPIRED",
               ),

@@ -6,10 +6,11 @@ import { LoginDto } from "@/domain/auth/dtos/login.dto";
 import type { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 
 import { STRONG_PASSWORD_PATTERN } from "@/domain/shared/validators/regex.validators";
-import globalStrings from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
+
 import { processValidationError } from "../../../helpers/validators/processError.validator";
 
-const { VALIDATION } = globalStrings.ERRORS.AUTH.REGISTER;
+const { VALIDATION } = ERROR_MESSAGES.AUTH.REGISTER;
 
 const loginSchema = z.object({
   email: z.email(VALIDATION.EMAIL.INVALID_FORMAT),

@@ -1,9 +1,9 @@
 import { LoginValidator } from "../login.validator";
 import { LoginDto } from "@/domain/auth/dtos/login.dto";
 import { ValidationError } from "@/domain/errors/validation-error";
-import globalStrings from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
-const { VALIDATION } = globalStrings.ERRORS.AUTH.REGISTER;
+const { VALIDATION } = ERROR_MESSAGES.AUTH.REGISTER;
 
 describe("LoginValidator", () => {
   describe("validate", () => {

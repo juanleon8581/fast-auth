@@ -5,10 +5,10 @@ import { LogoutDto } from "@/domain/auth/dtos/logout.dto";
 
 import type { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 
-import globalStrings from "@/config/strings/global.strings.json";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 import { processValidationError } from "../../../helpers/validators/processError.validator";
 
-const { VALIDATION } = globalStrings.ERRORS.AUTH.LOGOUT;
+const { VALIDATION } = ERROR_MESSAGES.AUTH.LOGOUT;
 
 const logoutSchema = z.object({
   sessionToken: z
