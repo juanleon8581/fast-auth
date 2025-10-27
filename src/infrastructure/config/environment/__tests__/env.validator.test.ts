@@ -52,7 +52,7 @@ describe("env.validator.test", () => {
     it("should reject invalid DATABASE_URL with specific message 'Must be a valid URL'", () => {
       process.env.DATABASE_URL = "invalid-url";
       expect(() => EnvValidator.validate(process.env)).toThrow(
-        "Must be a valid database URL",
+        "Must be a valid URL",
       );
     });
 

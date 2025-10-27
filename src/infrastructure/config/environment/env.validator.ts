@@ -1,35 +1,34 @@
 import { TEnvironment } from "@/domain/shared/interfaces/environments.interfaces";
 import { z } from "zod";
+import { ERROR_MESSAGES } from "./envs.constants";
 
 const environmentsArray: TEnvironment[] = ["dev", "prod", "qa"];
 
 const envSchema = z.object({
   NODE_ENV: z.enum(environmentsArray, {
-    message:
-      "NODE_ENV must be one of the following: dev, prod, qa, development, production",
+    message: ERROR_MESSAGES.NODE_ENV.INVALID_VALUE,
   }),
   PORT: z.coerce.number().default(3000),
-  SUPABASE_URL: z.url({ message: "Must be a valid URL" }),
+  SUPABASE_URL: z.url({ message: ERROR_MESSAGES.URLS }),
   SUPABASE_ANON_KEY: z
-    .string({ message: "SUPABASE_ANON_KEY is required" })
-    .nonempty("SUPABASE_ANON_KEY must be non-empty"),
+    .string({ message: ERROR_MESSAGES.SUPABASE_ANON_KEY.REQUIRED })
+    .nonempty(ERROR_MESSAGES.SUPABASE_ANON_KEY.NON_EMPTY),
   JWT_SECRET: z
-    .string({ message: "JWT_SECRET is required" })
-    .min(32, { message: "JWT_SECRET must be at least 32 characters long" }),
-  DATABASE_URL: z.url({ message: "Must be a valid database URL" }),
+    .string({ message: ERROR_MESSAGES.JWT_SECRET.REQUIRED })
+    .min(32, { message: ERROR_MESSAGES.JWT_SECRET.MIN_LENGTH }),
+  DATABASE_URL: z.url({ message: ERROR_MESSAGES.URLS }),
   PASSPHRASE: z
-    .string({ message: "PASSPHRASE is required" })
-    .min(12, { message: "PASSPHRASE must be at least 12 characters long" }),
+    .string({ message: ERROR_MESSAGES.PASSPHASE.REQUIRED })
+    .min(12, { message: ERROR_MESSAGES.PASSPHASE.MIN_LENGTH }),
   LOG_TRANSPORT: z
     .enum(["console", "file", "all"], {
-      message: "LOG_TRANSPORT must be one of the following: console, file, all",
+      message: ERROR_MESSAGES.LOG_TRANSPORT.INVALID_VALUE,
     })
     .optional()
     .default("console"),
   LOG_LEVEL: z
     .enum(["error", "warn", "info", "http", "verbose", "debug", "silly"], {
-      message:
-        "LOG_LEVEL must be one of the following: error, warn, info, http, verbose, debug, silly",
+      message: ERROR_MESSAGES.LOG_LEVEL.INVALID_VALUE,
     })
     .optional()
     .default("info"),
