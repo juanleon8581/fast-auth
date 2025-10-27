@@ -1,5 +1,5 @@
 import { LoginDto } from "../login.dto";
-import { clearAllMocks } from "@/config/tests/test-utils";
+import { clearAllMocks } from "@/tests/test-utils";
 
 describe("LoginDto", () => {
   afterEach(() => {

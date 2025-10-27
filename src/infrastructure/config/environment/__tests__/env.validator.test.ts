@@ -1,4 +1,4 @@
-import mockEnv from "@/config/tests/__mocks__/env.mock";
+import mockEnv from "@/tests/__mocks__/env.mock";
 import { EnvValidator } from "../env.validator";
 import { TEnvironment } from "@/domain/shared/interfaces/environments.interfaces";
 import {

@@ -1,4 +1,4 @@
-import mockEnv from "@/config/tests/__mocks__/env.mock";
+import mockEnv from "@/tests/__mocks__/env.mock";
 import { EnvConfig } from "../env.config";
 
 jest.mock("dotenv", () => ({

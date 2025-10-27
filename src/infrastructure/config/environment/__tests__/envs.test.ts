@@ -1,4 +1,4 @@
-import mockEnv from "@/config/tests/__mocks__/env.mock";
+import mockEnv from "@/tests/__mocks__/env.mock";
 import { EnvConfig } from "../env.config";
 
 //TODO: Validar la creación de un mock global para dotenv

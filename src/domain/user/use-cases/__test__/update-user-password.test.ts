@@ -2,7 +2,7 @@ import { UpdateUserPassword } from "@/domain/user/use-cases/update-user-password
 import { UpdateUserDto } from "@/domain/user/dtos/update-user.dto";
 import { UserEntity } from "@/domain/user/entities/user.entity";
 import { AuthUserEntity } from "@/domain/auth/entities/auth-user.entity";
-import { MockAuthRepository } from "@/config/tests/__mocks__/auth-repository.mock";
+import { MockAuthRepository } from "@/tests/__mocks__/auth-repository.mock";
 
 describe("UpdateUserPassword", () => {
   let updateUserPassword: UpdateUserPassword;

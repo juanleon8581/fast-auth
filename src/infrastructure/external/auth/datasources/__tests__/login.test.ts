@@ -11,7 +11,7 @@ import {
   createMockDatasourceUserMapper,
   createMockUserEntity,
   createMockAuthUserEntity,
-} from "@/config/tests/__helpers__/auth-datasource.helpers";
+} from "@/tests/__helpers__/auth-datasource.helpers";
 
 // Mock dependencies
 jest.mock("@/infrastructure/external/auth/auth.client");

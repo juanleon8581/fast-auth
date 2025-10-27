@@ -1,8 +1,4 @@
-import {
-  clearAllMocks,
-  mockUser,
-  generateMockToken,
-} from "@/config/tests/test-utils";
+import { clearAllMocks, mockUser, generateMockToken } from "@/tests/test-utils";
 
 describe("Jest Configuration", () => {
   afterEach(() => {

@@ -1,5 +1,5 @@
 import { LogoutDto } from "../logout.dto";
-import { clearAllMocks } from "@/config/tests/test-utils";
+import { clearAllMocks } from "@/tests/test-utils";
 
 describe("LogoutDto", () => {
   afterEach(() => {

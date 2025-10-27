@@ -1,5 +1,5 @@
 import { RequestResetPasswordEmailDto } from "../request-reset-password-email.dto";
-import { clearAllMocks } from "@/config/tests/test-utils";
+import { clearAllMocks } from "@/tests/test-utils";
 
 describe("RequestResetPasswordEmailDto", () => {
   afterEach(() => {

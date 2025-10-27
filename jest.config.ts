@@ -27,7 +27,7 @@ const config: Config = {
   ],
   coverageDirectory: "coverage",
   coverageReporters: ["text", "lcov", "html"],
-  setupFilesAfterEnv: ["<rootDir>/src/config/tests/setup.ts"],
+  setupFilesAfterEnv: ["<rootDir>/src/tests/setup.ts"],
   testTimeout: 10000,
 };
 

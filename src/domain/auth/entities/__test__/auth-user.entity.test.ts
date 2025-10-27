@@ -1,6 +1,6 @@
 import { AuthUserEntity } from "@/domain/auth/entities/auth-user.entity";
 import { UserEntity } from "@/domain/user/entities/user.entity";
-import { clearAllMocks } from "@/config/tests/test-utils";
+import { clearAllMocks } from "@/tests/test-utils";
 import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
 describe("AuthUserEntity", () => {

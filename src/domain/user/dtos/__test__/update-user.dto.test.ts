@@ -1,5 +1,5 @@
 import { UpdateUserDto } from "@/domain/user/dtos/update-user.dto";
-import { clearAllMocks } from "@/config/tests/test-utils";
+import { clearAllMocks } from "@/tests/test-utils";
 
 describe("UpdateUserDto", () => {
   afterEach(() => {

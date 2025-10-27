@@ -1,5 +1,5 @@
 import { RegisterDto } from "../register.dto";
-import { clearAllMocks } from "@/config/tests/test-utils";
+import { clearAllMocks } from "@/tests/test-utils";
 
 describe("RegisterDto", () => {
   afterEach(() => {

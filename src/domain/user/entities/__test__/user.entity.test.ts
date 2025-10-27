@@ -1,5 +1,5 @@
 import { UserEntity } from "../user.entity";
-import { clearAllMocks } from "@/config/tests/test-utils";
+import { clearAllMocks } from "@/tests/test-utils";
 
 describe("UserEntity", () => {
   afterEach(() => {
