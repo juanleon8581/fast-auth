@@ -1,4 +1,5 @@
 import { TEnvironment } from "@/domain/shared/interfaces/environments.interfaces";
+import envs from "../environment/envs";
 
 interface ICryptoConfig {
   keysPath: string; // Path to the directory containing encryption keys
@@ -9,9 +10,9 @@ interface ICryptoConfig {
 
 const cryptoConfig: Readonly<ICryptoConfig> = {
   keysPath: "./.keys",
-  cryptoEnvironment: ["prod", "qa"] as const,
-  forceEncrypt: true,
-  disabledEncrypt: false,
+  cryptoEnvironment: envs.CRYPTO_ENVIRONMENT,
+  forceEncrypt: envs.CRYPTO_FORCE_ENCRYPT,
+  disabledEncrypt: envs.CRYPTO_DISABLED_ENCRYPT,
 } as const;
 
 Object.freeze(cryptoConfig);

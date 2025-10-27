@@ -3,6 +3,11 @@ import cryptoConfig from "../crypto.config";
 import type { TEnvironment } from "@/domain/shared/interfaces/environments.interfaces";
 
 describe("crypto.config.test", () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+    jest.resetModules();
+  });
+
   describe("CryptoConfig – Default shape and values", () => {
     it("should export a config object as default", () => {
       const cryptoConfigScope = require("../crypto.config").default;
@@ -17,10 +22,20 @@ describe("crypto.config.test", () => {
     it("should have cryptoEnvironment equal to ['prod', 'qa']", () => {
       expect(cryptoConfig.cryptoEnvironment).toEqual(["prod", "qa"]);
     });
-    it("should set forceEncrypt to true", () => {
+    it("should set forceEncrypt to true", async () => {
+      process.env.CRYPTO_FORCE_ENCRYPT = "true";
+      const envs = (await import("@/infrastructure/config/environment/envs"))
+        .default;
+      const cryptoConfig = (await import("../crypto.config")).default;
+      expect(envs.CRYPTO_FORCE_ENCRYPT).toBe(true);
       expect(cryptoConfig.forceEncrypt).toBe(true);
     });
-    it("should set disabledEncrypt to false", () => {
+    it("should set disabledEncrypt to false", async () => {
+      process.env.CRYPTO_DISABLED_ENCRYPT = "false";
+      const envs = (await import("@/infrastructure/config/environment/envs"))
+        .default;
+      const cryptoConfig = (await import("../crypto.config")).default;
+      expect(envs.CRYPTO_DISABLED_ENCRYPT).toBe(false);
       expect(cryptoConfig.disabledEncrypt).toBe(false);
     });
   });

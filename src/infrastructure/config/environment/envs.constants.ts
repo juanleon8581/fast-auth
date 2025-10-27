@@ -28,4 +28,14 @@ export const ERROR_MESSAGES = {
     INVALID_VALUE:
       "LOG_LEVEL must be one of the following: error, warn, info, http, verbose, debug, silly",
   },
+  CRYPTO_ENVIRONMENT: {
+    INVALID_VALUE:
+      'CRYPTO_ENVIRONMENT must be one or more of the following: prod, qa, dev eg: ("dev,qa")',
+  },
+  CRYPTO_FORCE_ENCRYPT: {
+    INVALID_VALUE: "CRYPTO_FORCE_ENCRYPT must be a boolean",
+  },
+  CRYPTO_DISABLED_ENCRYPT: {
+    INVALID_VALUE: "CRYPTO_DISABLED_ENCRYPT must be a boolean",
+  },
 };
