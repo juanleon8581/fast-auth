@@ -9,27 +9,14 @@ const config: Config = {
     "^.+\.ts$": [
       "ts-jest",
       {
-        tsconfig: {
-          target: "ES2020",
-          module: "CommonJS",
-          moduleResolution: "node",
-          esModuleInterop: true,
-          allowSyntheticDefaultImports: true,
-          skipLibCheck: true,
-          baseUrl: ".",
-          paths: {
-            "@/*": ["./src/*"],
-          },
-        },
+        tsconfig: "./tsconfig.json",
       },
     ],
   },
-  transformIgnorePatterns: [
-    "node_modules/(?!(jose)/)"
-  ],
+  transformIgnorePatterns: ["node_modules/(?!(jose)/)"],
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
-    "^jose$": "<rootDir>/src/config/tests/__mocks__/jose.ts"
+    "^jose$": "<rootDir>/src/config/tests/__mocks__/jose.ts",
   },
   collectCoverageFrom: [
     "src/**/*.ts",
@@ -40,7 +27,7 @@ const config: Config = {
   ],
   coverageDirectory: "coverage",
   coverageReporters: ["text", "lcov", "html"],
-  setupFilesAfterEnv: ["<rootDir>/src/config/tests/setup.ts"],
+  setupFilesAfterEnv: ["<rootDir>/src/tests/setup.ts"],
   testTimeout: 10000,
 };
 

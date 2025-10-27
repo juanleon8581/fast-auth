@@ -1,0 +1,33 @@
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
+import { TRawJson } from "../../shared/interfaces/general.interfaces";
+
+interface IRegisterDto {
+  name: string;
+  lastname: string;
+  email: string;
+  password: string;
+}
+
+export class RegisterDto {
+  constructor(
+    public readonly name: string,
+    public readonly lastname: string,
+    public readonly email: string,
+    public readonly password: string,
+  ) {}
+
+  private static create(props: IRegisterDto): RegisterDto {
+    const { name, lastname, email, password } = props;
+
+    return new RegisterDto(name, lastname, email, password);
+  }
+
+  static createFrom(props: TRawJson): [string?, RegisterDto?] {
+    const { name, lastname, email, password } = props;
+
+    if (!name || !lastname || !email || !password)
+      return [ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA];
+
+    return [undefined, RegisterDto.create({ name, lastname, email, password })];
+  }
+}

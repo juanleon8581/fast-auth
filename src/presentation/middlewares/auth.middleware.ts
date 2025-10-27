@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { jwtVerify } from "jose";
 import { TextEncoder } from "util";
-import envs from "../../config/envs";
+
 import { UnauthorizedError } from "@/domain/errors/unauthorized-error";
-import { ERRORS } from "@/config/strings/global.strings.json";
-import { LoggerService } from "@/infrastructure/services/logger.service";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
+import LoggerService from "@/infrastructure/services/logger/logger.service";
+import envs from "@/infrastructure/config/environment/envs";
 
 /**
  * Authentication middleware that validates JWT Bearer tokens
@@ -25,10 +26,12 @@ export class AuthMiddleware {
       // Extract Authorization header
       const authHeader = req.headers.authorization;
 
+      const logger = new LoggerService().logger;
+
       if (!authHeader) {
         next(
           new UnauthorizedError(
-            ERRORS.DATA_VALIDATION.AUTHORIZATION_HEADER_REQUIRED,
+            ERROR_MESSAGES.DATA_VALIDATION.AUTHORIZATION_HEADER_REQUIRED,
             "authorization",
             "MISSING_AUTH_HEADER",
           ),
@@ -71,7 +74,7 @@ export class AuthMiddleware {
         });
 
         // Log successful authentication
-        LoggerService.logDebug({
+        logger.debug({
           message: "JWT token verified successfully",
           req,
           service: AuthMiddleware.serviceNameForLogger,
@@ -89,7 +92,7 @@ export class AuthMiddleware {
           ) {
             next(
               new UnauthorizedError(
-                ERRORS.DATA_VALIDATION.TOKEN_EXPIRED,
+                ERROR_MESSAGES.DATA_VALIDATION.TOKEN_EXPIRED,
                 "token",
                 "TOKEN_EXPIRED",
               ),

@@ -6,7 +6,7 @@ describe("CryptoMiddleware.decrypt", () => {
 
   it("when encryption enabled, decrypts body and calls next", async () => {
     // Mock config to force encryption
-    jest.doMock("@/config/crypto.config", () => ({
+    jest.doMock("@/infrastructure/config/crypto/crypto.config", () => ({
       __esModule: true,
       default: {
         keysPath: "./.keys",
@@ -16,21 +16,12 @@ describe("CryptoMiddleware.decrypt", () => {
       },
     }));
 
-    // Mock envs
-    jest.doMock("@/config/envs", () => ({
-      __esModule: true,
-      default: {
-        NODE_ENV: "test",
-        PASSPHRASE: "very-secure-passphrase",
-      },
-    }));
-
     // Mock CryptoService to avoid filesystem
     const privateKeyDer = Buffer.from("pkcs8-der");
     const getInstanceMock = {
       getLatestPrivateKeyBase64url: jest.fn().mockResolvedValue(privateKeyDer),
     } as any;
-    jest.doMock("@/infrastructure/services/crypto.service", () => ({
+    jest.doMock("@/infrastructure/services/crypto/crypto.service", () => ({
       __esModule: true,
       CryptoService: class {
         static getInstance() {
@@ -42,7 +33,7 @@ describe("CryptoMiddleware.decrypt", () => {
     // Mock DecryptPayloadUseCase to return payload
     const decryptedPayload = { user: "john" };
     const executeMock = jest.fn().mockResolvedValue(decryptedPayload);
-    jest.doMock("@/domain/use-cases/decrypt-payload.usecase", () => ({
+    jest.doMock("@/domain/crypto/use-cases/decrypt-payload.usecase", () => ({
       __esModule: true,
       DecryptPayloadUseCase: class {
         constructor() {}
@@ -55,12 +46,15 @@ describe("CryptoMiddleware.decrypt", () => {
       encryptedPayload: "a",
       encryption: { iv: "b", wrappedKey: "c" },
     } as any;
-    jest.doMock("@/infrastructure/validators/encrypted-body.validator", () => ({
-      __esModule: true,
-      EncryptedBodyValidator: {
-        validate: jest.fn().mockReturnValue(dtoMock),
-      },
-    }));
+    jest.doMock(
+      "@/infrastructure/services/crypto/validators/encrypted-body.validator",
+      () => ({
+        __esModule: true,
+        EncryptedBodyValidator: {
+          validate: jest.fn().mockReturnValue(dtoMock),
+        },
+      }),
+    );
 
     const { CryptoMiddleware } = require("../crypto.middleware");
 
@@ -80,7 +74,7 @@ describe("CryptoMiddleware.decrypt", () => {
 
   it("when encryption disabled, skips decryption and calls next", async () => {
     // Mock config to disable encryption and not force
-    jest.doMock("@/config/crypto.config", () => ({
+    jest.doMock("@/infrastructure/config/crypto/crypto.config", () => ({
       __esModule: true,
       default: {
         keysPath: "./.keys",
@@ -90,18 +84,9 @@ describe("CryptoMiddleware.decrypt", () => {
       },
     }));
 
-    // Mock envs to a non-encrypted env
-    jest.doMock("@/config/envs", () => ({
-      __esModule: true,
-      default: {
-        NODE_ENV: "dev",
-        PASSPHRASE: "very-secure-passphrase",
-      },
-    }));
-
     // Keep other modules real but ensure use-case would not be invoked
     const usecaseModule = jest.createMockFromModule(
-      "@/domain/use-cases/decrypt-payload.usecase",
+      "@/domain/crypto/use-cases/decrypt-payload.usecase",
     ) as any;
     usecaseModule.DecryptPayloadUseCase = class {
       execute() {
@@ -109,7 +94,7 @@ describe("CryptoMiddleware.decrypt", () => {
       }
     };
     jest.doMock(
-      "@/domain/use-cases/decrypt-payload.usecase",
+      "@/domain/crypto/use-cases/decrypt-payload.usecase",
       () => usecaseModule,
     );
 

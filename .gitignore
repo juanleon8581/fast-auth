@@ -122,3 +122,4 @@ supabase/*
 
 # Development
 actual_process_checklist.md
+*.temp.dev.md

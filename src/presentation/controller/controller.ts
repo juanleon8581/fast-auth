@@ -1,19 +1,20 @@
-import { AuthRepository } from "@/domain/repositories/auth.repository";
-import { LoginUser } from "@/domain/use-cases/login-user";
-import { RegisterUser } from "@/domain/use-cases/register-user";
-import { LogoutAuth } from "@/domain/use-cases/logout-user";
-import { LoginValidator } from "@/infrastructure/validators/login.validator";
-import { RegisterValidator } from "@/infrastructure/validators/register.validator";
-import { LogoutValidator } from "@/infrastructure/validators/logout.validator";
+import { AuthRepository } from "@/domain/auth/repositories/auth.repository";
+import { LoginUser } from "@/domain/auth/use-cases/login-user";
+import { RegisterUser } from "@/domain/auth/use-cases/register-user";
+import { LogoutAuth } from "@/domain/auth/use-cases/logout-user";
+import { LoginValidator } from "@/infrastructure/external/auth/validators/login.validator";
+import { RegisterValidator } from "@/infrastructure/external/auth/validators/register.validator";
+import { LogoutValidator } from "@/infrastructure/external/auth/validators/logout.validator";
 import { ResponseHelper } from "@/presentation/utils/response-helper";
 
 import { Request, Response, NextFunction } from "express";
-import { UpdateUserValidator } from "@/infrastructure/validators/update-user.validator";
-import { UpdateUser } from "@/domain/use-cases/update-user";
-import { UpdateUserPassword } from "@/domain/use-cases/update-user-password";
-import { RequestResetPasswordEmail } from "@/domain/use-cases/request-reset-password-email";
-import { RequestResetPasswordEmailValidator } from "@/infrastructure/validators/request-reset-password-email.validator";
-import { CryptoService } from "@/infrastructure/services/crypto.service";
+import { UpdateUserValidator } from "@/infrastructure/external/auth/validators/update-user.validator";
+import { UpdateUser } from "@/domain/user/use-cases/update-user";
+import { UpdateUserPassword } from "@/domain/user/use-cases/update-user-password";
+
+import { RequestResetPasswordEmailValidator } from "@/infrastructure/external/auth/validators/request-reset-password-email.validator";
+import { CryptoService } from "@/infrastructure/services/crypto/crypto.service";
+import { RequestResetPasswordEmail } from "@/domain/auth/use-cases/request-reset-password-email";
 
 export class AuthController {
   constructor(private readonly datasource: AuthRepository) {}

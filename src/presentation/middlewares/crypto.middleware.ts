@@ -1,8 +1,8 @@
-import cryptoConfig from "@/config/crypto.config";
-import envs from "@/config/envs";
-import { DecryptPayloadUseCase } from "@/domain/use-cases/decrypt-payload.usecase";
-import { CryptoService } from "@/infrastructure/services/crypto.service";
-import { EncryptedBodyValidator } from "@/infrastructure/validators/encrypted-body.validator";
+import cryptoConfig from "@/infrastructure/config/crypto/crypto.config";
+import envs from "@/infrastructure/config/environment/envs";
+import { DecryptPayloadUseCase } from "@/domain/crypto/use-cases/decrypt-payload.usecase";
+import { CryptoService } from "@/infrastructure/services/crypto/crypto.service";
+import { EncryptedBodyValidator } from "@/infrastructure/services/crypto/validators/encrypted-body.validator";
 import { Request, Response, NextFunction } from "express";
 
 export class CryptoMiddleware {
