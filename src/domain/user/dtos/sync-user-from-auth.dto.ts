@@ -3,11 +3,11 @@ import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 
 export class SyncUserFromAuthDto {
   private constructor(
-    private readonly id: string,
-    private readonly email: string,
-    private readonly name?: string,
-    private readonly email_verified?: boolean,
-    private readonly phone?: string,
+    public readonly id: string,
+    public readonly email: string,
+    public readonly name?: string,
+    public readonly email_verified?: boolean,
+    public readonly phone?: string,
   ) {
     Object.freeze(this);
   }
