@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { AuthController } from "../controller";
+import { AuthController } from "../auth.controller";
 import { RegisterDto } from "@/domain/auth/dtos/register.dto";
 import { LoginDto } from "@/domain/auth/dtos/login.dto";
 import { UpdateUserDto } from "@/domain/user/dtos/update-user.dto";

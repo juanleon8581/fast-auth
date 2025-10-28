@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { AuthDatasource } from "@/infrastructure/external/auth/datasources/auth.datasource";
 import { AuthClient } from "@/infrastructure/external/auth/auth.client";
-import { AuthController } from "@/presentation/auth/controllers/controller";
+import { AuthController } from "@/presentation/auth/controllers/auth.controller";
 import { AuthMiddleware } from "@/presentation/middlewares/auth.middleware";
 import { CryptoMiddleware } from "@/presentation/middlewares/crypto.middleware";
 
