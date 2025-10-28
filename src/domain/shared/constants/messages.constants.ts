@@ -9,6 +9,7 @@ export const ERROR_MESSAGES = {
     INVALID_AUTHORIZATION_FORMAT: "Invalid authorization format",
     TOKEN_EXPIRED: "Token has expired",
     DAYS_MUST_BE_GREATER_THAN_0: "Days must be greater than 0",
+    INVALID_WEBHOOK_DATA: "Invalid webhook data",
   },
   AUTH: {
     REFRESH_SESSION: {
