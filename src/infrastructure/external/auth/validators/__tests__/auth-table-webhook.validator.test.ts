@@ -17,8 +17,10 @@ describe("AuthTableWebhookValidator", () => {
         record: {
           id: validUuid,
           email: "user@example.com",
-          name: "John Doe",
-          email_verified: true,
+          raw_user_meta_data: {
+            display_name: "John Doe",
+            email_verified: true,
+          },
           phone: "+1234567890",
         },
       };
@@ -26,7 +28,15 @@ describe("AuthTableWebhookValidator", () => {
       const spy = jest.spyOn(SyncUserFromAuthDto, "createFrom");
       const result = AuthTableWebhookValidator.validate(data as any);
 
-      expect(spy).toHaveBeenCalledWith(data.record);
+      expect(spy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: validUuid,
+          email: "user@example.com",
+          name: "John Doe",
+          email_verified: true,
+          phone: "+1234567890",
+        }),
+      );
       expect(result).toBeInstanceOf(SyncUserFromAuthDto);
       expect(result.id).toBe(validUuid);
       expect(result.email).toBe("user@example.com");
@@ -51,8 +61,10 @@ describe("AuthTableWebhookValidator", () => {
         record: {
           id: validUuid,
           email: "invalid-email",
-          name: "John Doe",
-          email_verified: true,
+          raw_user_meta_data: {
+            display_name: "John Doe",
+            email_verified: true,
+          },
           phone: "+1234567890",
         },
       };
@@ -73,8 +85,10 @@ describe("AuthTableWebhookValidator", () => {
         record: {
           id: "not-a-uuid",
           email: "user@example.com",
-          name: "John Doe",
-          email_verified: true,
+          raw_user_meta_data: {
+            display_name: "John Doe",
+            email_verified: true,
+          },
           phone: "+1234567890",
         },
       };
@@ -95,8 +109,10 @@ describe("AuthTableWebhookValidator", () => {
         record: {
           id: validUuid,
           email: "user@example.com",
-          name: "John Doe",
-          email_verified: "yes" as any,
+          raw_user_meta_data: {
+            display_name: "John Doe",
+            email_verified: "yes" as any,
+          },
           phone: "+1234567890",
         },
       };
@@ -112,28 +128,39 @@ describe("AuthTableWebhookValidator", () => {
       }
     });
 
-    it("should throw ValidationError when phone is missing", () => {
+    it("should validate when phone is missing (optional field)", () => {
       const data = {
         record: {
           id: validUuid,
           email: "user@example.com",
-          name: "John Doe",
-          email_verified: true,
+          raw_user_meta_data: {
+            display_name: "John Doe",
+            email_verified: true,
+          },
           // phone missing
         } as any,
       };
 
-      try {
-        AuthTableWebhookValidator.validate(data as any);
-      } catch (error) {
-        expect(error).toBeInstanceOf(ValidationError);
-        const err = error as ValidationError;
-        expect(err.field).toBe("phone");
-        expect(err.code).toBe("VALIDATION_ERROR");
-        expect(err.message).toBe(
-          "Invalid input: expected string, received undefined",
-        );
-      }
+      const result = AuthTableWebhookValidator.validate(data as any);
+      expect(result).toBeInstanceOf(SyncUserFromAuthDto);
+      expect(result.phone).toBeUndefined();
+    });
+
+    it("should throw ValidationError when raw_user_meta_data is missing", () => {
+      const data = {
+        record: {
+          id: validUuid,
+          email: "user@example.com",
+          // raw_user_meta_data missing
+        } as any,
+      };
+
+      expect(() => AuthTableWebhookValidator.validate(data as any)).toThrow(
+        ValidationError,
+      );
+      expect(() => AuthTableWebhookValidator.validate(data as any)).toThrow(
+        ERROR_MESSAGES.DATA_VALIDATION.INVALID_WEBHOOK_DATA,
+      );
     });
 
     it("should throw ValidationError when DTO factory returns domain error", () => {
@@ -141,8 +168,10 @@ describe("AuthTableWebhookValidator", () => {
         record: {
           id: validUuid,
           email: "user@example.com",
-          name: "John Doe",
-          email_verified: true,
+          raw_user_meta_data: {
+            display_name: "John Doe",
+            email_verified: true,
+          },
           phone: "+1234567890",
         },
       };

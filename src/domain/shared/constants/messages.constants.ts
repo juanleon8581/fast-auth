@@ -11,6 +11,10 @@ export const ERROR_MESSAGES = {
     DAYS_MUST_BE_GREATER_THAN_0: "Days must be greater than 0",
     INVALID_WEBHOOK_DATA: "Invalid webhook data",
   },
+  REQ_SIGN: {
+    UNKNOWN_ERROR: "Unknown error",
+    BAD_SIGNATURE: "Unauthorized: bad signature for request",
+  },
   AUTH: {
     REFRESH_SESSION: {
       SESSION_NOT_FOUND: "Session not found",

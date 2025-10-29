@@ -11,7 +11,7 @@ const insertSchema = z.object({
   email: z.email(),
   name: z.string(),
   email_verified: z.boolean(),
-  phone: z.string(),
+  phone: z.string().optional(),
 });
 
 export class AuthTableWebhookValidator {
@@ -19,13 +19,28 @@ export class AuthTableWebhookValidator {
     try {
       const { record } = data;
 
-      if (!record) {
+      if (
+        !record ||
+        !record.email ||
+        !record.raw_user_meta_data ||
+        !record.id
+      ) {
         throw new ValidationError(
           ERROR_MESSAGES.DATA_VALIDATION.INVALID_WEBHOOK_DATA,
         );
       }
 
-      const validatedData = insertSchema.parse(record);
+      const { raw_user_meta_data: rawUserMetadata } = record;
+
+      const objForValidation = {
+        id: record.id,
+        email: record.email,
+        name: rawUserMetadata.display_name,
+        email_verified: rawUserMetadata.email_verified,
+        phone: record.phone ?? undefined,
+      };
+
+      const validatedData = insertSchema.parse(objForValidation);
 
       const [error, syncUserFromAuthDto] =
         SyncUserFromAuthDto.createFrom(validatedData);
