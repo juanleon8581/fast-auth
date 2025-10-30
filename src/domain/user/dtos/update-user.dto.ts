@@ -13,7 +13,7 @@ interface IUpdateUserDto {
 }
 
 export class UpdateUserDto {
-  constructor(
+  private constructor(
     public readonly sessionToken: string,
     public readonly refreshToken: string,
     public readonly email?: string,
