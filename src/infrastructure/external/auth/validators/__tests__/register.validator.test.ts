@@ -1,16 +1,29 @@
 import { RegisterValidator } from "../register.validator";
 import { RegisterDto } from "@/domain/auth/dtos/register.dto";
+import { TUserRole } from "@/domain/auth/interfaces/auth-user.interfaces";
 import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
+import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 
 // Mock RegisterDto
 jest.mock("@/domain/auth/dtos/register.dto");
 
-const MockedRegisterDto = RegisterDto as jest.MockedClass<typeof RegisterDto>;
+const MockedRegisterDto = RegisterDto;
 const { DATA_VALIDATION } = ERROR_MESSAGES;
 const { VALIDATION } = ERROR_MESSAGES.AUTH.REGISTER;
 
 describe("RegisterValidator", () => {
+  let validData: TRawJson;
   beforeEach(() => {
+    validData = {
+      name: "John",
+      lastname: "Doe",
+      email: "john.doe@example.com",
+      password: "SecurePass123!",
+      phone: "+1234567890",
+      role: "USER",
+      metadata: {},
+    };
+
     jest.clearAllMocks();
 
     // Mock RegisterDto.createFrom to return a valid DTO
@@ -19,6 +32,8 @@ describe("RegisterValidator", () => {
       lastname: "Doe",
       email: "john.doe@example.com",
       password: "SecurePass123!",
+      role: "USER",
+      metadata: {},
     } as RegisterDto;
 
     (MockedRegisterDto.createFrom as jest.Mock).mockReturnValue([
@@ -30,31 +45,18 @@ describe("RegisterValidator", () => {
   describe("validate method", () => {
     describe("successful validation", () => {
       it("should validate correct data and return RegisterDto", () => {
-        const validData = {
-          name: "John",
-          lastname: "Doe",
-          email: "john.doe@example.com",
-          password: "SecurePass123!",
-        };
-
         const dto = RegisterValidator.validate(validData);
 
         expect(dto).toBeDefined();
         expect(MockedRegisterDto.createFrom).toHaveBeenCalledWith({
-          name: "John",
-          lastname: "Doe",
-          email: "john.doe@example.com",
-          password: "SecurePass123!",
+          ...validData,
+          name: "john",
+          lastname: "doe",
         });
       });
 
       it("should convert email to lowercase", () => {
-        const validData = {
-          name: "John",
-          lastname: "Doe",
-          email: "JOHN.DOE@EXAMPLE.COM",
-          password: "SecurePass123!",
-        };
+        validData.email = "JOHN.DOE@EXAMPLE.COM";
 
         RegisterValidator.validate(validData);
 
@@ -66,14 +68,15 @@ describe("RegisterValidator", () => {
       });
 
       it("should handle minimum valid lengths", () => {
-        const validData = {
+        const data = {
           name: "Jo",
           lastname: "Do",
           email: "a@b.co",
           password: "Pass123!",
+          phone: "+123456789",
         };
 
-        const dto = RegisterValidator.validate(validData);
+        const dto = RegisterValidator.validate(data);
 
         expect(dto).toBeDefined();
       });
@@ -84,21 +87,37 @@ describe("RegisterValidator", () => {
           lastname: "B".repeat(50),
           email: "test@" + "a".repeat(90) + ".com",
           password: "A".repeat(120) + "Pass123!",
+          phone: "+12345678901234",
         };
 
         const dto = RegisterValidator.validate(validData);
 
         expect(dto).toBeDefined();
       });
+
+      it("should handle all valid roles", () => {
+        const roles: TUserRole[] = ["USER", "MODERATOR", "ADMIN"];
+
+        roles.forEach((role) => {
+          validData.role = role;
+
+          const dto = RegisterValidator.validate(validData);
+
+          expect(dto).toBeDefined();
+          expect(MockedRegisterDto.createFrom).toHaveBeenCalledWith(
+            expect.objectContaining({
+              role,
+            }),
+          );
+        });
+      });
     });
 
     describe("name validation errors", () => {
       it("should throw error for name too short", () => {
         const invalidData = {
+          ...validData,
           name: "J",
-          lastname: "Doe",
-          email: "john.doe@example.com",
-          password: "SecurePass123!",
         };
 
         expect(() => RegisterValidator.validate(invalidData)).toThrow(
@@ -108,10 +127,8 @@ describe("RegisterValidator", () => {
 
       it("should throw error for name too long", () => {
         const invalidData = {
+          ...validData,
           name: "A".repeat(51),
-          lastname: "Doe",
-          email: "john.doe@example.com",
-          password: "SecurePass123!",
         };
 
         expect(() => RegisterValidator.validate(invalidData)).toThrow(
@@ -121,10 +138,8 @@ describe("RegisterValidator", () => {
 
       it("should throw error for name with invalid characters", () => {
         const invalidData = {
+          ...validData,
           name: "John123",
-          lastname: "Doe",
-          email: "john.doe@example.com",
-          password: "SecurePass123!",
         };
 
         expect(() => RegisterValidator.validate(invalidData)).toThrow(
@@ -133,12 +148,9 @@ describe("RegisterValidator", () => {
       });
 
       it("should throw error for missing name", () => {
-        const invalidData = {
-          lastname: "Doe",
-          email: "john.doe@example.com",
-          password: "SecurePass123!",
-        };
+        const { name, ...invalidData } = validData;
 
+        expect(name).toBeDefined();
         expect(() => RegisterValidator.validate(invalidData)).toThrow(
           "Invalid input: expected string, received undefined",
         );
@@ -148,10 +160,8 @@ describe("RegisterValidator", () => {
     describe("lastname validation errors", () => {
       it("should throw error for lastname too short", () => {
         const invalidData = {
-          name: "John",
+          ...validData,
           lastname: "D",
-          email: "john.doe@example.com",
-          password: "SecurePass123!",
         };
 
         expect(() => RegisterValidator.validate(invalidData)).toThrow(
@@ -161,10 +171,8 @@ describe("RegisterValidator", () => {
 
       it("should throw error for lastname too long", () => {
         const invalidData = {
-          name: "John",
+          ...validData,
           lastname: "B".repeat(51),
-          email: "john.doe@example.com",
-          password: "SecurePass123!",
         };
 
         expect(() => RegisterValidator.validate(invalidData)).toThrow(
@@ -174,10 +182,8 @@ describe("RegisterValidator", () => {
 
       it("should throw error for lastname with invalid characters", () => {
         const invalidData = {
-          name: "John",
+          ...validData,
           lastname: "Doe123",
-          email: "john.doe@example.com",
-          password: "SecurePass123!",
         };
 
         expect(() => RegisterValidator.validate(invalidData)).toThrow(
@@ -186,12 +192,9 @@ describe("RegisterValidator", () => {
       });
 
       it("should throw error for missing lastname", () => {
-        const invalidData = {
-          name: "John",
-          email: "john.doe@example.com",
-          password: "SecurePass123!",
-        };
+        const { lastname, ...invalidData } = validData;
 
+        expect(lastname).toBeDefined();
         expect(() => RegisterValidator.validate(invalidData)).toThrow(
           "Invalid input: expected string, received undefined",
         );
@@ -201,10 +204,8 @@ describe("RegisterValidator", () => {
     describe("email validation errors", () => {
       it("should throw error for invalid email format", () => {
         const invalidData = {
-          name: "John",
-          lastname: "Doe",
+          ...validData,
           email: "invalid-email",
-          password: "SecurePass123!",
         };
 
         expect(() => RegisterValidator.validate(invalidData)).toThrow(
@@ -214,10 +215,8 @@ describe("RegisterValidator", () => {
 
       it("should throw error for email too long", () => {
         const invalidData = {
-          name: "John",
-          lastname: "Doe",
+          ...validData,
           email: "test@" + "a".repeat(250) + ".com",
-          password: "SecurePass123!",
         };
 
         expect(() => RegisterValidator.validate(invalidData)).toThrow(
@@ -226,12 +225,9 @@ describe("RegisterValidator", () => {
       });
 
       it("should throw error for missing email", () => {
-        const invalidData = {
-          name: "John",
-          lastname: "Doe",
-          password: "SecurePass123!",
-        };
+        const { email, ...invalidData } = validData;
 
+        expect(email).toBeDefined();
         expect(() => RegisterValidator.validate(invalidData)).toThrow(
           "Must be a valid email",
         );
@@ -241,9 +237,7 @@ describe("RegisterValidator", () => {
     describe("password validation errors", () => {
       it("should throw error for password too short", () => {
         const invalidData = {
-          name: "John",
-          lastname: "Doe",
-          email: "john.doe@example.com",
+          ...validData,
           password: "Pass1!",
         };
 
@@ -254,9 +248,7 @@ describe("RegisterValidator", () => {
 
       it("should throw error for password too long", () => {
         const invalidData = {
-          name: "John",
-          lastname: "Doe",
-          email: "john.doe@example.com",
+          ...validData,
           password: "A".repeat(129),
         };
 
@@ -267,9 +259,7 @@ describe("RegisterValidator", () => {
 
       it("should throw error for password without uppercase", () => {
         const invalidData = {
-          name: "John",
-          lastname: "Doe",
-          email: "john.doe@example.com",
+          ...validData,
           password: "securepass123!",
         };
 
@@ -280,9 +270,7 @@ describe("RegisterValidator", () => {
 
       it("should throw error for password without lowercase", () => {
         const invalidData = {
-          name: "John",
-          lastname: "Doe",
-          email: "john.doe@example.com",
+          ...validData,
           password: "SECUREPASS123!",
         };
 
@@ -293,9 +281,7 @@ describe("RegisterValidator", () => {
 
       it("should throw error for password without numbers", () => {
         const invalidData = {
-          name: "John",
-          lastname: "Doe",
-          email: "john.doe@example.com",
+          ...validData,
           password: "SecurePass!",
         };
 
@@ -306,9 +292,7 @@ describe("RegisterValidator", () => {
 
       it("should throw error for password without special characters", () => {
         const invalidData = {
-          name: "John",
-          lastname: "Doe",
-          email: "john.doe@example.com",
+          ...validData,
           password: "SecurePass123",
         };
 
@@ -318,15 +302,69 @@ describe("RegisterValidator", () => {
       });
 
       it("should throw error for missing password", () => {
-        const invalidData = {
-          name: "John",
-          lastname: "Doe",
-          email: "john.doe@example.com",
-        };
+        const { password, ...invalidData } = validData;
 
+        expect(password).toBeDefined();
         expect(() => RegisterValidator.validate(invalidData)).toThrow(
           "Invalid input: expected string, received undefined",
         );
+      });
+    });
+
+    describe("phone validation errors", () => {
+      it("should throw error for invalid phone format", () => {
+        const invalidData = {
+          ...validData,
+          phone: "1234567890",
+        };
+
+        expect(() => RegisterValidator.validate(invalidData)).toThrow(
+          VALIDATION.PHONE.INVALID_FORMAT,
+        );
+      });
+
+      it("should throw error for invalid phone format with letters", () => {
+        const invalidData = {
+          ...validData,
+          phone: "+12345abc67890",
+        };
+
+        expect(() => RegisterValidator.validate(invalidData)).toThrow(
+          VALIDATION.PHONE.INVALID_FORMAT,
+        );
+      });
+
+      it("should throw error for short phone number", () => {
+        const invalidData = {
+          ...validData,
+          phone: "+12345678",
+        };
+
+        expect(() => RegisterValidator.validate(invalidData)).toThrow(
+          VALIDATION.PHONE.MIN_LENGTH,
+        );
+      });
+
+      it("should throw error for long phone number", () => {
+        const invalidData = {
+          ...validData,
+          phone: "+123456789012345",
+        };
+
+        expect(() => RegisterValidator.validate(invalidData)).toThrow(
+          VALIDATION.PHONE.MAX_LENGTH,
+        );
+      });
+    });
+
+    describe("metadata validation errors", () => {
+      it("should throw error for invalid display_name format", () => {
+        const invalidData = {
+          ...validData,
+          metadata: "John Doe 123",
+        };
+
+        expect(() => RegisterValidator.validate(invalidData)).toThrow();
       });
     });
 

@@ -14,6 +14,7 @@ export const createMockRegisterDto = (): RegisterDto =>
     lastname: "Doe",
     email: "john.doe@example.com",
     password: "SecurePass123!",
+    role: "USER",
   }) as RegisterDto;
 
 export const createMockLoginDto = (): LoginDto =>
@@ -29,6 +30,7 @@ export const createMockUpdateUserDto = (): UpdateUserDto =>
     email: "john.doe@example.com",
     newPassword: "NewSecurePass123!",
     phone: "+1234567890",
+    role: "USER",
   }) as UpdateUserDto;
 
 export const createMockLogoutDto = (): LogoutDto =>

@@ -144,6 +144,21 @@ API documentation is automatically generated from YAML files in `docs/api/`:
 - Document all possible responses
 - Maintain consistent naming conventions
 
+### Auth Payload Notes
+
+- Register
+  - Required: `name`, `lastname`, `email`, `password`
+  - Optional: `phone`
+  - Optional: `role` (`USER`, `MODERATOR`, `ADMIN`), default `USER`
+  - Optional: `metadata` (object with string keys and string values)
+  - Align Swagger with `RegisterDto` and `RegisterValidator`.
+
+- Update User
+  - Supports: `name`, `lastname`, `display_name`, `role`, `email_verified`
+  - `email_verified`: include only when `true`; omit `false`
+  - Do not include password fields here; password changes are handled separately
+  - Align Swagger with `UpdateUserDto` and datasource behavior.
+
 ## Code Standards
 
 ### TypeScript

@@ -319,60 +319,68 @@ describe("UpdateUserDto", () => {
 
   describe("constructor", () => {
     it("should create UpdateUserDto instance with readonly properties", () => {
-      const dto = new UpdateUserDto(
-        "session-token-123",
-        "refresh-token-456",
-        "new.email@example.com",
-        "NewPassword123!",
-        "NewPassword123!",
-        "+1234567890",
-      );
+      const [error, dto] = UpdateUserDto.createFrom({
+        sessionToken: "session-token-123",
+        refreshToken: "refresh-token-456",
+        email: "new.email@example.com",
+        newPassword: "NewPassword123!",
+        newPasswordConfirmation: "NewPassword123!",
+        phone: "+1234567890",
+      });
 
-      expect(dto.sessionToken).toBe("session-token-123");
-      expect(dto.refreshToken).toBe("refresh-token-456");
-      expect(dto.email).toBe("new.email@example.com");
-      expect(dto.newPassword).toBe("NewPassword123!");
-      expect(dto.newPasswordConfirmation).toBe("NewPassword123!");
-      expect(dto.phone).toBe("+1234567890");
+      expect(error).toBeUndefined();
+      expect(dto).toBeInstanceOf(UpdateUserDto);
+      expect(dto!.sessionToken).toBe("session-token-123");
+      expect(dto!.refreshToken).toBe("refresh-token-456");
+      expect(dto!.email).toBe("new.email@example.com");
+      expect(dto!.newPassword).toBe("NewPassword123!");
+      expect(dto!.newPasswordConfirmation).toBe("NewPassword123!");
+      expect(dto!.phone).toBe("+1234567890");
     });
 
     it("should create UpdateUserDto instance with only required fields", () => {
-      const dto = new UpdateUserDto("session-token-123", "refresh-token-456");
+      const [error, dto] = UpdateUserDto.createFrom({
+        sessionToken: "session-token-123",
+        refreshToken: "refresh-token-456",
+      });
 
-      expect(dto.sessionToken).toBe("session-token-123");
-      expect(dto.refreshToken).toBe("refresh-token-456");
-      expect(dto.email).toBeUndefined();
-      expect(dto.newPassword).toBeUndefined();
-      expect(dto.newPasswordConfirmation).toBeUndefined();
-      expect(dto.phone).toBeUndefined();
+      expect(error).toBeUndefined();
+      expect(dto).toBeInstanceOf(UpdateUserDto);
+      expect(dto!.sessionToken).toBe("session-token-123");
+      expect(dto!.refreshToken).toBe("refresh-token-456");
+      expect(dto!.email).toBeUndefined();
+      expect(dto!.newPassword).toBeUndefined();
+      expect(dto!.newPasswordConfirmation).toBeUndefined();
+      expect(dto!.phone).toBeUndefined();
     });
 
     it("should create UpdateUserDto instance with partial optional fields", () => {
-      const dto = new UpdateUserDto(
-        "session-token-123",
-        "refresh-token-456",
-        "new.email@example.com",
-        undefined,
-        undefined,
-        "+1234567890",
-      );
+      const [error, dto] = UpdateUserDto.createFrom({
+        sessionToken: "session-token-123",
+        refreshToken: "refresh-token-456",
+        email: "new.email@example.com",
+        phone: "+1234567890",
+      });
 
-      expect(dto.sessionToken).toBe("session-token-123");
-      expect(dto.refreshToken).toBe("refresh-token-456");
-      expect(dto.email).toBe("new.email@example.com");
-      expect(dto.newPassword).toBeUndefined();
-      expect(dto.newPasswordConfirmation).toBeUndefined();
-      expect(dto.phone).toBe("+1234567890");
+      expect(error).toBeUndefined();
+      expect(dto).toBeInstanceOf(UpdateUserDto);
+      expect(dto!.sessionToken).toBe("session-token-123");
+      expect(dto!.refreshToken).toBe("refresh-token-456");
+      expect(dto!.email).toBe("new.email@example.com");
+      expect(dto!.newPassword).toBeUndefined();
+      expect(dto!.newPasswordConfirmation).toBeUndefined();
+      expect(dto!.phone).toBe("+1234567890");
     });
 
     it("should freeze the instance to prevent modifications", () => {
-      const dto = new UpdateUserDto(
-        "session-token-123",
-        "refresh-token-456",
-        "email@example.com",
-      );
+      const [error, dto] = UpdateUserDto.createFrom({
+        sessionToken: "session-token-123",
+        refreshToken: "refresh-token-456",
+        email: "email@example.com",
+      });
 
-      expect(Object.isFrozen(dto)).toBe(true);
+      expect(error).toBeUndefined();
+      expect(Object.isFrozen(dto!)).toBe(true);
 
       // Attempting to modify should not work
       expect(() => {
@@ -383,27 +391,37 @@ describe("UpdateUserDto", () => {
 
   describe("interface compliance", () => {
     it("should have all required properties defined", () => {
-      const dto = new UpdateUserDto("session-token-123", "refresh-token-456");
+      const [error, dto] = UpdateUserDto.createFrom({
+        sessionToken: "session-token-123",
+        refreshToken: "refresh-token-456",
+      });
 
-      expect(dto).toHaveProperty("sessionToken");
-      expect(dto).toHaveProperty("refreshToken");
-      expect(dto).toHaveProperty("email");
-      expect(dto).toHaveProperty("newPassword");
-      expect(dto).toHaveProperty("newPasswordConfirmation");
-      expect(dto).toHaveProperty("phone");
+      expect(error).toBeUndefined();
+      expect(dto!).toHaveProperty("sessionToken");
+      expect(dto!).toHaveProperty("refreshToken");
+      expect(dto!).toHaveProperty("email");
+      expect(dto!).toHaveProperty("name");
+      expect(dto!).toHaveProperty("lastname");
+      expect(dto!).toHaveProperty("display_name");
+      expect(dto!).toHaveProperty("role");
+      expect(dto!).toHaveProperty("email_verified");
+      expect(dto!).toHaveProperty("newPassword");
+      expect(dto!).toHaveProperty("newPasswordConfirmation");
+      expect(dto!).toHaveProperty("phone");
     });
 
     it("should implement readonly properties correctly", () => {
-      const dto = new UpdateUserDto(
-        "session-token-123",
-        "refresh-token-456",
-        "email@example.com",
-      );
+      const [error, dto] = UpdateUserDto.createFrom({
+        sessionToken: "session-token-123",
+        refreshToken: "refresh-token-456",
+        email: "email@example.com",
+      });
 
+      expect(error).toBeUndefined();
       // TypeScript readonly properties should be accessible
-      expect(typeof dto.sessionToken).toBe("string");
-      expect(typeof dto.refreshToken).toBe("string");
-      expect(typeof dto.email).toBe("string");
+      expect(typeof dto!.sessionToken).toBe("string");
+      expect(typeof dto!.refreshToken).toBe("string");
+      expect(typeof dto!.email).toBe("string");
     });
   });
 
@@ -453,6 +471,80 @@ describe("UpdateUserDto", () => {
       expect(dto).toBeInstanceOf(UpdateUserDto);
       expect(dto?.email).toBe("usuario@ejemplo.com");
       expect(dto?.phone).toBe("📞 +1234567890");
+    });
+  });
+
+  describe("new fields", () => {
+    it("should create DTO with name and lastname", () => {
+      const [error, dto] = UpdateUserDto.createFrom({
+        sessionToken: "session-token-123",
+        refreshToken: "refresh-token-456",
+        name: "John",
+        lastname: "Doe",
+      });
+
+      expect(error).toBeUndefined();
+      expect(dto).toBeInstanceOf(UpdateUserDto);
+      expect(dto!.name).toBe("John");
+      expect(dto!.lastname).toBe("Doe");
+    });
+
+    it("should create DTO with display_name and role", () => {
+      const [error, dto] = UpdateUserDto.createFrom({
+        sessionToken: "session-token-123",
+        refreshToken: "refresh-token-456",
+        display_name: "Johnny",
+        role: "admin",
+      });
+
+      expect(error).toBeUndefined();
+      expect(dto).toBeInstanceOf(UpdateUserDto);
+      expect(dto!.display_name).toBe("Johnny");
+      expect(dto!.role).toBe("admin");
+    });
+
+    it("should set email_verified true or false", () => {
+      const [errorTrue, dtoTrue] = UpdateUserDto.createFrom({
+        sessionToken: "session-token-123",
+        refreshToken: "refresh-token-456",
+        email_verified: true,
+      });
+      const [errorFalse, dtoFalse] = UpdateUserDto.createFrom({
+        sessionToken: "session-token-123",
+        refreshToken: "refresh-token-456",
+        email_verified: false,
+      });
+
+      expect(errorTrue).toBeUndefined();
+      expect(errorFalse).toBeUndefined();
+      expect(dtoTrue).toBeInstanceOf(UpdateUserDto);
+      expect(dtoFalse).toBeInstanceOf(UpdateUserDto);
+      expect(dtoTrue!.email_verified).toBe(true);
+      expect(dtoFalse!.email_verified).toBe(false);
+    });
+
+    it("should create DTO with all new fields present", () => {
+      const [error, dto] = UpdateUserDto.createFrom({
+        sessionToken: "session-token-123",
+        refreshToken: "refresh-token-456",
+        email: "user@example.com",
+        name: "Jane",
+        lastname: "Doe",
+        display_name: "Jane D.",
+        role: "user",
+        email_verified: true,
+        phone: "+1234567890",
+      });
+
+      expect(error).toBeUndefined();
+      expect(dto).toBeInstanceOf(UpdateUserDto);
+      expect(dto!.email).toBe("user@example.com");
+      expect(dto!.name).toBe("Jane");
+      expect(dto!.lastname).toBe("Doe");
+      expect(dto!.display_name).toBe("Jane D.");
+      expect(dto!.role).toBe("user");
+      expect(dto!.email_verified).toBe(true);
+      expect(dto!.phone).toBe("+1234567890");
     });
   });
 });

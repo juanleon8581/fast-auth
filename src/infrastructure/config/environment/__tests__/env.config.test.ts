@@ -17,6 +17,9 @@ jest.mock("../env.validator", () => ({
         PASSPHRASE: env.PASSPHRASE,
         LOG_TRANSPORT: env.LOG_TRANSPORT,
         LOG_LEVEL: env.LOG_LEVEL,
+        CRYPTO_ENVIRONMENT: env.CRYPTO_ENVIRONMENT,
+        CRYPTO_FORCE_ENCRYPT: env.CRYPTO_FORCE_ENCRYPT,
+        CRYPTO_DISABLED_ENCRYPT: env.CRYPTO_DISABLED_ENCRYPT,
       };
       return envs;
     }),

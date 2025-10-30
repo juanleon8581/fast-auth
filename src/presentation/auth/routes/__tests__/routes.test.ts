@@ -2,12 +2,12 @@ import { Router } from "express";
 import { AuthRoutes } from "../routes";
 import { AuthDatasource } from "@/infrastructure/external/auth/datasources/auth.datasource";
 import { AuthClient } from "@/infrastructure/external/auth/auth.client";
-import { AuthController } from "@/presentation/controller/controller";
+import { AuthController } from "@/presentation/auth/controllers/auth.controller";
 
 // Mock dependencies
 jest.mock("@/infrastructure/external/auth/datasources/auth.datasource");
 jest.mock("@/infrastructure/external/auth/auth.client");
-jest.mock("@/presentation/controller/controller");
+jest.mock("@/presentation/auth/controllers/auth.controller");
 jest.mock("@/presentation/middlewares/auth.middleware", () => ({
   AuthMiddleware: {
     verify: jest.fn((req: any, res: any, next: any) => next()),

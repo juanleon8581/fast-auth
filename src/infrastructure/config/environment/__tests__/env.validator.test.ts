@@ -228,4 +228,111 @@ describe("env.validator.test", () => {
       );
     });
   });
+
+  describe("EnvValidator - Crypto Config envs", () => {
+    describe("CRYPTO_ENVIRONMENT", () => {
+      it("should get default value for CRYPTO_ENVIRONMENT", () => {
+        delete process.env.CRYPTO_ENVIRONMENT;
+        const envs = EnvValidator.validate(process.env);
+        expect(envs.CRYPTO_ENVIRONMENT).toStrictEqual(["prod", "qa"]);
+      });
+
+      it("should get value for CRYPTO_ENVIRONMENT", () => {
+        process.env.CRYPTO_ENVIRONMENT = "dev,qa";
+        const envs = EnvValidator.validate(process.env);
+        expect(envs.CRYPTO_ENVIRONMENT).toStrictEqual(["dev", "qa"]);
+      });
+
+      it("should get value for CRYPTO_ENVIRONMENT with whitespace", () => {
+        process.env.CRYPTO_ENVIRONMENT = " dev, qa ";
+        const envs = EnvValidator.validate(process.env);
+        expect(envs.CRYPTO_ENVIRONMENT).toStrictEqual(["dev", "qa"]);
+      });
+
+      it("should get value for CRYPTO_ENVIRONMENT to lowercase", () => {
+        process.env.CRYPTO_ENVIRONMENT = "Dev,QA";
+        const envs = EnvValidator.validate(process.env);
+        expect(envs.CRYPTO_ENVIRONMENT).toStrictEqual(["dev", "qa"]);
+      });
+
+      it("should throw error for CRYPTO_ENVIRONMENT with invalid values", () => {
+        process.env.CRYPTO_ENVIRONMENT = "developer,qa";
+        expect(() => EnvValidator.validate(process.env)).toThrow(
+          'CRYPTO_ENVIRONMENT must be one or more of the following: prod, qa, dev eg: ("dev,qa")',
+        );
+      });
+    });
+
+    describe("CRYPTO_FORCE_ENCRYPT", () => {
+      it("should get default value for CRYPTO_FORCE_ENCRYPT", () => {
+        delete process.env.CRYPTO_FORCE_ENCRYPT;
+        const envs = EnvValidator.validate(process.env);
+        expect(envs.CRYPTO_FORCE_ENCRYPT).toBe(false);
+      });
+
+      it("should get value for CRYPTO_FORCE_ENCRYPT", () => {
+        process.env.CRYPTO_FORCE_ENCRYPT = "true";
+        const envs = EnvValidator.validate(process.env);
+        expect(envs.CRYPTO_FORCE_ENCRYPT).toBe(true);
+      });
+
+      it("should get value for CRYPTO_FORCE_ENCRYPT to lowercase", () => {
+        const values = ["TRUE", "FALSE"];
+        values.forEach((value) => {
+          process.env.CRYPTO_FORCE_ENCRYPT = value;
+          const envs = EnvValidator.validate(process.env);
+          expect(typeof envs.CRYPTO_FORCE_ENCRYPT).toBe("boolean");
+        });
+      });
+
+      it("should get value for CRYPTO_FORCE_ENCRYPT to false", () => {
+        process.env.CRYPTO_FORCE_ENCRYPT = "false";
+        const envs = EnvValidator.validate(process.env);
+        expect(envs.CRYPTO_FORCE_ENCRYPT).toBe(false);
+      });
+
+      it("should throw error for CRYPTO_FORCE_ENCRYPT with invalid values", () => {
+        process.env.CRYPTO_FORCE_ENCRYPT = "invalid";
+        expect(() => EnvValidator.validate(process.env)).toThrow(
+          "CRYPTO_FORCE_ENCRYPT must be a boolean",
+        );
+      });
+    });
+
+    describe("CRYPTO_DISABLED_ENCRYPT", () => {
+      it("should get default value for CRYPTO_DISABLED_ENCRYPT", () => {
+        delete process.env.CRYPTO_DISABLED_ENCRYPT;
+        const envs = EnvValidator.validate(process.env);
+        expect(envs.CRYPTO_DISABLED_ENCRYPT).toBe(false);
+      });
+
+      it("should get value for CRYPTO_DISABLED_ENCRYPT", () => {
+        process.env.CRYPTO_DISABLED_ENCRYPT = "true";
+        const envs = EnvValidator.validate(process.env);
+        expect(envs.CRYPTO_DISABLED_ENCRYPT).toBe(true);
+      });
+
+      it("should get value for CRYPTO_DISABLED_ENCRYPT to lowercase", () => {
+        const values = ["TRUE", "FALSE"];
+        values.forEach((value) => {
+          process.env.CRYPTO_DISABLED_ENCRYPT = value;
+          const envs = EnvValidator.validate(process.env);
+          expect(typeof envs.CRYPTO_DISABLED_ENCRYPT).toBe("boolean");
+        });
+      });
+
+      it("should get value for CRYPTO_DISABLED_ENCRYPT to false", () => {
+        process.env.CRYPTO_DISABLED_ENCRYPT = "false";
+        const envs = EnvValidator.validate(process.env);
+        expect(envs.CRYPTO_DISABLED_ENCRYPT).toBe(false);
+      });
+
+      it("should throw error for CRYPTO_DISABLED_ENCRYPT with invalid values", () => {
+        process.env.CRYPTO_DISABLED_ENCRYPT = "invalid";
+        expect(() => EnvValidator.validate(process.env)).toThrow(
+          "CRYPTO_DISABLED_ENCRYPT must be a boolean",
+        );
+      });
+    });
+  });
 });

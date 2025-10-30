@@ -125,14 +125,17 @@ describe("AuthRepository", () => {
   describe("concrete implementation behavior", () => {
     describe("register method", () => {
       it("should implement register method that returns AuthUserEntity", async () => {
-        const registerDto = new RegisterDto(
-          "John",
-          "Doe",
-          "test@example.com",
-          "password123",
-        );
+        const [error, registerDto] = RegisterDto.createFrom({
+          name: "John",
+          lastname: "Doe",
+          email: "test@example.com",
+          password: "password123",
+          role: "USER",
+        });
 
-        const result = await testRepository.register(registerDto);
+        expect(error).toBeUndefined();
+
+        const result = await testRepository.register(registerDto!);
 
         expect(result).toBeInstanceOf(AuthUserEntity);
         expect(result.user).toBeInstanceOf(UserEntity);
@@ -143,41 +146,50 @@ describe("AuthRepository", () => {
       });
 
       it("should handle different RegisterDto instances", async () => {
-        const registerDto = new RegisterDto(
-          "Jane",
-          "Smith",
-          "another@example.com",
-          "password456",
-        );
+        const [error, registerDto] = RegisterDto.createFrom({
+          name: "Jane",
+          lastname: "Smith",
+          email: "another@example.com",
+          password: "password456",
+          role: "USER",
+        });
 
-        const result = await testRepository.register(registerDto);
+        expect(error).toBeUndefined();
+
+        const result = await testRepository.register(registerDto!);
 
         expect(result.user.email).toBe("another@example.com");
         expect(result.user.name).toBe("Jane Smith");
       });
       describe("method signature validation", () => {
         it("should accept RegisterDto parameter", () => {
-          const registerDto = new RegisterDto(
-            "Test",
-            "User",
-            "test@example.com",
-            "password123",
-          );
+          const [error, registerDto] = RegisterDto.createFrom({
+            name: "Test",
+            lastname: "User",
+            email: "test@example.com",
+            password: "password123",
+            role: "USER",
+          });
+
+          expect(error).toBeUndefined();
 
           expect(() => {
-            testRepository.register(registerDto);
+            testRepository.register(registerDto!);
           }).not.toThrow();
         });
 
         it("should return Promise<AuthUserEntity>", async () => {
-          const registerDto = new RegisterDto(
-            "Test",
-            "User",
-            "test@example.com",
-            "password123",
-          );
+          const [error, registerDto] = RegisterDto.createFrom({
+            name: "Test",
+            lastname: "User",
+            email: "test@example.com",
+            password: "password123",
+            role: "USER",
+          });
 
-          const result = testRepository.register(registerDto);
+          expect(error).toBeUndefined();
+
+          const result = testRepository.register(registerDto!);
           expect(result).toBeInstanceOf(Promise);
 
           const resolvedResult = await result;

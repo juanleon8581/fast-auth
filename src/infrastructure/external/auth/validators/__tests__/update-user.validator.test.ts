@@ -3,18 +3,27 @@ import { UpdateUserDto } from "@/domain/user/dtos/update-user.dto";
 import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 import { ValidationError } from "@/domain/errors/validation-error";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
+import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
+import { UserRole } from "@prisma/client";
 
-// Mock UpdateUserDto
-jest.mock("@/domain/user/dtos/update-user.dto");
-
-const MockedUpdateUserDto = UpdateUserDto as jest.MockedClass<
-  typeof UpdateUserDto
->;
+// We will spy on the static createFrom method instead of mocking the class
 const { VALIDATION } = ERROR_MESSAGES.AUTH.UPDATE_USER;
 const { VALIDATION: REGISTER_VALIDATION } = ERROR_MESSAGES.AUTH.REGISTER;
 
 describe("UpdateUserValidator", () => {
+  let validDataForDto: TRawJson;
   beforeEach(() => {
+    validDataForDto = {
+      sessionToken: "session-token-123",
+      refreshToken: "refresh-token-456",
+      email: "user@example.com",
+      newPassword: "NewSecurePass123!",
+      newPasswordConfirmation: "NewSecurePass123!",
+      phone: "+1234567890",
+      name: "John",
+      lastname: "Doe",
+    };
+
     jest.clearAllMocks();
 
     // Mock UpdateUserDto.createFrom to return a valid DTO
@@ -27,28 +36,26 @@ describe("UpdateUserValidator", () => {
       phone: "+1234567890",
     } as UpdateUserDto;
 
-    (MockedUpdateUserDto.createFrom as jest.Mock).mockReturnValue([
-      undefined,
-      mockDto,
-    ]);
+    jest
+      .spyOn(UpdateUserDto, "createFrom")
+      .mockReturnValue([undefined, mockDto as UpdateUserDto]);
   });
 
   describe("validate method", () => {
     describe("successful validation", () => {
       it("should validate correct data with all fields and return UpdateUserDto", () => {
         const validData = {
-          sessionToken: "session-token-123",
-          refreshToken: "refresh-token-456",
-          email: "user@example.com",
-          newPassword: "NewSecurePass123!",
-          newPasswordConfirmation: "NewSecurePass123!",
-          phone: "+1234567890",
+          ...validDataForDto,
         };
 
         const dto = UpdateUserValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(MockedUpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith({
+          ...validData,
+          name: validData.name.toLowerCase(),
+          lastname: validData.lastname.toLowerCase(),
+        });
       });
 
       it("should validate data with only required fields", () => {
@@ -60,7 +67,7 @@ describe("UpdateUserValidator", () => {
         const dto = UpdateUserValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(MockedUpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
       });
 
       it("should validate data with empty optional fields", () => {
@@ -71,12 +78,14 @@ describe("UpdateUserValidator", () => {
           newPassword: "",
           newPasswordConfirmation: "",
           phone: "",
+          name: "",
+          lastname: "",
         };
 
         const dto = UpdateUserValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(MockedUpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
       });
 
       it("should validate data with only email update", () => {
@@ -89,7 +98,75 @@ describe("UpdateUserValidator", () => {
         const dto = UpdateUserValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(MockedUpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+      });
+
+      it("should validate data with only display_name update", () => {
+        const validData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          display_name: "John D.",
+        };
+
+        const dto = UpdateUserValidator.validate(validData);
+
+        expect(dto).toBeDefined();
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+      });
+
+      it("should validate data with empty display_name", () => {
+        const validData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          display_name: "",
+        };
+
+        const dto = UpdateUserValidator.validate(validData);
+
+        expect(dto).toBeDefined();
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+      });
+
+      it("should validate data with only role update", () => {
+        const validData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          role: UserRole.USER,
+        };
+
+        const dto = UpdateUserValidator.validate(validData);
+
+        expect(dto).toBeDefined();
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+      });
+
+      it("should validate data with empty role", () => {
+        const validData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          role: "",
+        };
+
+        const dto = UpdateUserValidator.validate(validData);
+
+        expect(dto).toBeDefined();
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+      });
+
+      it("should validate data with only metadata update", () => {
+        const validData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          metadata: {
+            theme: "dark",
+            newsletter: "subscribed",
+          },
+        } as const;
+
+        const dto = UpdateUserValidator.validate(validData);
+
+        expect(dto).toBeDefined();
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
       });
 
       it("should validate data with only phone update", () => {
@@ -102,7 +179,7 @@ describe("UpdateUserValidator", () => {
         const dto = UpdateUserValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(MockedUpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
       });
 
       it("should validate data with password update", () => {
@@ -116,7 +193,7 @@ describe("UpdateUserValidator", () => {
         const dto = UpdateUserValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(MockedUpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
       });
     });
 
@@ -221,7 +298,7 @@ describe("UpdateUserValidator", () => {
           ValidationError,
         );
         expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
-          VALIDATION.NEW_PASSWORD.MIN_LENGTH,
+          REGISTER_VALIDATION.PASSWORD.MIN_LENGTH,
         );
       });
 
@@ -237,7 +314,7 @@ describe("UpdateUserValidator", () => {
           ValidationError,
         );
         expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
-          VALIDATION.NEW_PASSWORD.MAX_LENGTH,
+          REGISTER_VALIDATION.PASSWORD.MAX_LENGTH,
         );
       });
 
@@ -253,7 +330,7 @@ describe("UpdateUserValidator", () => {
           ValidationError,
         );
         expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
-          VALIDATION.NEW_PASSWORD.INVALID_FORMAT,
+          REGISTER_VALIDATION.PASSWORD.INVALID_FORMAT,
         );
       });
 
@@ -285,6 +362,34 @@ describe("UpdateUserValidator", () => {
         );
         expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
           VALIDATION.NEW_PASSWORD_CONFIRMATION.MUST_MATCH,
+        );
+      });
+    });
+
+    describe("validation errors - role and metadata", () => {
+      it("should throw ValidationError when role format is invalid", () => {
+        const invalidData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          role: "INVALID_ROLE",
+        };
+
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          ValidationError,
+        );
+      });
+
+      it("should throw ValidationError when metadata has non-string values", () => {
+        const invalidData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          metadata: {
+            emailVerified: true as unknown as string,
+          },
+        };
+
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          ValidationError,
         );
       });
     });
@@ -329,10 +434,9 @@ describe("UpdateUserValidator", () => {
         };
 
         // Mock DTO creation to return an error
-        (MockedUpdateUserDto.createFrom as jest.Mock).mockReturnValue([
-          "DTO creation error",
-          undefined,
-        ]);
+        jest
+          .spyOn(UpdateUserDto, "createFrom")
+          .mockReturnValue(["DTO creation error", undefined]);
 
         expect(() => UpdateUserValidator.validate(validData)).toThrow(
           BadRequestError,
@@ -370,7 +474,7 @@ describe("UpdateUserValidator", () => {
         const dto = UpdateUserValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(MockedUpdateUserDto.createFrom).toHaveBeenCalledWith({
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith({
           sessionToken: "session-token-123",
           refreshToken: "refresh-token-456",
         });
@@ -391,7 +495,7 @@ describe("UpdateUserValidator", () => {
         const dto = UpdateUserValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(MockedUpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
       });
 
       it("should validate partial update with only email and phone", () => {
@@ -405,7 +509,7 @@ describe("UpdateUserValidator", () => {
         const dto = UpdateUserValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(MockedUpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
       });
 
       it("should validate update with complex email formats", () => {
@@ -418,7 +522,7 @@ describe("UpdateUserValidator", () => {
         const dto = UpdateUserValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(MockedUpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
       });
 
       it("should validate update with name and lastname", () => {
@@ -432,7 +536,11 @@ describe("UpdateUserValidator", () => {
         const dto = UpdateUserValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(MockedUpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith({
+          ...validData,
+          name: validData.name.toLowerCase(),
+          lastname: validData.lastname.toLowerCase(),
+        });
       });
 
       it("should validate update with name, lastname and other fields", () => {
@@ -448,7 +556,11 @@ describe("UpdateUserValidator", () => {
         const dto = UpdateUserValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(MockedUpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith({
+          ...validData,
+          name: validData.name.toLowerCase(),
+          lastname: validData.lastname.toLowerCase(),
+        });
       });
 
       it("should validate update with complex names containing spaces", () => {
@@ -462,7 +574,11 @@ describe("UpdateUserValidator", () => {
         const dto = UpdateUserValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(MockedUpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith({
+          ...validData,
+          name: validData.name.toLowerCase(),
+          lastname: validData.lastname.toLowerCase(),
+        });
       });
     });
 

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { AuthController } from "../controller";
+import { AuthController } from "../auth.controller";
 import { RegisterDto } from "@/domain/auth/dtos/register.dto";
 import { LoginDto } from "@/domain/auth/dtos/login.dto";
 import { UpdateUserDto } from "@/domain/user/dtos/update-user.dto";
@@ -145,12 +145,13 @@ describe("AuthController", () => {
   describe("register method", () => {
     describe("Successful registration", () => {
       beforeEach(() => {
-        const mockDto = new RegisterDto(
-          "John",
-          "Doe",
-          "john.doe@example.com",
-          "SecurePass123!",
-        );
+        const mockDto = RegisterDto.createFrom({
+          name: "John",
+          lastname: "Doe",
+          email: "john.doe@example.com",
+          password: "SecurePass123!",
+          role: "USER",
+        });
         (RegisterValidator.validate as jest.Mock).mockReturnValue(mockDto);
       });
 
@@ -197,12 +198,13 @@ describe("AuthController", () => {
       });
 
       it("should execute use case with validated DTO", async () => {
-        const mockDto = new RegisterDto(
-          "John",
-          "Doe",
-          "john.doe@example.com",
-          "SecurePass123!",
-        );
+        const mockDto = RegisterDto.createFrom({
+          name: "John",
+          lastname: "Doe",
+          email: "john.doe@example.com",
+          password: "SecurePass123!",
+          role: "USER",
+        });
         const mockUser = new UserEntity(
           "1",
           "john.doe@example.com",
@@ -225,12 +227,13 @@ describe("AuthController", () => {
       });
 
       it("should return user data on successful registration", async () => {
-        const mockDto = new RegisterDto(
-          "John",
-          "Doe",
-          "john.doe@example.com",
-          "SecurePass123!",
-        );
+        const mockDto = RegisterDto.createFrom({
+          name: "John",
+          lastname: "Doe",
+          email: "john.doe@example.com",
+          password: "SecurePass123!",
+          role: "USER",
+        });
         const mockUser = new UserEntity(
           "1",
           "john.doe@example.com",
@@ -302,12 +305,13 @@ describe("AuthController", () => {
 
     describe("Use case execution errors", () => {
       beforeEach(() => {
-        const mockDto = new RegisterDto(
-          "John",
-          "Doe",
-          "john.doe@example.com",
-          "SecurePass123!",
-        );
+        const mockDto = RegisterDto.createFrom({
+          name: "John",
+          lastname: "Doe",
+          email: "john.doe@example.com",
+          password: "SecurePass123!",
+          role: "USER",
+        });
         (RegisterValidator.validate as jest.Mock).mockReturnValue(mockDto);
       });
 
@@ -365,14 +369,15 @@ describe("AuthController", () => {
 
     describe("Successful update", () => {
       beforeEach(() => {
-        const mockDto = new UpdateUserDto(
-          "mock-session-token",
-          "mock-refresh-token",
-          "john.doe@example.com",
-          "NewSecurePass123!",
-          "+1234567890",
-        );
-        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto);
+        const [error, mockDto] = UpdateUserDto.createFrom({
+          sessionToken: "mock-session-token",
+          refreshToken: "mock-refresh-token",
+          email: "john.doe@example.com",
+          newPassword: "NewSecurePass123!",
+          phone: "+1234567890",
+        });
+        expect(error).toBeUndefined();
+        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto!);
       });
 
       it("should validate request body", () => {
@@ -418,13 +423,14 @@ describe("AuthController", () => {
       });
 
       it("should execute use case with validated DTO", async () => {
-        const mockDto = new UpdateUserDto(
-          "mock-session-token",
-          "mock-refresh-token",
-          "john.doe@example.com",
-          "NewSecurePass123!",
-          "+1234567890",
-        );
+        const [error, mockDto] = UpdateUserDto.createFrom({
+          sessionToken: "mock-session-token",
+          refreshToken: "mock-refresh-token",
+          email: "john.doe@example.com",
+          newPassword: "NewSecurePass123!",
+          phone: "+1234567890",
+        });
+        expect(error).toBeUndefined();
         const mockUser = new UserEntity(
           "1",
           "john.doe@example.com",
@@ -432,8 +438,7 @@ describe("AuthController", () => {
           true,
           "+1234567890",
         );
-
-        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto);
+        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto!);
         mockUpdateUser.execute.mockResolvedValue(mockUser);
 
         authController.updateUser(
@@ -443,17 +448,18 @@ describe("AuthController", () => {
         );
 
         expect(mockUpdateUser.execute).toHaveBeenCalledTimes(1);
-        expect(mockUpdateUser.execute).toHaveBeenCalledWith(mockDto);
+        expect(mockUpdateUser.execute).toHaveBeenCalledWith(mockDto!);
       });
 
       it("should return user data on successful update", async () => {
-        const mockDto = new UpdateUserDto(
-          "mock-session-token",
-          "mock-refresh-token",
-          "john.doe@example.com",
-          "NewSecurePass123!",
-          "+1234567890",
-        );
+        const [error, mockDto] = UpdateUserDto.createFrom({
+          sessionToken: "mock-session-token",
+          refreshToken: "mock-refresh-token",
+          email: "john.doe@example.com",
+          newPassword: "NewSecurePass123!",
+          phone: "+1234567890",
+        });
+        expect(error).toBeUndefined();
         const mockUser = new UserEntity(
           "1",
           "john.doe@example.com",
@@ -461,8 +467,7 @@ describe("AuthController", () => {
           true,
           "+1234567890",
         );
-
-        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto);
+        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto!);
         mockUpdateUser.execute.mockResolvedValue(mockUser);
 
         authController.updateUser(
@@ -488,13 +493,14 @@ describe("AuthController", () => {
       });
 
       it("should not call next on successful update", async () => {
-        const mockDto = new UpdateUserDto(
-          "mock-session-token",
-          "mock-refresh-token",
-          "john.doe@example.com",
-          "NewSecurePass123!",
-          "+1234567890",
-        );
+        const [error, mockDto] = UpdateUserDto.createFrom({
+          sessionToken: "mock-session-token",
+          refreshToken: "mock-refresh-token",
+          email: "john.doe@example.com",
+          newPassword: "NewSecurePass123!",
+          phone: "+1234567890",
+        });
+        expect(error).toBeUndefined();
         const mockUser = new UserEntity(
           "1",
           "john.doe@example.com",
@@ -502,8 +508,7 @@ describe("AuthController", () => {
           true,
           "+1234567890",
         );
-
-        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto);
+        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto!);
         mockUpdateUser.execute.mockResolvedValue(mockUser);
 
         authController.updateUser(
@@ -574,14 +579,15 @@ describe("AuthController", () => {
 
     describe("Use case errors", () => {
       beforeEach(() => {
-        const mockDto = new UpdateUserDto(
-          "mock-session-token",
-          "mock-refresh-token",
-          "john.doe@example.com",
-          "NewSecurePass123!",
-          "+1234567890",
-        );
-        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto);
+        const [error, mockDto] = UpdateUserDto.createFrom({
+          sessionToken: "mock-session-token",
+          refreshToken: "mock-refresh-token",
+          email: "john.doe@example.com",
+          newPassword: "NewSecurePass123!",
+          phone: "+1234567890",
+        });
+        expect(error).toBeUndefined();
+        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto!);
       });
 
       it("should call next with use case error", async () => {
@@ -642,12 +648,13 @@ describe("AuthController", () => {
   describe("Method binding", () => {
     it("should maintain correct context when method is extracted", () => {
       const { register } = authController;
-      const mockDto = new RegisterDto(
-        "John",
-        "Doe",
-        "john.doe@example.com",
-        "SecurePass123!",
-      );
+      const mockDto = RegisterDto.createFrom({
+        name: "John",
+        lastname: "Doe",
+        email: "john.doe@example.com",
+        password: "SecurePass123!",
+        role: "USER",
+      });
       const mockUser = new UserEntity(
         "1",
         "john.doe@example.com",
@@ -669,12 +676,13 @@ describe("AuthController", () => {
 
   describe("Integration", () => {
     it("should properly integrate all dependencies", async () => {
-      const mockDto = new RegisterDto(
-        "John",
-        "Doe",
-        "john.doe@example.com",
-        "SecurePass123!",
-      );
+      const mockDto = RegisterDto.createFrom({
+        name: "John",
+        lastname: "Doe",
+        email: "john.doe@example.com",
+        password: "SecurePass123!",
+        role: "USER",
+      });
       const mockUser = new UserEntity(
         "1",
         "john.doe@example.com",
@@ -966,13 +974,13 @@ describe("AuthController", () => {
 
     it("should maintain correct context when updateUser method is extracted", () => {
       const { updateUser } = authController;
-      const mockDto = new UpdateUserDto(
-        "mock-session-token",
-        "mock-refresh-token",
-        "john.doe@example.com",
-        "NewSecurePass123!",
-        "+1234567890",
-      );
+      const [error, mockDto] = UpdateUserDto.createFrom({
+        sessionToken: "mock-session-token",
+        refreshToken: "mock-refresh-token",
+        email: "john.doe@example.com",
+        newPassword: "NewSecurePass123!",
+        phone: "+1234567890",
+      });
       const mockUser = new UserEntity(
         "1",
         "john.doe@example.com",
@@ -980,8 +988,8 @@ describe("AuthController", () => {
         true,
         "+1234567890",
       );
-
-      (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto);
+      expect(error).toBeUndefined();
+      (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto!);
       mockUpdateUser.execute.mockResolvedValue(mockUser);
 
       // Should work even when method is extracted from instance
@@ -1007,14 +1015,14 @@ describe("AuthController", () => {
 
     describe("Successful password update", () => {
       beforeEach(() => {
-        const mockDto = new UpdateUserDto(
-          "session-token-123",
-          "refresh-token-456",
-          undefined,
-          "NewSecurePass123!",
-          "NewSecurePass123!",
-        );
-        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto);
+        const [error, mockDto] = UpdateUserDto.createFrom({
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          newPassword: "NewSecurePass123!",
+          newPasswordConfirmation: "NewSecurePass123!",
+        });
+        expect(error).toBeUndefined();
+        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto!);
       });
 
       it("should validate request body", () => {
@@ -1074,13 +1082,13 @@ describe("AuthController", () => {
       });
 
       it("should execute use case with validated DTO", async () => {
-        const mockDto = new UpdateUserDto(
-          "session-token-123",
-          "refresh-token-456",
-          undefined,
-          "NewSecurePass123!",
-          "NewSecurePass123!",
-        );
+        const [error, mockDto] = UpdateUserDto.createFrom({
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          newPassword: "NewSecurePass123!",
+          newPasswordConfirmation: "NewSecurePass123!",
+        });
+        expect(error).toBeUndefined();
         const mockUser = new UserEntity(
           "1",
           "john.doe@example.com",
@@ -1095,8 +1103,7 @@ describe("AuthController", () => {
             refresh_token: "refresh-token-456",
           },
         });
-
-        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto);
+        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto!);
         mockUpdateUserPassword.execute.mockResolvedValue(mockAuthUser);
 
         authController.updateUserPassword(
@@ -1106,17 +1113,17 @@ describe("AuthController", () => {
         );
 
         expect(mockUpdateUserPassword.execute).toHaveBeenCalledTimes(1);
-        expect(mockUpdateUserPassword.execute).toHaveBeenCalledWith(mockDto);
+        expect(mockUpdateUserPassword.execute).toHaveBeenCalledWith(mockDto!);
       });
 
       it("should return auth user data on successful password update", async () => {
-        const mockDto = new UpdateUserDto(
-          "session-token-123",
-          "refresh-token-456",
-          undefined,
-          "NewSecurePass123!",
-          "NewSecurePass123!",
-        );
+        const [error, mockDto] = UpdateUserDto.createFrom({
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          newPassword: "NewSecurePass123!",
+          newPasswordConfirmation: "NewSecurePass123!",
+        });
+        expect(error).toBeUndefined();
         const mockUser = new UserEntity(
           "1",
           "john.doe@example.com",
@@ -1131,8 +1138,7 @@ describe("AuthController", () => {
             refresh_token: "refresh-token-456",
           },
         });
-
-        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto);
+        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto!);
         mockUpdateUserPassword.execute.mockResolvedValue(mockAuthUser);
 
         authController.updateUserPassword(
@@ -1195,14 +1201,14 @@ describe("AuthController", () => {
 
     describe("Use case execution errors", () => {
       beforeEach(() => {
-        const mockDto = new UpdateUserDto(
-          "session-token-123",
-          "refresh-token-456",
-          undefined,
-          "NewSecurePass123!",
-          "NewSecurePass123!",
-        );
-        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto);
+        const [error, mockDto] = UpdateUserDto.createFrom({
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          newPassword: "NewSecurePass123!",
+          newPasswordConfirmation: "NewSecurePass123!",
+        });
+        expect(error).toBeUndefined();
+        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto!);
       });
 
       it("should call next with use case error", async () => {
@@ -1245,13 +1251,12 @@ describe("AuthController", () => {
     describe("Method binding", () => {
       it("should maintain correct context when updateUserPassword method is extracted", () => {
         const { updateUserPassword } = authController;
-        const mockDto = new UpdateUserDto(
-          "session-token-123",
-          "refresh-token-456",
-          undefined,
-          "NewSecurePass123!",
-          "NewSecurePass123!",
-        );
+        const [error, mockDto] = UpdateUserDto.createFrom({
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          newPassword: "NewSecurePass123!",
+          newPasswordConfirmation: "NewSecurePass123!",
+        });
         const mockUser = new UserEntity(
           "1",
           "john.doe@example.com",
@@ -1266,8 +1271,8 @@ describe("AuthController", () => {
             refresh_token: "refresh-token-456",
           },
         });
-
-        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto);
+        expect(error).toBeUndefined();
+        (UpdateUserValidator.validate as jest.Mock).mockReturnValue(mockDto!);
         mockUpdateUserPassword.execute.mockResolvedValue(mockAuthUser);
 
         // Should work even when method is extracted from instance

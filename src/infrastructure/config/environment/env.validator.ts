@@ -32,6 +32,41 @@ const envSchema = z.object({
     })
     .optional()
     .default("info"),
+  CRYPTO_ENVIRONMENT: z
+    .string()
+    .transform((str) =>
+      str.split(",").map((item) => {
+        const environment = item.trim().toLowerCase() as TEnvironment;
+        if (!environmentsArray.includes(environment)) {
+          throw new Error(ERROR_MESSAGES.CRYPTO_ENVIRONMENT.INVALID_VALUE);
+        }
+        return environment;
+      }),
+    )
+    .optional()
+    .default(["prod", "qa"]),
+  CRYPTO_FORCE_ENCRYPT: z
+    .string()
+    .transform((str) => {
+      const lowerCaseStr = str.toLowerCase();
+      if (lowerCaseStr !== "true" && lowerCaseStr !== "false") {
+        throw new Error(ERROR_MESSAGES.CRYPTO_FORCE_ENCRYPT.INVALID_VALUE);
+      }
+      return lowerCaseStr === "true";
+    })
+    .optional()
+    .default(false),
+  CRYPTO_DISABLED_ENCRYPT: z
+    .string()
+    .transform((str) => {
+      const lowerCaseStr = str.toLowerCase();
+      if (lowerCaseStr !== "true" && lowerCaseStr !== "false") {
+        throw new Error(ERROR_MESSAGES.CRYPTO_DISABLED_ENCRYPT.INVALID_VALUE);
+      }
+      return lowerCaseStr === "true";
+    })
+    .optional()
+    .default(false),
 });
 
 export type IEnv = z.infer<typeof envSchema>;

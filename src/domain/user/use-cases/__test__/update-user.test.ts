@@ -26,17 +26,18 @@ describe("UpdateUser", () => {
 
   describe("execute", () => {
     it("should successfully update user with valid data", async () => {
-      const updateDto = new UpdateUserDto(
-        "mock-session-token",
-        "mock-refresh-token",
-        "newemail@example.com",
-        "newPassword123",
-        "newPassword123",
-        "+1234567890",
-        "https://example.com/redirect",
-      );
+      const [error, updateDto] = UpdateUserDto.createFrom({
+        sessionToken: "mock-session-token",
+        refreshToken: "mock-refresh-token",
+        email: "newemail@example.com",
+        newPassword: "newPassword123",
+        newPasswordConfirmation: "newPassword123",
+        phone: "+1234567890",
+        redirectTo: "https://example.com/redirect",
+      });
+      expect(error).toBeUndefined();
 
-      const result = await updateUser.execute(updateDto);
+      const result = await updateUser.execute(updateDto!);
 
       expect(result).toBeInstanceOf(UserEntity);
       if (result instanceof UserEntity) {
@@ -46,13 +47,14 @@ describe("UpdateUser", () => {
     });
 
     it("should successfully update user with partial data", async () => {
-      const updateDto = new UpdateUserDto(
-        "mock-session-token",
-        "mock-refresh-token",
-        "partialemail@example.com",
-      );
+      const [error, updateDto] = UpdateUserDto.createFrom({
+        sessionToken: "mock-session-token",
+        refreshToken: "mock-refresh-token",
+        email: "partialemail@example.com",
+      });
+      expect(error).toBeUndefined();
 
-      const result = await updateUser.execute(updateDto);
+      const result = await updateUser.execute(updateDto!);
 
       expect(result).toBeInstanceOf(UserEntity);
       if (result instanceof UserEntity) {
@@ -61,12 +63,13 @@ describe("UpdateUser", () => {
     });
 
     it("should successfully update user with only required fields", async () => {
-      const updateDto = new UpdateUserDto(
-        "mock-session-token",
-        "mock-refresh-token",
-      );
+      const [error, updateDto] = UpdateUserDto.createFrom({
+        sessionToken: "mock-session-token",
+        refreshToken: "mock-refresh-token",
+      });
+      expect(error).toBeUndefined();
 
-      const result = await updateUser.execute(updateDto);
+      const result = await updateUser.execute(updateDto!);
 
       expect(result).toBeInstanceOf(UserEntity);
       if (result instanceof UserEntity) {
@@ -76,58 +79,60 @@ describe("UpdateUser", () => {
     });
 
     it("should call repository updateUser method with correct parameters", async () => {
-      const updateDto = new UpdateUserDto(
-        "session-token-123",
-        "refresh-token-456",
-        "test@example.com",
-        "newPassword",
-        "newPassword",
-        "+9876543210",
-      );
+      const [error, updateDto] = UpdateUserDto.createFrom({
+        sessionToken: "session-token-123",
+        refreshToken: "refresh-token-456",
+        email: "test@example.com",
+        newPassword: "newPassword",
+        newPasswordConfirmation: "newPassword",
+        phone: "+9876543210",
+      });
+      expect(error).toBeUndefined();
 
       const repositorySpy = jest.spyOn(mockRepository, "updateUser");
 
-      await updateUser.execute(updateDto);
+      await updateUser.execute(updateDto!);
 
       expect(repositorySpy).toHaveBeenCalledTimes(1);
       expect(repositorySpy).toHaveBeenCalledWith(updateDto);
     });
 
     it("should propagate repository errors", async () => {
-      const updateDto = new UpdateUserDto(
-        "mock-session-token",
-        "mock-refresh-token",
-        "error@example.com",
-      );
+      const [error, updateDto] = UpdateUserDto.createFrom({
+        sessionToken: "mock-session-token",
+        refreshToken: "mock-refresh-token",
+        email: "error@example.com",
+      });
+      expect(error).toBeUndefined();
 
       mockRepository.setShouldFail(true, "Repository update failed");
 
-      await expect(updateUser.execute(updateDto)).rejects.toThrow(
+      await expect(updateUser.execute(updateDto!)).rejects.toThrow(
         "Repository update failed",
       );
     });
 
     it("should handle different UpdateUserDto instances", async () => {
-      const updateDto1 = new UpdateUserDto(
-        "session-token-1",
-        "refresh-token-1",
-        "user1@example.com",
-        "password1",
-        "password1",
-        "+1111111111",
-      );
+      const [error1, updateDto1] = UpdateUserDto.createFrom({
+        sessionToken: "session-token-1",
+        refreshToken: "refresh-token-1",
+        email: "user1@example.com",
+        newPassword: "password1",
+        newPasswordConfirmation: "password1",
+        phone: "+1111111111",
+      });
 
-      const updateDto2 = new UpdateUserDto(
-        "session-token-2",
-        "refresh-token-2",
-        "user2@example.com",
-        undefined,
-        undefined,
-        "+2222222222",
-      );
+      const [error2, updateDto2] = UpdateUserDto.createFrom({
+        sessionToken: "session-token-2",
+        refreshToken: "refresh-token-2",
+        email: "user2@example.com",
+        phone: "+2222222222",
+      });
+      expect(error1).toBeUndefined();
+      expect(error2).toBeUndefined();
 
-      const result1 = await updateUser.execute(updateDto1);
-      const result2 = await updateUser.execute(updateDto2);
+      const result1 = await updateUser.execute(updateDto1!);
+      const result2 = await updateUser.execute(updateDto2!);
 
       expect(result1).toBeInstanceOf(UserEntity);
       expect(result2).toBeInstanceOf(UserEntity);
@@ -141,17 +146,18 @@ describe("UpdateUser", () => {
     });
 
     it("should return UserEntity with correct structure", async () => {
-      const updateDto = new UpdateUserDto(
-        "test-session-token",
-        "test-refresh-token",
-        "structure@example.com",
-        "newPassword123",
-        "newPassword123",
-        "+5555555555",
-        "https://redirect.example.com",
-      );
+      const [error, updateDto] = UpdateUserDto.createFrom({
+        sessionToken: "test-session-token",
+        refreshToken: "test-refresh-token",
+        email: "structure@example.com",
+        newPassword: "newPassword123",
+        newPasswordConfirmation: "newPassword123",
+        phone: "+5555555555",
+        redirectTo: "https://redirect.example.com",
+      });
+      expect(error).toBeUndefined();
 
-      const result = await updateUser.execute(updateDto);
+      const result = await updateUser.execute(updateDto!);
 
       expect(result).toBeInstanceOf(UserEntity);
       if (result instanceof UserEntity) {
@@ -181,13 +187,14 @@ describe("UpdateUser", () => {
 
       mockRepository.setMockResult(customUser as any); // Cast needed for mock compatibility
 
-      const updateDto = new UpdateUserDto(
-        "any-session-token",
-        "any-refresh-token",
-        "any@example.com",
-      );
+      const [error, updateDto] = UpdateUserDto.createFrom({
+        sessionToken: "any-session-token",
+        refreshToken: "any-refresh-token",
+        email: "any@example.com",
+      });
+      expect(error).toBeUndefined();
 
-      const result = await updateUser.execute(updateDto);
+      const result = await updateUser.execute(updateDto!);
 
       if (result instanceof UserEntity) {
         expect(result.id).toBe("custom-update-123");
@@ -199,34 +206,32 @@ describe("UpdateUser", () => {
     });
 
     it("should handle password update fields correctly", async () => {
-      const updateDto = new UpdateUserDto(
-        "password-session-token",
-        "password-refresh-token",
-        undefined,
-        "newSecurePassword123",
-        "newSecurePassword123",
-      );
+      const [error, updateDto] = UpdateUserDto.createFrom({
+        sessionToken: "password-session-token",
+        refreshToken: "password-refresh-token",
+        newPassword: "newSecurePassword123",
+        newPasswordConfirmation: "newSecurePassword123",
+      });
+      expect(error).toBeUndefined();
 
       const repositorySpy = jest.spyOn(mockRepository, "updateUser");
 
-      await updateUser.execute(updateDto);
+      await updateUser.execute(updateDto!);
 
-      expect(repositorySpy).toHaveBeenCalledWith(updateDto);
-      expect(updateDto.newPassword).toBe("newSecurePassword123");
-      expect(updateDto.newPasswordConfirmation).toBe("newSecurePassword123");
+      expect(repositorySpy).toHaveBeenCalledWith(updateDto!);
+      expect(updateDto!.newPassword).toBe("newSecurePassword123");
+      expect(updateDto!.newPasswordConfirmation).toBe("newSecurePassword123");
     });
 
     it("should handle phone number update correctly", async () => {
-      const updateDto = new UpdateUserDto(
-        "phone-session-token",
-        "phone-refresh-token",
-        undefined,
-        undefined,
-        undefined,
-        "+1-555-123-4567",
-      );
+      const [error, updateDto] = UpdateUserDto.createFrom({
+        sessionToken: "phone-session-token",
+        refreshToken: "phone-refresh-token",
+        phone: "+1-555-123-4567",
+      });
+      expect(error).toBeUndefined();
 
-      const result = await updateUser.execute(updateDto);
+      const result = await updateUser.execute(updateDto!);
 
       if (result instanceof UserEntity) {
         expect(result.phone).toBe("+1-555-123-4567");
@@ -239,31 +244,33 @@ describe("UpdateUser", () => {
       const jwtLikeRefreshToken =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.different_signature_here";
 
-      const updateDto = new UpdateUserDto(
-        jwtLikeSessionToken,
-        jwtLikeRefreshToken,
-        "jwt@example.com",
-      );
+      const [error, updateDto] = UpdateUserDto.createFrom({
+        sessionToken: jwtLikeSessionToken,
+        refreshToken: jwtLikeRefreshToken,
+        email: "jwt@example.com",
+      });
+      expect(error).toBeUndefined();
 
-      const result = await updateUser.execute(updateDto);
+      const result = await updateUser.execute(updateDto!);
 
       expect(result).toBeInstanceOf(UserEntity);
-      expect(updateDto.sessionToken).toBe(jwtLikeSessionToken);
-      expect(updateDto.refreshToken).toBe(jwtLikeRefreshToken);
+      expect(updateDto!.sessionToken).toBe(jwtLikeSessionToken);
+      expect(updateDto!.refreshToken).toBe(jwtLikeRefreshToken);
     });
 
     it("should handle empty optional fields gracefully", async () => {
-      const updateDto = new UpdateUserDto(
-        "empty-session-token",
-        "empty-refresh-token",
-        "", // Empty email
-        "", // Empty password
-        "", // Empty password confirmation
-        "", // Empty phone
-        "", // Empty redirection link
-      );
+      const [error, updateDto] = UpdateUserDto.createFrom({
+        sessionToken: "empty-session-token",
+        refreshToken: "empty-refresh-token",
+        email: "",
+        newPassword: "",
+        newPasswordConfirmation: "",
+        phone: "",
+        redirectionLink: "",
+      });
+      expect(error).toBeUndefined();
 
-      const result = await updateUser.execute(updateDto);
+      const result = await updateUser.execute(updateDto!);
 
       expect(result).toBeInstanceOf(UserEntity);
       // Should not throw error with empty optional fields

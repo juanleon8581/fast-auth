@@ -8,6 +8,9 @@ const mockEnv = {
   PASSPHRASE: "test-passphrase",
   LOG_TRANSPORT: "console",
   LOG_LEVEL: "info",
+  CRYPTO_ENVIRONMENT: "prod,qa",
+  CRYPTO_FORCE_ENCRYPT: "false",
+  CRYPTO_DISABLED_ENCRYPT: "false",
 };
 
 Object.freeze(mockEnv);

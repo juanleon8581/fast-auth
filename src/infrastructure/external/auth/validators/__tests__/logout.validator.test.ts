@@ -42,7 +42,7 @@ describe("LogoutValidator", () => {
         ValidationError,
       );
       expect(() => LogoutValidator.validate(invalidData)).toThrow(
-        VALIDATION.ACCESS_TOKEN.REQUIRED,
+        VALIDATION.SESSION_TOKEN.REQUIRED,
       );
     });
 
@@ -69,7 +69,7 @@ describe("LogoutValidator", () => {
         ValidationError,
       );
       expect(() => LogoutValidator.validate(invalidData)).toThrow(
-        VALIDATION.ACCESS_TOKEN.REQUIRED,
+        VALIDATION.SESSION_TOKEN.REQUIRED,
       );
     });
 

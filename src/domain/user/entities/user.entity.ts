@@ -34,9 +34,6 @@ export class UserEntity implements IUserData {
     if (email_verified === undefined || email_verified === null) {
       throw new Error(ERROR_MESSAGES.DATA_VALIDATION.INVALID_DATA);
     }
-    if (email_verified === false) {
-      throw new Error(ERROR_MESSAGES.DATA_VALIDATION.EMAIL_NOT_VERIFIED);
-    }
 
     return this.create({ id, email, name, email_verified, phone });
   };

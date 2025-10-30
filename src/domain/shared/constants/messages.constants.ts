@@ -9,6 +9,11 @@ export const ERROR_MESSAGES = {
     INVALID_AUTHORIZATION_FORMAT: "Invalid authorization format",
     TOKEN_EXPIRED: "Token has expired",
     DAYS_MUST_BE_GREATER_THAN_0: "Days must be greater than 0",
+    INVALID_WEBHOOK_DATA: "Invalid webhook data",
+  },
+  REQ_SIGN: {
+    UNKNOWN_ERROR: "Unknown error",
+    BAD_SIGNATURE: "Unauthorized: bad signature for request",
   },
   AUTH: {
     REFRESH_SESSION: {
@@ -37,6 +42,14 @@ export const ERROR_MESSAGES = {
           INVALID_FORMAT:
             "Password must contain at least: 1 lowercase, 1 uppercase, 1 number and 1 special character",
         },
+        PHONE: {
+          MIN_LENGTH: "Phone number must be at least 10 characters long",
+          MAX_LENGTH: "Phone number cannot exceed 15 characters",
+          INVALID_FORMAT: "Phone number must be in a valid format",
+        },
+        ROLE: {
+          INVALID_FORMAT: "Role must be a valid role",
+        },
       },
     },
     LOGIN: {
@@ -58,8 +71,8 @@ export const ERROR_MESSAGES = {
     LOGOUT: {
       USER_NOT_LOGGED_OUT: "User not logged out",
       VALIDATION: {
-        ACCESS_TOKEN: {
-          REQUIRED: "Access token is required",
+        SESSION_TOKEN: {
+          REQUIRED: "Session token is required",
         },
         REFRESH_TOKEN: {
           REQUIRED: "Refresh token is required",
