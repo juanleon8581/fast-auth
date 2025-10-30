@@ -1,13 +1,28 @@
 import { Router } from "express";
 import { AuthRoutes } from "../routes";
-import { AuthDatasource } from "@/infrastructure/datasources/auth.datasource";
-import { AuthClient } from "@/infrastructure/config/auth.client";
-import { AuthController } from "@/presentation/controller/controller";
+import { AuthDatasource } from "@/infrastructure/external/auth/datasources/auth.datasource";
+import { AuthClient } from "@/infrastructure/external/auth/auth.client";
+import { AuthController } from "@/presentation/auth/controllers/auth.controller";
 
 // Mock dependencies
-jest.mock("@/infrastructure/datasources/auth.datasource");
-jest.mock("@/infrastructure/config/auth.client");
-jest.mock("@/presentation/controller/controller");
+jest.mock("@/infrastructure/external/auth/datasources/auth.datasource");
+jest.mock("@/infrastructure/external/auth/auth.client");
+jest.mock("@/presentation/auth/controllers/auth.controller");
+jest.mock("@/presentation/middlewares/auth.middleware", () => ({
+  AuthMiddleware: {
+    verify: jest.fn((req: any, res: any, next: any) => next()),
+  },
+}));
+jest.mock("@/presentation/middlewares/crypto.middleware", () => ({
+  CryptoMiddleware: {
+    decrypt: jest.fn((req: any, res: any, next: any) => next()),
+  },
+}));
+
+// Import the mocked AuthMiddleware
+const {
+  AuthMiddleware,
+} = require("@/presentation/middlewares/auth.middleware");
 
 describe("AuthRoutes", () => {
   let mockRouter: jest.Mocked<Router>;
@@ -33,15 +48,23 @@ describe("AuthRoutes", () => {
 
     // Mock AuthDatasource
     mockAuthDatasource = {} as jest.Mocked<AuthDatasource>;
-    (AuthDatasource as jest.Mock).mockImplementation(() => mockAuthDatasource);
+    (AuthDatasource as unknown as jest.Mock).mockImplementation(
+      () => mockAuthDatasource,
+    );
 
     // Mock AuthController
     mockAuthController = {
       register: jest.fn(),
       login: jest.fn(),
       logout: jest.fn(),
+      updateUser: jest.fn(),
+      updateUserPassword: jest.fn(),
+      requestResetPasswordEmail: jest.fn(),
+      getPublicKey: jest.fn(),
     } as unknown as jest.Mocked<AuthController>;
-    (AuthController as jest.Mock).mockImplementation(() => mockAuthController);
+    (AuthController as unknown as jest.Mock).mockImplementation(
+      () => mockAuthController,
+    );
   });
 
   describe("routes getter", () => {
@@ -72,6 +95,7 @@ describe("AuthRoutes", () => {
       AuthRoutes.routes;
       expect(mockRouter.post).toHaveBeenCalledWith(
         "/register",
+        expect.any(Function),
         mockAuthController.register,
       );
     });
@@ -80,13 +104,66 @@ describe("AuthRoutes", () => {
       AuthRoutes.routes;
       expect(mockRouter.post).toHaveBeenCalledWith(
         "/login",
+        expect.any(Function),
         mockAuthController.login,
+      );
+    });
+
+    it("should register POST /logout route with AuthMiddleware.verify", () => {
+      AuthRoutes.routes;
+      expect(mockRouter.post).toHaveBeenCalledWith(
+        "/logout",
+        expect.any(Function),
+        AuthMiddleware.verify,
+        mockAuthController.logout,
+      );
+    });
+
+    it("should register PUT /update route with AuthMiddleware.verify", () => {
+      AuthRoutes.routes;
+      expect(mockRouter.put).toHaveBeenCalledWith(
+        "/update-user",
+        expect.any(Function),
+        AuthMiddleware.verify,
+        mockAuthController.updateUser,
+      );
+    });
+
+    it("should register PUT /update-user-password route with AuthMiddleware.verify", () => {
+      AuthRoutes.routes;
+      expect(mockRouter.put).toHaveBeenCalledWith(
+        "/update-user-password",
+        expect.any(Function),
+        AuthMiddleware.verify,
+        mockAuthController.updateUserPassword,
+      );
+    });
+
+    it("should register POST /request-reset-password-email route", () => {
+      AuthRoutes.routes;
+      expect(mockRouter.post).toHaveBeenCalledWith(
+        "/request-reset-password-email",
+        mockAuthController.requestResetPasswordEmail,
       );
     });
 
     it("should return the configured router", () => {
       const result = AuthRoutes.routes;
       expect(result).toBe(mockRouter);
+    });
+
+    it("should define requestResetPasswordEmail endpoint", () => {
+      AuthRoutes.routes;
+
+      const postCalls = (mockRouter.post as jest.Mock).mock.calls;
+      const resetPasswordRoute = postCalls.find(
+        (call) => call[0] === "/request-reset-password-email",
+      );
+
+      expect(resetPasswordRoute).toBeDefined();
+      expect(resetPasswordRoute[1]).toBe(
+        mockAuthController.requestResetPasswordEmail,
+      );
     });
   });
 
@@ -99,9 +176,37 @@ describe("AuthRoutes", () => {
       expect(mockRouter.post).toHaveBeenCalledWith(
         "/register",
         expect.any(Function),
+        expect.any(Function),
       );
       expect(mockRouter.post).toHaveBeenCalledWith(
         "/login",
+        expect.any(Function),
+        expect.any(Function),
+      );
+      expect(mockRouter.post).toHaveBeenCalledWith(
+        "/logout",
+        expect.any(Function),
+        AuthMiddleware.verify,
+        expect.any(Function),
+      );
+      expect(mockRouter.put).toHaveBeenCalledWith(
+        "/update-user",
+        expect.any(Function),
+        AuthMiddleware.verify,
+        expect.any(Function),
+      );
+      expect(mockRouter.put).toHaveBeenCalledWith(
+        "/update-user-password",
+        expect.any(Function),
+        AuthMiddleware.verify,
+        expect.any(Function),
+      );
+      expect(mockRouter.post).toHaveBeenCalledWith(
+        "/request-reset-password-email",
+        expect.any(Function),
+      );
+      expect(mockRouter.get).toHaveBeenCalledWith(
+        "/public-key",
         expect.any(Function),
       );
     });
@@ -111,8 +216,28 @@ describe("AuthRoutes", () => {
 
       // Verify that controller methods are used as handlers
       const postCalls = (mockRouter.post as jest.Mock).mock.calls;
-      expect(postCalls[0][1]).toBe(mockAuthController.register);
-      expect(postCalls[1][1]).toBe(mockAuthController.login);
+      const putCalls = (mockRouter.put as jest.Mock).mock.calls;
+
+      const registerCall = postCalls.find((c) => c[0] === "/register");
+      const loginCall = postCalls.find((c) => c[0] === "/login");
+      const logoutCall = postCalls.find((c) => c[0] === "/logout");
+      const resetCall = postCalls.find(
+        (c) => c[0] === "/request-reset-password-email",
+      );
+
+      expect(registerCall?.[1]).toEqual(expect.any(Function));
+      expect(registerCall?.[2]).toBe(mockAuthController.register);
+      expect(loginCall?.[1]).toEqual(expect.any(Function));
+      expect(loginCall?.[2]).toBe(mockAuthController.login);
+      expect(logoutCall?.[3]).toBe(mockAuthController.logout);
+      expect(resetCall?.[1]).toBe(mockAuthController.requestResetPasswordEmail);
+
+      const updateCall = putCalls.find((c) => c[0] === "/update-user");
+      const updatePwdCall = putCalls.find(
+        (c) => c[0] === "/update-user-password",
+      );
+      expect(updateCall?.[3]).toBe(mockAuthController.updateUser);
+      expect(updatePwdCall?.[3]).toBe(mockAuthController.updateUserPassword);
     });
   });
 
@@ -138,13 +263,13 @@ describe("AuthRoutes", () => {
   });
 
   describe("Route Methods", () => {
-    it("should only define POST routes", () => {
+    it("should define POST and PUT routes", () => {
       AuthRoutes.routes;
 
-      // Verify only POST method is used
-      expect(mockRouter.post).toHaveBeenCalledTimes(3);
-      expect(mockRouter.get).not.toHaveBeenCalled();
-      expect(mockRouter.put).not.toHaveBeenCalled();
+      // Verify POST and PUT methods are used
+      expect(mockRouter.post).toHaveBeenCalledTimes(4); // register, login, logout, request-reset-password-email
+      expect(mockRouter.put).toHaveBeenCalledTimes(2); // both PUT routes
+      expect(mockRouter.get).toHaveBeenCalledTimes(1); // public-key
       expect(mockRouter.delete).not.toHaveBeenCalled();
       expect(mockRouter.patch).not.toHaveBeenCalled();
     });
@@ -156,7 +281,8 @@ describe("AuthRoutes", () => {
       const registerRoute = postCalls.find((call) => call[0] === "/register");
 
       expect(registerRoute).toBeDefined();
-      expect(registerRoute[1]).toBe(mockAuthController.register);
+      expect(registerRoute[1]).toEqual(expect.any(Function));
+      expect(registerRoute[2]).toBe(mockAuthController.register);
     });
 
     it("should define login endpoint", () => {
@@ -166,7 +292,8 @@ describe("AuthRoutes", () => {
       const loginRoute = postCalls.find((call) => call[0] === "/login");
 
       expect(loginRoute).toBeDefined();
-      expect(loginRoute[1]).toBe(mockAuthController.login);
+      expect(loginRoute[1]).toEqual(expect.any(Function));
+      expect(loginRoute[2]).toBe(mockAuthController.login);
     });
 
     it("should define logout endpoint", () => {
@@ -176,7 +303,121 @@ describe("AuthRoutes", () => {
       const logoutRoute = postCalls.find((call) => call[0] === "/logout");
 
       expect(logoutRoute).toBeDefined();
-      expect(logoutRoute[1]).toBe(mockAuthController.logout);
+      expect(logoutRoute[1]).toEqual(expect.any(Function));
+      expect(logoutRoute[2]).toBe(AuthMiddleware.verify);
+      expect(logoutRoute[3]).toBe(mockAuthController.logout);
+    });
+
+    it("should define updateUser endpoint", () => {
+      AuthRoutes.routes;
+
+      const putCalls = (mockRouter.put as jest.Mock).mock.calls;
+      const updateRoute = putCalls.find((call) => call[0] === "/update-user");
+
+      expect(updateRoute).toBeDefined();
+      expect(updateRoute[1]).toEqual(expect.any(Function));
+      expect(updateRoute[2]).toBe(AuthMiddleware.verify);
+      expect(updateRoute[3]).toBe(mockAuthController.updateUser);
+    });
+
+    it("should define updateUserPassword endpoint", () => {
+      AuthRoutes.routes;
+
+      const putCalls = (mockRouter.put as jest.Mock).mock.calls;
+      const updatePasswordRoute = putCalls.find(
+        (call) => call[0] === "/update-user-password",
+      );
+
+      expect(updatePasswordRoute).toBeDefined();
+      expect(updatePasswordRoute[1]).toEqual(expect.any(Function));
+      expect(updatePasswordRoute[2]).toBe(AuthMiddleware.verify);
+      expect(updatePasswordRoute[3]).toBe(
+        mockAuthController.updateUserPassword,
+      );
+    });
+  });
+
+  describe("Middleware Integration", () => {
+    it("should apply AuthMiddleware.verify to protected routes", () => {
+      AuthRoutes.routes;
+
+      const postCalls = (mockRouter.post as jest.Mock).mock.calls;
+      const putCalls = (mockRouter.put as jest.Mock).mock.calls;
+
+      // Check that authMiddleware is applied to logout route
+      const logoutCall = postCalls.find((call) => call[0] === "/logout");
+      expect(logoutCall[2]).toBe(AuthMiddleware.verify);
+
+      // Check that authMiddleware is applied to update-user route
+      const updateUserCall = putCalls.find(
+        (call) => call[0] === "/update-user",
+      );
+      expect(updateUserCall[2]).toBe(AuthMiddleware.verify);
+
+      // Check that authMiddleware is applied to update-user-password route
+      const updatePasswordCall = putCalls.find(
+        (call) => call[0] === "/update-user-password",
+      );
+      expect(updatePasswordCall[2]).toBe(AuthMiddleware.verify);
+    });
+
+    it("should not apply AuthMiddleware.verify to public routes", () => {
+      AuthRoutes.routes;
+
+      const postCalls = (mockRouter.post as jest.Mock).mock.calls;
+
+      // Check that authMiddleware is NOT applied to register route
+      const registerCall = postCalls.find((call) => call[0] === "/register");
+      expect(registerCall[1]).toEqual(expect.any(Function));
+      expect(registerCall[1]).not.toBe(AuthMiddleware.verify);
+      expect(registerCall[2]).toBe(mockAuthController.register);
+
+      // Check that authMiddleware is NOT applied to login route
+      const loginCall = postCalls.find((call) => call[0] === "/login");
+      expect(loginCall[1]).toEqual(expect.any(Function));
+      expect(loginCall[1]).not.toBe(AuthMiddleware.verify);
+      expect(loginCall[2]).toBe(mockAuthController.login);
+
+      // Check that authMiddleware is NOT applied to request-reset-password-email route
+      const resetPasswordCall = postCalls.find(
+        (call) => call[0] === "/request-reset-password-email",
+      );
+      expect(resetPasswordCall[1]).toBe(
+        mockAuthController.requestResetPasswordEmail,
+      );
+      expect(resetPasswordCall[1]).not.toBe(AuthMiddleware.verify);
+    });
+
+    it("should have correct middleware order for protected routes", () => {
+      AuthRoutes.routes;
+
+      const postCalls = (mockRouter.post as jest.Mock).mock.calls;
+      const putCalls = (mockRouter.put as jest.Mock).mock.calls;
+
+      // Verify middleware comes before controller for logout
+      const logoutCall = postCalls.find((call) => call[0] === "/logout");
+      expect(logoutCall).toHaveLength(4); // path, crypto middleware, auth middleware, controller
+      expect(logoutCall[1]).toEqual(expect.any(Function));
+      expect(logoutCall[2]).toBe(AuthMiddleware.verify);
+      expect(logoutCall[3]).toBe(mockAuthController.logout);
+
+      // Verify middleware comes before controller for update-user
+      const updateUserCall = putCalls.find(
+        (call) => call[0] === "/update-user",
+      );
+      expect(updateUserCall).toHaveLength(4); // path, crypto middleware, auth middleware, controller
+      expect(updateUserCall[1]).toEqual(expect.any(Function));
+      expect(updateUserCall[2]).toBe(AuthMiddleware.verify);
+      expect(updateUserCall[3]).toBe(mockAuthController.updateUser);
+
+      // Verify middleware comes before controller for update-user-password
+      const updatePasswordCall = putCalls.find(
+        (call) => call[0] === "/update-user-password",
+      );
+      expect(updatePasswordCall).toHaveLength(4); // path, crypto middleware, auth middleware, controller
+      expect(updatePasswordCall[1]).toEqual(expect.any(Function));
+      expect(updatePasswordCall[2]).toBe(AuthMiddleware.verify);
+      expect(updatePasswordCall[3]).toBe(mockAuthController.updateUserPassword);
     });
   });
 
@@ -199,7 +440,7 @@ describe("AuthRoutes", () => {
 
   describe("Error Handling", () => {
     it("should handle AuthDatasource creation errors gracefully", () => {
-      (AuthDatasource as jest.Mock).mockImplementation(() => {
+      (AuthDatasource as unknown as jest.Mock).mockImplementation(() => {
         throw new Error("Datasource creation failed");
       });
 
@@ -207,7 +448,7 @@ describe("AuthRoutes", () => {
     });
 
     it("should handle AuthController creation errors gracefully", () => {
-      (AuthController as jest.Mock).mockImplementation(() => {
+      (AuthController as unknown as jest.Mock).mockImplementation(() => {
         throw new Error("Controller creation failed");
       });
 

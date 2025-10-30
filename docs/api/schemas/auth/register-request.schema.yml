@@ -36,3 +36,29 @@ components:
           maxLength: 128
           example: 12345678
           format: password
+
+        phone:
+          type: string
+          description: User phone (optional, international format)
+          minLength: 10
+          maxLength: 15
+          example: "+1234567890"
+
+        role:
+          type: string
+          description: User role (optional, defaults to USER)
+          enum:
+            - USER
+            - MODERATOR
+            - ADMIN
+          default: USER
+          example: USER
+
+        metadata:
+          type: object
+          description: Additional profile metadata (string values only)
+          additionalProperties:
+            type: string
+          example:
+            display_name: "John Doe"
+            theme: "dark"

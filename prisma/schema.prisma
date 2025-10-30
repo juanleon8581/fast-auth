@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model that extends Supabase Auth
+// The id should match the Supabase Auth user id (UUID)
+model User {
+  id        String     @id // This will be the same as Supabase Auth user id
+  name      String
+  lastname  String
+  email     String     @unique
+  role      UserRole   @default(USER)
+  status    UserStatus @default(ACTIVE)
+  phone     String?
+  metadata  Json? // Additional data as JSON
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  // Relations
+  logs Log[] @relation("UserLogs")
+
+  @@map("users")
+}
+
+// User status enum
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+// User roles enum
+enum UserRole {
+  ADMIN
+  USER
+  MODERATOR
+}
+
+// Log model for application logging
+model Log {
+  id        String   @id @default(cuid())
+  level     LogLevel
+  message   String
+  meta      Json? // Additional metadata as JSON
+  timestamp DateTime @default(now())
+  service   String? // Service or module that generated the log
+  userId    String? // Optional user ID for user-related logs
+  requestId String? // Optional request ID for tracing
+  error     String? // Error stack trace if applicable
+
+  // Relations
+  user User? @relation("UserLogs", fields: [userId], references: [id])
+
+  @@index([level])
+  @@index([timestamp])
+  @@index([service])
+  @@index([userId])
+  @@index([requestId])
+  @@map("logs")
+}
+
+// Enum for log levels
+enum LogLevel {
+  ERROR
+  WARN
+  INFO
+  HTTP
+  VERBOSE
+  DEBUG
+  SILLY
+}

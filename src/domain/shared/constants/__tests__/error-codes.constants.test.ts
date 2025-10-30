@@ -1,0 +1,16 @@
+import { ERROR_CODES } from "@/domain/shared/constants/error-codes.constants";
+
+describe("ERROR_CODES", () => {
+  it("contains DATA_VALIDATION.MISSING_FIELDS code", () => {
+    expect(ERROR_CODES.DATA_VALIDATION.MISSING_FIELDS).toBe(
+      "DATA_VALIDATION.MISSING_FIELDS",
+    );
+  });
+
+  it("contains AUTH.UPDATE_USER.VALIDATION.NEW_PASSWORD_CONFIRMATION.MUST_MATCH code", () => {
+    expect(
+      ERROR_CODES.AUTH.UPDATE_USER.VALIDATION.NEW_PASSWORD_CONFIRMATION
+        .MUST_MATCH,
+    ).toBe("AUTH.UPDATE_USER.VALIDATION.NEW_PASSWORD_CONFIRMATION.MUST_MATCH");
+  });
+});

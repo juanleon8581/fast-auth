@@ -3,9 +3,22 @@ import { ErrorMiddleware } from "../error.middleware";
 import { ErrorHandler } from "@/domain/errors/error-handler";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 
+// Mock LoggerService using the reusable mock
+jest.mock("@/infrastructure/services/logger/logger.service", () => {
+  // Import the reusable mock
+  const mockModule = jest.requireActual("@/infrastructure/services/logger/__mocks__/logger.service");
+  return {
+    __esModule: true,
+    default: mockModule.default,
+  };
+});
+
 // Mock ErrorHandler
 jest.mock("@/domain/errors/error-handler");
 const mockErrorHandler = ErrorHandler as jest.Mocked<typeof ErrorHandler>;
+
+// Import helpers after mocking
+import { getMockLogger, getLoggerServiceMock, resetLoggerServiceMock } from "@/infrastructure/services/logger/__mocks__/logger.service";
 
 describe("ErrorMiddleware", () => {
   let mockReq: Partial<Request>;
@@ -28,6 +41,7 @@ describe("ErrorMiddleware", () => {
     };
 
     jest.clearAllMocks();
+    resetLoggerServiceMock(); // Reset the reusable mock
   });
 
   describe("handleError", () => {
@@ -55,14 +69,21 @@ describe("ErrorMiddleware", () => {
         mockNext,
       );
 
+      // Use the reusable mock helpers
+      const mockLogger = getMockLogger();
+      const loggerServiceMock = getLoggerServiceMock();
+
       // Assert
       expect(mockErrorHandler.handle).toHaveBeenCalledWith(
         error,
         "test-request-id",
         "1.0.0",
       );
+
       expect(mockStatus).toHaveBeenCalledWith(400);
       expect(mockJson).toHaveBeenCalledWith(expectedResponse);
+      expect(loggerServiceMock).toHaveBeenCalledTimes(1);
+      expect(mockLogger.error).not.toHaveBeenCalled();
     });
 
     it("should handle generic error", () => {
@@ -89,14 +110,24 @@ describe("ErrorMiddleware", () => {
         mockNext,
       );
 
+      // Use the reusable mock helpers
+      const mockLogger = getMockLogger();
+      const loggerServiceMock = getLoggerServiceMock();
+
       // Assert
       expect(mockErrorHandler.handle).toHaveBeenCalledWith(
         error,
         "test-request-id",
         "1.0.0",
       );
+
       expect(mockStatus).toHaveBeenCalledWith(500);
       expect(mockJson).toHaveBeenCalledWith(expectedResponse);
+      expect(loggerServiceMock).toHaveBeenCalledTimes(1);
+      expect(mockLogger.error).toHaveBeenCalledTimes(1);
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        expect.objectContaining(error),
+      );
     });
 
     it("should handle unknown error types", () => {
@@ -123,14 +154,20 @@ describe("ErrorMiddleware", () => {
         mockNext,
       );
 
+      // Use the reusable mock helpers
+      const mockLogger = getMockLogger();
+
       // Assert
       expect(mockErrorHandler.handle).toHaveBeenCalledWith(
         error,
         "test-request-id",
         "1.0.0",
       );
+
       expect(mockStatus).toHaveBeenCalledWith(500);
       expect(mockJson).toHaveBeenCalledWith(expectedResponse);
+      expect(mockLogger.error).toHaveBeenCalledTimes(1);
+      expect(mockLogger.warn).not.toHaveBeenCalled();
     });
 
     it("should handle null error", () => {
@@ -157,14 +194,20 @@ describe("ErrorMiddleware", () => {
         mockNext,
       );
 
+      // Use the reusable mock helpers
+      const mockLogger = getMockLogger();
+
       // Assert
       expect(mockErrorHandler.handle).toHaveBeenCalledWith(
         error,
         "test-request-id",
         "1.0.0",
       );
+
       expect(mockStatus).toHaveBeenCalledWith(500);
       expect(mockJson).toHaveBeenCalledWith(expectedResponse);
+      expect(mockLogger.error).toHaveBeenCalledTimes(1);
+      expect(mockLogger.warn).not.toHaveBeenCalled();
     });
 
     it("should handle different status codes", () => {
@@ -191,6 +234,9 @@ describe("ErrorMiddleware", () => {
         mockNext,
       );
 
+      // Use the reusable mock helpers
+      const mockLogger = getMockLogger();
+
       // Assert
       expect(mockErrorHandler.handle).toHaveBeenCalledWith(
         error,
@@ -199,6 +245,8 @@ describe("ErrorMiddleware", () => {
       );
       expect(mockStatus).toHaveBeenCalledWith(422);
       expect(mockJson).toHaveBeenCalledWith(expectedResponse);
+      expect(mockLogger.error).not.toHaveBeenCalledTimes(1);
+      expect(mockLogger.warn).toHaveBeenCalled();
     });
   });
 });

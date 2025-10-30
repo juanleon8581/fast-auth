@@ -17,18 +17,36 @@ This documentation provides comprehensive guidance for developers working on the
 The project follows Clean Architecture with three main layers:
 
 ### Domain Layer (`src/domain/`)
+
 - **Entities**: Core business objects
 - **Use Cases**: Business logic implementation
 - **Repositories**: Abstract contracts for data access
 - **DTOs**: Data transfer objects
 - **Errors**: Custom error definitions
+- **Shared Validators**: Regex and input patterns under `src/domain/shared/validators`
+
+#### Import Policy (No Barrels)
+- Explicit per-file imports only; barrels (`index.ts`) are prohibited, including under `src/domain/shared/validators`.
+- Prefer `@/domain/<feature>/<type>/<file>` for clarity.
+
+Examples:
+```ts
+import { EMAIL_BASIC_REGEX } from "@/domain/shared/validators/regex.validators";
+```
 
 ### Infrastructure Layer (`src/infrastructure/`)
+
+- **External/Auth**: `external/auth/` (driver `auth.client.ts`, `datasources/`, `mappers/`, `validators/`)
+- **Persistence**: `persistence/` (driver `database.client.ts`, `datasource/` such as `log.datasource.ts`, `mappers/`)
+- **Services**: `services/` (crypto and logger with `adapter/`, `*.service.ts`, `validators/`)
+- **Helpers**: `helpers/validators/` (infrastructure validators such as `processError.validator.ts`)
+
 - **Datasources**: External data source implementations
 - **Validators**: Input validation logic
 - **Config**: Infrastructure configurations
 
 ### Presentation Layer (`src/presentation/`)
+
 - **Controllers**: HTTP request handlers
 - **Routes**: API route definitions
 - **Middlewares**: Request/response processing
@@ -37,19 +55,22 @@ The project follows Clean Architecture with three main layers:
 ## Development Guidelines
 
 ### Prerequisites
+
 - Node.js >= 18.0.0
 - pnpm package manager
 - TypeScript knowledge
 - Understanding of Clean Architecture principles
 
 ### Getting Started
+
 1. Clone the repository
 2. Install dependencies: `pnpm install`
-3. Copy environment file: `cp .env.example .env`
+3. Copy environment file: `cp .env.example .env.dev`
 4. Start development server: `pnpm dev`
 5. Access API documentation: `http://localhost:3000/api-docs`
 
 ### Development Workflow
+
 1. Create feature branch from main
 2. Implement changes following the architecture
 3. Write comprehensive tests
@@ -64,31 +85,34 @@ Follow this step-by-step guide to create new endpoints that maintain architectur
 ### Step-by-Step Implementation
 
 Refer to the detailed guides in this documentation folder:
+
 - [Endpoint Development Guide](./endpoint-development-guide.md)
 - [Template Files](./templates/)
 - [Testing Templates](./testing-templates.md)
 
 ### Quick Reference Checklist
 
-- [ ] Define DTO in `src/infrastructure/dtos/`
-- [ ] Create repository contract in `src/domain/repositories/`
-- [ ] Implement use case in `src/domain/use-cases/`
-- [ ] Create validator in `src/infrastructure/validators/`
-- [ ] Implement datasource in `src/infrastructure/datasources/`
-- [ ] Create controller in `src/presentation/controller/`
-- [ ] Define routes in `src/presentation/[feature]/routes/`
+- [ ] Define DTO in `src/domain/<feature>/dtos/`
+- [ ] Create repository contract in `src/domain/<feature>/repositories/`
+- [ ] Implement use case in `src/domain/<feature>/use-cases/`
+- [ ] Create validator in infrastructure according to the capability (e.g., `src/infrastructure/external/auth/validators/`)
+- [ ] Implement datasource in the corresponding capability (e.g., `src/infrastructure/external/auth/datasources/` or `src/infrastructure/persistence/datasource/`)
+- [ ] Create controller in `src/presentation/controller/` (or feature subfolder)
+- [ ] Define routes in `src/presentation/routes.ts` (or feature subfolder)
 - [ ] Create API documentation in `docs/api/`
-- [ ] Write comprehensive tests
+- [ ] Write comprehensive tests (unit + integration)
 - [ ] Verify in Swagger UI
 
 ## Testing Strategy
 
 ### Test Types
+
 - **Unit Tests**: Individual component testing
 - **Integration Tests**: Component interaction testing
 - **API Tests**: End-to-end endpoint testing
 
 ### Test Commands
+
 ```bash
 pnpm test              # Run all tests
 pnpm test:watch        # Run tests in watch mode
@@ -96,7 +120,9 @@ pnpm test:coverage     # Run tests with coverage report
 ```
 
 ### Test Structure
+
 Each layer should have corresponding tests:
+
 - Domain: Business logic validation
 - Infrastructure: Data access and validation
 - Presentation: HTTP handling and routing
@@ -104,6 +130,7 @@ Each layer should have corresponding tests:
 ## API Documentation
 
 ### Swagger Documentation
+
 API documentation is automatically generated from YAML files in `docs/api/`:
 
 - **Paths**: `docs/api/paths/[feature]/[endpoint].path.yml`
@@ -111,26 +138,45 @@ API documentation is automatically generated from YAML files in `docs/api/`:
 - **Tags**: `docs/api/tags.docs.yml`
 
 ### Documentation Standards
+
 - Use clear, descriptive summaries
 - Include comprehensive examples
 - Document all possible responses
 - Maintain consistent naming conventions
 
+### Auth Payload Notes
+
+- Register
+  - Required: `name`, `lastname`, `email`, `password`
+  - Optional: `phone`
+  - Optional: `role` (`USER`, `MODERATOR`, `ADMIN`), default `USER`
+  - Optional: `metadata` (object with string keys and string values)
+  - Align Swagger with `RegisterDto` and `RegisterValidator`.
+
+- Update User
+  - Supports: `name`, `lastname`, `display_name`, `role`, `email_verified`
+  - `email_verified`: include only when `true`; omit `false`
+  - Do not include password fields here; password changes are handled separately
+  - Align Swagger with `UpdateUserDto` and datasource behavior.
+
 ## Code Standards
 
 ### TypeScript
+
 - Strict type checking enabled
 - Use interfaces for contracts
 - Implement proper error handling
 - Follow naming conventions
 
 ### ESLint & Prettier
+
 - Automatic code formatting
 - Consistent code style
 - Import organization
 - Error prevention
 
 ### Quality Commands
+
 ```bash
 pnpm lint              # Check code quality
 pnpm lint:fix          # Fix linting issues
@@ -143,18 +189,24 @@ pnpm code:check        # Run all quality checks
 ### Common Issues
 
 #### ESLint Configuration
+
 If you encounter module resolution issues:
+
 - Ensure `eslint.config.mjs` is properly configured
 - Check TypeScript path mappings in `tsconfig.json`
 
 #### Swagger Documentation
+
 If documentation doesn't update:
+
 - Verify YAML syntax in documentation files
 - Check file paths in `swagger.config.ts`
 - Restart development server
 
 #### Test Failures
+
 For test-related issues:
+
 - Ensure all dependencies are installed
 - Check test environment configuration
 - Verify mock implementations
@@ -173,6 +225,7 @@ For test-related issues:
 ## Next Steps
 
 For detailed implementation guides, refer to:
+
 - [Endpoint Development Guide](./endpoint-development-guide.md)
 - [Template Files](./templates/)
 - [Testing Guide](./testing-templates.md)

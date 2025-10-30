@@ -1,0 +1,47 @@
+import type { User } from "@supabase/supabase-js";
+import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
+
+interface IDatasourceUserMapper {
+  id: string;
+  email: string;
+  name: string;
+  email_verified: boolean;
+  phone?: string;
+}
+
+export class DatasourceUserMapper implements IDatasourceUserMapper {
+  constructor(
+    public readonly id: string,
+    public readonly email: string,
+    public readonly name: string,
+    public readonly email_verified: boolean,
+    public readonly phone?: string,
+  ) {
+    Object.freeze(this);
+  }
+
+  private static create(props: IDatasourceUserMapper): DatasourceUserMapper {
+    const { id, email, name, email_verified, phone } = props;
+
+    return new DatasourceUserMapper(id, email, name, email_verified, phone);
+  }
+
+  static createFrom = (raw: User): [string?, DatasourceUserMapper?] => {
+    const { id, email, email_confirmed_at, phone } = raw;
+    const name = raw.user_metadata?.display_name;
+
+    if (!id || !email || !name)
+      return [ERROR_MESSAGES.AUTH.LOGIN.INVALID_DATA_RECEIVED];
+
+    return [
+      undefined,
+      DatasourceUserMapper.create({
+        id,
+        email,
+        name,
+        email_verified: !!email_confirmed_at,
+        phone,
+      }),
+    ];
+  };
+}

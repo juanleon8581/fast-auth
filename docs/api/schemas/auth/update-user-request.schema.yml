@@ -1,0 +1,64 @@
+components:
+  schemas:
+    UpdateUserRequest:
+      type: object
+      required:
+        - sessionToken
+        - refreshToken
+      properties:
+        sessionToken:
+          type: string
+          description: Valid JWT session token
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          format: jwt
+
+        refreshToken:
+          type: string
+          description: Valid refresh token
+          example: "refresh_token_example"
+
+        email:
+          type: string
+          format: email
+          description: New email address (optional)
+          example: "user@example.com"
+
+        phone:
+          type: string
+          description: New phone number (optional)
+          example: "+1234567890"
+
+        name:
+          type: string
+          description: User's first name (optional, but if provided, lastname is also required)
+          example: "John"
+          minLength: 2
+          maxLength: 50
+          pattern: "^[a-zA-ZÀ-ÿ\\s]+$"
+
+        lastname:
+          type: string
+          description: User's last name (optional, but if provided, name is also required)
+          example: "Doe"
+          minLength: 2
+          maxLength: 50
+          pattern: "^[a-zA-ZÀ-ÿ\\s]+$"
+
+        display_name:
+          type: string
+          description: User display name (optional)
+          example: "John Doe"
+
+        role:
+          type: string
+          description: User role (optional)
+          enum:
+            - USER
+            - MODERATOR
+            - ADMIN
+          example: USER
+
+        email_verified:
+          type: boolean
+          description: Mark email as verified (optional). Only `true` is applied; `false` is ignored.
+          example: true

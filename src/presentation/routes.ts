@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { AuthRoutes } from "./auth/routes/routes";
+import { UserRoutes } from "./user/routes/user.routes";
 
 export class AppRoutes {
   static get routes(): Router {
@@ -13,6 +14,7 @@ export class AppRoutes {
     // Example feature routes
     // router.use("/users", UserRoutes.routes);
     router.use("/auth", AuthRoutes.routes);
+    router.use("/users", UserRoutes.routes);
 
     return router;
   }

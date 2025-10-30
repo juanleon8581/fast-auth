@@ -39,24 +39,68 @@ The project follows Clean Architecture principles, organizing code in layers wit
 
 ```
 src/
-├── domain/                     # Enterprise Business Rules
-│   ├── entities/               # Domain entities
-│   ├── dtos/                   # Data Transfer Objects
-│   └── interfaces/             # Domain contracts
-├── application/                # Application Business Rules
-│   ├── use-cases/             # Use cases
-│   ├── interfaces/            # Application contracts
-│   └── validators/            # Business validators
+├── domain/                     # Business logic (feature-first)
+│   ├── auth/                   # Authentication domain module
+│   │   ├── dtos/               # DTOs (explicit imports)
+│   │   ├── entities/           # Entities
+│   │   ├── interfaces/         # Contracts
+│   │   ├── repositories/       # Repository contracts
+│   │   └── use-cases/          # Use cases
+│   ├── user/                   # User domain module
+│   ├── crypto/                 # Cross-cutting cryptography contracts & use cases
+│   ├── log/                    # Logging contracts & use cases
+│   └── shared/                 # Shared interfaces, errors, types, validators
 ├── presentation/               # Interface Adapters
-│   ├── controllers/           # HTTP controllers
-│   ├── routes/               # Route definitions
-│   ├── middleware/           # Application middleware
-│   └── validators/           # Input validators
-└── infrastructure/            # Frameworks & Drivers
-    ├── config/               # Configurations
-    ├── database/             # Data access
-    ├── services/             # External services
-    └── utils/                # Utilities
+│   ├── __tests__/              # Presentation tests
+│   ├── auth/                   # Auth HTTP handlers
+│   ├── controller/             # Controllers
+│   ├── middlewares/            # Application middleware
+│   ├── routes.ts               # Route definitions
+│   ├── server.ts               # Express server configuration
+│   └── utils/                  # Presentation utilities
+└── infrastructure/             # Frameworks & Drivers
+    ├── external/
+    │   └── auth/               # External Auth capability (driver + datasource)
+    │       ├── auth.client.ts  # Driver for external provider (Supabase SDK)
+    │       ├── datasources/
+    │       ├── mappers/
+    │       └── validators/
+    ├── persistence/            # ORM/database client + datasources
+    │   ├── database.client.ts  # Driver for database (Prisma client)
+    │   ├── datasource/
+    │   │   └── log.datasource.ts
+    │   └── mappers/
+    ├── services/               # Cross-cutting infra services
+    │   ├── crypto/
+    │   │   ├── adapter/
+    │   │   ├── crypto.service.ts
+    │   │   └── validators/
+    │   └── logger/
+    │       ├── adapter/
+    │       ├── interfaces/
+    │       ├── logger.service.ts
+    │       └── validators/
+    └── helpers/
+        └── validators/
+            └── processError.validator.ts
+```
+
+#### Import Policy (No Barrels)
+
+- Use explicit per-file imports only; barrel files (`index.ts`) are prohibited.
+- Prefer `@/domain/<feature>/<type>/<file>` paths for clarity.
+- Cross-cutting modules (`crypto`, `log`) must not depend on business features.
+- Shared contracts reside in `src/domain/shared` and are safe to import across features.
+- Infrastructure depends on domain contracts only; avoid direct cross-imports between `external/`, `persistence/`, and `services` (they interact via use cases and domain contracts).
+- Note: Barrels are also prohibited in `src/domain/shared/validators`; import per-file from `@/domain/shared/validators/<file>`.
+
+Example:
+
+```ts
+import { LogoutDto } from "@/domain/auth/dtos/logout.dto";
+import { UpdateUser } from "@/domain/user/use-cases/update-user";
+import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
+import { STRONG_PASSWORD_PATTERN } from "@/domain/shared/validators/regex.validators";
 ```
 
 ## Implemented Design Patterns
@@ -273,6 +317,26 @@ export class SendWelcomeEmailHandler
       event.eventData.email,
       event.eventData.userId,
     );
+  }
+}
+
+export class SendOrderConfirmationHandler
+  implements EventHandler<OrderCreatedEvent>
+{
+  constructor(
+    private emailService: EmailService,
+    private userRepository: UserRepository,
+  ) {}
+
+  async handle(event: OrderCreatedEvent): Promise<void> {
+    const user = await this.userRepository.findById(event.customerId);
+    if (user) {
+      await this.emailService.sendOrderConfirmation(
+        user.email,
+        event.orderId,
+        event.amount,
+      );
+    }
   }
 }
 ```

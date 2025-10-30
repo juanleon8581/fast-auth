@@ -7,6 +7,7 @@ jest.mock("express", () => ({
   Router: jest.fn(() => ({
     get: jest.fn(),
     use: jest.fn(),
+    post: jest.fn(),
   })),
 }));
 
@@ -22,6 +23,7 @@ describe("AppRoutes", () => {
     mockRouter = {
       get: jest.fn(),
       use: jest.fn(),
+      post: jest.fn(),
     };
 
     mockAuthRoutes = {
@@ -29,6 +31,7 @@ describe("AppRoutes", () => {
     };
 
     (Router as jest.Mock).mockReturnValue(mockRouter);
+
     (AuthRoutes as any).routes = mockAuthRoutes.routes;
   });
 
@@ -36,7 +39,7 @@ describe("AppRoutes", () => {
     it("should create and return an Express Router", () => {
       const routes = AppRoutes.routes;
 
-      expect(Router).toHaveBeenCalledTimes(1);
+      expect(Router).toHaveBeenCalledTimes(2);
       expect(routes).toBe(mockRouter);
     });
 
@@ -60,7 +63,7 @@ describe("AppRoutes", () => {
 
       // Verify both methods were called
       expect(mockRouter.get).toHaveBeenCalledTimes(1);
-      expect(mockRouter.use).toHaveBeenCalledTimes(1);
+      expect(mockRouter.use).toHaveBeenCalledTimes(2);
 
       // Verify specific route configurations
       expect(mockRouter.get).toHaveBeenCalledWith("/", expect.any(Function));
@@ -115,11 +118,20 @@ describe("AppRoutes", () => {
       // Verify that the router is properly configured
       expect(routes).not.toBeUndefined();
       expect(mockRouter.get).toHaveBeenCalledTimes(1);
-      expect(mockRouter.use).toHaveBeenCalledTimes(1);
+      expect(mockRouter.use).toHaveBeenCalledTimes(2);
 
       // Verify route paths
       expect(mockRouter.get).toHaveBeenCalledWith("/", expect.any(Function));
-      expect(mockRouter.use).toHaveBeenCalledWith("/auth", expect.any(Object));
+      expect(mockRouter.use).toHaveBeenNthCalledWith(
+        1,
+        "/auth",
+        expect.any(Object),
+      );
+      expect(mockRouter.use).toHaveBeenNthCalledWith(
+        2,
+        "/users",
+        expect.any(Object),
+      );
     });
   });
 

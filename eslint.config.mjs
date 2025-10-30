@@ -50,6 +50,12 @@ export default [
   {
     files: ["**/*.test.ts", "**/*.spec.ts"],
     languageOptions: {
+      parser: typescriptParser,
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+        project: "./tsconfig.json",
+      },
       globals: {
         jest: "readonly",
         describe: "readonly",
@@ -60,6 +66,9 @@ export default [
         beforeAll: "readonly",
         afterAll: "readonly",
       },
+    },
+    plugins: {
+      "@typescript-eslint": typescript,
     },
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
