@@ -5,11 +5,14 @@ interface IUpdateUserDto {
   sessionToken: string;
   refreshToken: string;
   email?: string;
-  newPassword?: string;
-  newPasswordConfirmation?: string;
-  phone?: string;
   name?: string;
   lastname?: string;
+  display_name?: string;
+  role?: string;
+  email_verified?: boolean;
+  phone?: string;
+  newPassword?: string;
+  newPasswordConfirmation?: string;
 }
 
 export class UpdateUserDto {
@@ -17,11 +20,14 @@ export class UpdateUserDto {
     public readonly sessionToken: string,
     public readonly refreshToken: string,
     public readonly email?: string,
-    public readonly newPassword?: string,
-    public readonly newPasswordConfirmation?: string,
-    public readonly phone?: string,
     public readonly name?: string,
     public readonly lastname?: string,
+    public readonly display_name?: string,
+    public readonly role?: string,
+    public readonly email_verified?: boolean,
+    public readonly phone?: string,
+    public readonly newPassword?: string,
+    public readonly newPasswordConfirmation?: string,
   ) {
     Object.freeze(this);
   }
@@ -31,22 +37,28 @@ export class UpdateUserDto {
       sessionToken,
       refreshToken,
       email,
-      newPassword,
-      newPasswordConfirmation,
-      phone,
       name,
       lastname,
+      display_name,
+      role,
+      email_verified,
+      phone,
+      newPassword,
+      newPasswordConfirmation,
     } = props;
 
     return new UpdateUserDto(
       sessionToken,
       refreshToken,
       email,
-      newPassword,
-      newPasswordConfirmation,
-      phone,
       name,
       lastname,
+      display_name,
+      role,
+      email_verified,
+      phone,
+      newPassword,
+      newPasswordConfirmation,
     );
   }
 
@@ -55,11 +67,14 @@ export class UpdateUserDto {
       sessionToken,
       refreshToken,
       email,
-      newPassword,
-      newPasswordConfirmation,
-      phone,
       name,
       lastname,
+      display_name,
+      role,
+      email_verified,
+      phone,
+      newPassword,
+      newPasswordConfirmation,
     } = json;
 
     if (!sessionToken || !refreshToken)
@@ -71,11 +86,14 @@ export class UpdateUserDto {
         sessionToken,
         refreshToken,
         email,
-        newPassword,
-        newPasswordConfirmation,
-        phone,
         name,
         lastname,
+        display_name,
+        role,
+        email_verified,
+        phone,
+        newPassword,
+        newPasswordConfirmation,
       }),
     ];
   }
