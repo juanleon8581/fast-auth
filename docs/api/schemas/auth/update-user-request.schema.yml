@@ -44,14 +44,21 @@ components:
           maxLength: 50
           pattern: "^[a-zA-ZÀ-ÿ\\s]+$"
 
-        newPassword:
+        display_name:
           type: string
-          description: New password (requires newPasswordConfirmation)
-          example: "NewPassword123!"
-          minLength: 8
+          description: User display name (optional)
+          example: "John Doe"
 
-        newPasswordConfirmation:
+        role:
           type: string
-          description: Password confirmation (required when newPassword is provided)
-          example: "NewPassword123!"
-          minLength: 8
+          description: User role (optional)
+          enum:
+            - USER
+            - MODERATOR
+            - ADMIN
+          example: USER
+
+        email_verified:
+          type: boolean
+          description: Mark email as verified (optional). Only `true` is applied; `false` is ignored.
+          example: true
