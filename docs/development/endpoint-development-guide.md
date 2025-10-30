@@ -512,4 +512,19 @@ components:
 - Document all possible responses
 - Use consistent naming conventions
 
+### Auth Schema Conventions
+
+- Register
+  - Required: `name`, `lastname`, `email`, `password`.
+  - Optional: `phone`.
+  - Optional: `role` enum with values `USER`, `MODERATOR`, `ADMIN` (default `USER`).
+  - Optional: `metadata` as a flat object of `string: string` pairs.
+  - Align request schema with `RegisterDto` and `register.validator.ts`.
+
+- Update User
+  - Accepts: `name`, `lastname`, `display_name`, `role`, `email_verified`.
+  - `email_verified`: include only when `true`; omit `false` values.
+  - Do not include password change fields in this endpoint; use a dedicated password update flow.
+  - Ensure the request schema reflects datasource behavior for included/omitted fields.
+
 This template ensures consistency across all endpoints while maintaining the Clean Architecture principles of the project.
