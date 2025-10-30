@@ -4,6 +4,7 @@ import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 import { ValidationError } from "@/domain/errors/validation-error";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
+import { UserRole } from "@prisma/client";
 
 // We will spy on the static createFrom method instead of mocking the class
 const { VALIDATION } = ERROR_MESSAGES.AUTH.UPDATE_USER;
@@ -93,6 +94,74 @@ describe("UpdateUserValidator", () => {
           refreshToken: "refresh-token-456",
           email: "newemail@example.com",
         };
+
+        const dto = UpdateUserValidator.validate(validData);
+
+        expect(dto).toBeDefined();
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+      });
+
+      it("should validate data with only display_name update", () => {
+        const validData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          display_name: "John D.",
+        };
+
+        const dto = UpdateUserValidator.validate(validData);
+
+        expect(dto).toBeDefined();
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+      });
+
+      it("should validate data with empty display_name", () => {
+        const validData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          display_name: "",
+        };
+
+        const dto = UpdateUserValidator.validate(validData);
+
+        expect(dto).toBeDefined();
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+      });
+
+      it("should validate data with only role update", () => {
+        const validData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          role: UserRole.USER,
+        };
+
+        const dto = UpdateUserValidator.validate(validData);
+
+        expect(dto).toBeDefined();
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+      });
+
+      it("should validate data with empty role", () => {
+        const validData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          role: "",
+        };
+
+        const dto = UpdateUserValidator.validate(validData);
+
+        expect(dto).toBeDefined();
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+      });
+
+      it("should validate data with only metadata update", () => {
+        const validData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          metadata: {
+            theme: "dark",
+            newsletter: "subscribed",
+          },
+        } as const;
 
         const dto = UpdateUserValidator.validate(validData);
 
@@ -293,6 +362,34 @@ describe("UpdateUserValidator", () => {
         );
         expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
           VALIDATION.NEW_PASSWORD_CONFIRMATION.MUST_MATCH,
+        );
+      });
+    });
+
+    describe("validation errors - role and metadata", () => {
+      it("should throw ValidationError when role format is invalid", () => {
+        const invalidData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          role: "INVALID_ROLE",
+        };
+
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          ValidationError,
+        );
+      });
+
+      it("should throw ValidationError when metadata has non-string values", () => {
+        const invalidData = {
+          sessionToken: "session-token-123",
+          refreshToken: "refresh-token-456",
+          metadata: {
+            emailVerified: true as unknown as string,
+          },
+        };
+
+        expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
+          ValidationError,
         );
       });
     });
