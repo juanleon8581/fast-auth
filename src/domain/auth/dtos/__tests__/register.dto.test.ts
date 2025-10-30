@@ -1,78 +1,79 @@
 import { RegisterDto } from "../register.dto";
 import { clearAllMocks } from "@/tests/test-utils";
+import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 
 describe("RegisterDto", () => {
-  afterEach(() => {
+  let validData: TRawJson;
+  beforeEach(() => {
+    validData = {
+      name: "John",
+      lastname: "Doe",
+      email: "john.doe@example.com",
+      password: "securePassword123",
+      role: "USER",
+    };
     clearAllMocks();
   });
 
   describe("createFrom", () => {
     it("should create RegisterDto successfully with valid data", () => {
-      const validData = {
-        name: "John",
-        lastname: "Doe",
-        email: "john.doe@example.com",
-        password: "securePassword123",
-      };
-
       const [error, dto] = RegisterDto.createFrom(validData);
 
       expect(error).toBeUndefined();
       expect(dto).toBeInstanceOf(RegisterDto);
-      expect(dto?.name).toBe("John");
-      expect(dto?.lastname).toBe("Doe");
-      expect(dto?.email).toBe("john.doe@example.com");
-      expect(dto?.password).toBe("securePassword123");
+      expect(dto!.name).toBe("John");
+      expect(dto!.lastname).toBe("Doe");
+      expect(dto!.email).toBe("john.doe@example.com");
+      expect(dto!.password).toBe("securePassword123");
+      expect(dto!.role).toBe("USER");
     });
 
     it("should return error when name is missing", () => {
-      const invalidData = {
-        lastname: "Doe",
-        email: "john.doe@example.com",
-        password: "securePassword123",
-      };
+      const { name, ...invalidData } = validData;
 
       const [error, dto] = RegisterDto.createFrom(invalidData);
 
+      expect(name).toBeDefined();
       expect(error).toBeDefined();
       expect(dto).toBeUndefined();
     });
 
     it("should return error when lastname is missing", () => {
-      const invalidData = {
-        name: "John",
-        email: "john.doe@example.com",
-        password: "securePassword123",
-      };
+      const { lastname, ...invalidData } = validData;
 
       const [error, dto] = RegisterDto.createFrom(invalidData);
 
+      expect(lastname).toBeDefined();
       expect(error).toBeDefined();
       expect(dto).toBeUndefined();
     });
 
     it("should return error when email is missing", () => {
-      const invalidData = {
-        name: "John",
-        lastname: "Doe",
-        password: "securePassword123",
-      };
+      const { email, ...invalidData } = validData;
 
       const [error, dto] = RegisterDto.createFrom(invalidData);
 
+      expect(email).toBeDefined();
       expect(error).toBeDefined();
       expect(dto).toBeUndefined();
     });
 
     it("should return error when password is missing", () => {
-      const invalidData = {
-        name: "John",
-        lastname: "Doe",
-        email: "john.doe@example.com",
-      };
+      const { password, ...invalidData } = validData;
 
       const [error, dto] = RegisterDto.createFrom(invalidData);
 
+      expect(password).toBeDefined();
+      expect(error).toBeDefined();
+      expect(dto).toBeUndefined();
+    });
+
+    it("should return error when role is missing", () => {
+      const { role, ...invalidData } = validData;
+
+      const [error, dto] = RegisterDto.createFrom(invalidData);
+
+      expect(role).toBeDefined();
       expect(error).toBeDefined();
       expect(dto).toBeUndefined();
     });
@@ -92,6 +93,7 @@ describe("RegisterDto", () => {
         lastname: "",
         email: "",
         password: "",
+        role: "",
       };
 
       const [error, dto] = RegisterDto.createFrom(invalidData);
@@ -106,6 +108,7 @@ describe("RegisterDto", () => {
         lastname: null,
         email: null,
         password: null,
+        role: null,
       };
 
       const [error, dto] = RegisterDto.createFrom(invalidData);
@@ -120,6 +123,7 @@ describe("RegisterDto", () => {
         lastname: undefined,
         email: undefined,
         password: undefined,
+        role: undefined,
       };
 
       const [error, dto] = RegisterDto.createFrom(invalidData);
@@ -130,10 +134,7 @@ describe("RegisterDto", () => {
 
     it("should handle extra properties in input data", () => {
       const dataWithExtraProps = {
-        name: "John",
-        lastname: "Doe",
-        email: "john.doe@example.com",
-        password: "securePassword123",
+        ...validData,
         extraField: "should be ignored",
         anotherField: 123,
       };
@@ -142,32 +143,54 @@ describe("RegisterDto", () => {
 
       expect(error).toBeUndefined();
       expect(dto).toBeInstanceOf(RegisterDto);
-      expect(dto?.name).toBe("John");
-      expect(dto?.lastname).toBe("Doe");
-      expect(dto?.email).toBe("john.doe@example.com");
-      expect(dto?.password).toBe("securePassword123");
+      expect(dto!.name).toBe("John");
+      expect(dto!.lastname).toBe("Doe");
+      expect(dto!.email).toBe("john.doe@example.com");
+      expect(dto!.password).toBe("securePassword123");
+      expect(dto!.role).toBe("USER");
+      expect((dto as TRawJson).extraField).toBeUndefined();
+      expect((dto as TRawJson).anotherField).toBeUndefined();
     });
-  });
 
-  describe("constructor", () => {
-    it("should create RegisterDto instance with readonly properties", () => {
-      const dto = new RegisterDto(
-        "John",
-        "Doe",
-        "john@example.com",
-        "password123",
-      );
+    it("should create a dto with phone number", () => {
+      const data = {
+        ...validData,
+        phone: "+1234567890",
+      };
 
-      expect(dto.name).toBe("John");
-      expect(dto.lastname).toBe("Doe");
-      expect(dto.email).toBe("john@example.com");
-      expect(dto.password).toBe("password123");
+      const [error, dto] = RegisterDto.createFrom(data);
 
-      // Properties are readonly at TypeScript level but not frozen at runtime
-      // @ts-ignore
-      dto.name = "Jane";
-      // @ts-ignore
-      expect(dto.name).toBe("Jane"); // This will pass because object is not frozen
+      expect(error).toBeUndefined();
+      expect(dto).toBeDefined();
+      expect(dto).toBeInstanceOf(RegisterDto);
+      expect(dto!.name).toBe("John");
+      expect(dto!.lastname).toBe("Doe");
+      expect(dto!.email).toBe("john.doe@example.com");
+      expect(dto!.password).toBe("securePassword123");
+      expect(dto!.role).toBe("USER");
+      expect(dto!.phone).toBe("+1234567890");
+    });
+
+    it("should create a dto with metadata", () => {
+      const data = {
+        ...validData,
+        metadata: {
+          display_name: "John Doe",
+          email_verified: true,
+        },
+      };
+
+      const [error, dto] = RegisterDto.createFrom(data);
+
+      expect(error).toBeUndefined();
+      expect(dto).toBeDefined();
+      expect(dto).toBeInstanceOf(RegisterDto);
+      expect(dto!.name).toBe("John");
+      expect(dto!.lastname).toBe("Doe");
+      expect(dto!.email).toBe("john.doe@example.com");
+      expect(dto!.password).toBe("securePassword123");
+      expect(dto!.metadata?.display_name).toBe("John Doe");
+      expect(dto!.metadata?.email_verified).toBe(true);
     });
   });
 });

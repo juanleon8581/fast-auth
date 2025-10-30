@@ -104,17 +104,49 @@ describe("AuthDatasource - Register Functionality", () => {
       });
 
       it("should call Supabase signUp with correct parameters", async () => {
+        // Ensure metadata is present to verify spread behavior as well
+        (mockRegisterDto as any).metadata = {
+          email_verified: true,
+        };
+
         await authDatasource.register(mockRegisterDto);
 
-        expect(mockSupabaseClient.auth.signUp).toHaveBeenCalledWith({
-          email: mockRegisterDto.email,
-          password: mockRegisterDto.password,
-          options: {
-            data: {
-              display_name: `${mockRegisterDto.name} ${mockRegisterDto.lastname}`,
-            },
-          },
-        });
+        expect(mockSupabaseClient.auth.signUp).toHaveBeenCalledWith(
+          expect.objectContaining({
+            email: mockRegisterDto.email,
+            password: mockRegisterDto.password,
+            options: expect.objectContaining({
+              data: expect.objectContaining({
+                display_name: `${mockRegisterDto.name} ${mockRegisterDto.lastname}`,
+                lastname: mockRegisterDto.lastname,
+                name: mockRegisterDto.name,
+                role: mockRegisterDto.role,
+                // Spread from metadata
+                email_verified: true,
+              }),
+            }),
+          }),
+        );
+      });
+
+      it("should include metadata fields spread inside options.data when provided", async () => {
+        (mockRegisterDto as any).metadata = {
+          email_verified: true,
+          preferred_language: "en",
+        };
+
+        await authDatasource.register(mockRegisterDto);
+
+        const call = mockSupabaseClient.auth.signUp.mock.calls[0][0];
+        expect(call.options.data.display_name).toBe(
+          `${mockRegisterDto.name} ${mockRegisterDto.lastname}`,
+        );
+        expect(call.options.data.name).toBe(mockRegisterDto.name);
+        expect(call.options.data.lastname).toBe(mockRegisterDto.lastname);
+        expect(call.options.data.role).toBe(mockRegisterDto.role);
+        // Metadata spread assertions
+        expect(call.options.data.email_verified).toBe(true);
+        expect(call.options.data.preferred_language).toBe("en");
       });
 
       it("should create AuthClient and call create method", async () => {

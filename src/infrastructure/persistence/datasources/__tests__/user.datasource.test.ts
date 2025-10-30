@@ -25,7 +25,10 @@ describe("UserDatasource.upsertFromAuth", () => {
     const [, dto] = SyncUserFromAuthDto.createFrom({
       id: "user-1",
       email: "user1@example.com",
-      name: "John Doe",
+      name: "John",
+      lastname: "Doe",
+      display_name: "John Doe",
+      role: "USER",
       email_verified: true,
       phone: "+1234567890",
     });
@@ -47,22 +50,26 @@ describe("UserDatasource.upsertFromAuth", () => {
       expect.objectContaining({
         where: { id: "user-1" },
         update: expect.objectContaining({
+          name: "John",
+          lastname: "Doe",
           email: "user1@example.com",
           role: "USER",
-          profile: expect.objectContaining({
-            name: "John Doe",
+          phone: "+1234567890",
+          status: "ACTIVE",
+          metadata: expect.objectContaining({
             emailVerified: true,
-            phone: "+1234567890",
           }),
         }),
         create: expect.objectContaining({
           id: "user-1",
+          name: "John",
+          lastname: "Doe",
           email: "user1@example.com",
           role: "USER",
-          profile: expect.objectContaining({
-            name: "John Doe",
+          phone: "+1234567890",
+          status: "ACTIVE",
+          metadata: expect.objectContaining({
             emailVerified: true,
-            phone: "+1234567890",
           }),
         }),
       }),
@@ -77,6 +84,10 @@ describe("UserDatasource.upsertFromAuth", () => {
     const [, dto] = SyncUserFromAuthDto.createFrom({
       id: "user-2",
       email: "user2@example.com",
+      name: "Jane",
+      lastname: "Doe",
+      display_name: "Jane Doe",
+      role: "USER",
     });
 
     const datasource = new UserDatasource(

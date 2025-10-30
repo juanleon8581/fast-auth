@@ -22,6 +22,10 @@ describe("UserRepository (abstract contract)", () => {
     const [err, dto] = SyncUserFromAuthDto.createFrom({
       id: "user-1",
       email: "user@example.com",
+      name: "John",
+      lastname: "Doe",
+      display_name: "John Doe",
+      role: "USER",
     });
 
     expect(err).toBeUndefined();

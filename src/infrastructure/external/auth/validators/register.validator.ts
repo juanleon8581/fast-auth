@@ -5,11 +5,13 @@ import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 import {
   EMAIL_BASIC_REGEX,
   PERSON_NAME_PATTERN,
+  PHONE_INTERNATIONAL_REGEX,
   STRONG_PASSWORD_PATTERN,
 } from "@/domain/shared/validators/regex.validators";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 import { processValidationError } from "../../../helpers/validators/processError.validator";
+import { UserRole } from "@prisma/client";
 
 const { VALIDATION } = ERROR_MESSAGES.AUTH.REGISTER;
 
@@ -37,6 +39,19 @@ const registerSchema = z.object({
     .min(8, VALIDATION.PASSWORD.MIN_LENGTH)
     .max(128, VALIDATION.PASSWORD.MAX_LENGTH)
     .regex(STRONG_PASSWORD_PATTERN, VALIDATION.PASSWORD.INVALID_FORMAT),
+
+  phone: z
+    .string()
+    .min(10, VALIDATION.PHONE.MIN_LENGTH)
+    .max(15, VALIDATION.PHONE.MAX_LENGTH)
+    .regex(PHONE_INTERNATIONAL_REGEX, VALIDATION.PHONE.INVALID_FORMAT)
+    .optional(),
+  role: z
+    .enum(UserRole, { message: VALIDATION.ROLE.INVALID_FORMAT })
+    .optional()
+    .default(UserRole.USER),
+
+  metadata: z.record(z.string(), z.string()).optional().default({}),
 });
 
 export class RegisterValidator {

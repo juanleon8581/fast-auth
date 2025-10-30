@@ -11,3 +11,5 @@ export interface IAuthUserEntity {
   accessToken: string;
   refreshToken: string;
 }
+
+export type TUserRole = "ADMIN" | "USER" | "MODERATOR";

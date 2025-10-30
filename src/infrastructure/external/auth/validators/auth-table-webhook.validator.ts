@@ -10,8 +10,11 @@ const insertSchema = z.object({
   id: z.uuid(),
   email: z.email(),
   name: z.string(),
+  lastname: z.string(),
+  role: z.string(),
   email_verified: z.boolean(),
   phone: z.string().optional(),
+  display_name: z.string(),
 });
 
 export class AuthTableWebhookValidator {
@@ -21,6 +24,7 @@ export class AuthTableWebhookValidator {
 
       if (
         !record ||
+        !record.id ||
         !record.email ||
         !record.raw_user_meta_data ||
         !record.id
@@ -30,14 +34,26 @@ export class AuthTableWebhookValidator {
         );
       }
 
-      const { raw_user_meta_data: rawUserMetadata } = record;
+      const { id, email, phone, raw_user_meta_data: rawUserMetadata } = record;
+
+      const { name, lastname, role, email_verified, display_name } =
+        rawUserMetadata;
+
+      if (!name || !lastname || !role || !email_verified || !display_name) {
+        throw new ValidationError(
+          ERROR_MESSAGES.DATA_VALIDATION.INVALID_WEBHOOK_DATA,
+        );
+      }
 
       const objForValidation = {
-        id: record.id,
-        email: record.email,
-        name: rawUserMetadata.display_name,
-        email_verified: rawUserMetadata.email_verified,
-        phone: record.phone ?? undefined,
+        id,
+        email,
+        phone: phone ?? undefined,
+        name,
+        lastname,
+        role,
+        email_verified,
+        display_name,
       };
 
       const validatedData = insertSchema.parse(objForValidation);

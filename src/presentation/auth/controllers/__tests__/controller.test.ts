@@ -145,12 +145,13 @@ describe("AuthController", () => {
   describe("register method", () => {
     describe("Successful registration", () => {
       beforeEach(() => {
-        const mockDto = new RegisterDto(
-          "John",
-          "Doe",
-          "john.doe@example.com",
-          "SecurePass123!",
-        );
+        const mockDto = RegisterDto.createFrom({
+          name: "John",
+          lastname: "Doe",
+          email: "john.doe@example.com",
+          password: "SecurePass123!",
+          role: "USER",
+        });
         (RegisterValidator.validate as jest.Mock).mockReturnValue(mockDto);
       });
 
@@ -197,12 +198,13 @@ describe("AuthController", () => {
       });
 
       it("should execute use case with validated DTO", async () => {
-        const mockDto = new RegisterDto(
-          "John",
-          "Doe",
-          "john.doe@example.com",
-          "SecurePass123!",
-        );
+        const mockDto = RegisterDto.createFrom({
+          name: "John",
+          lastname: "Doe",
+          email: "john.doe@example.com",
+          password: "SecurePass123!",
+          role: "USER",
+        });
         const mockUser = new UserEntity(
           "1",
           "john.doe@example.com",
@@ -225,12 +227,13 @@ describe("AuthController", () => {
       });
 
       it("should return user data on successful registration", async () => {
-        const mockDto = new RegisterDto(
-          "John",
-          "Doe",
-          "john.doe@example.com",
-          "SecurePass123!",
-        );
+        const mockDto = RegisterDto.createFrom({
+          name: "John",
+          lastname: "Doe",
+          email: "john.doe@example.com",
+          password: "SecurePass123!",
+          role: "USER",
+        });
         const mockUser = new UserEntity(
           "1",
           "john.doe@example.com",
@@ -302,12 +305,13 @@ describe("AuthController", () => {
 
     describe("Use case execution errors", () => {
       beforeEach(() => {
-        const mockDto = new RegisterDto(
-          "John",
-          "Doe",
-          "john.doe@example.com",
-          "SecurePass123!",
-        );
+        const mockDto = RegisterDto.createFrom({
+          name: "John",
+          lastname: "Doe",
+          email: "john.doe@example.com",
+          password: "SecurePass123!",
+          role: "USER",
+        });
         (RegisterValidator.validate as jest.Mock).mockReturnValue(mockDto);
       });
 
@@ -642,12 +646,13 @@ describe("AuthController", () => {
   describe("Method binding", () => {
     it("should maintain correct context when method is extracted", () => {
       const { register } = authController;
-      const mockDto = new RegisterDto(
-        "John",
-        "Doe",
-        "john.doe@example.com",
-        "SecurePass123!",
-      );
+      const mockDto = RegisterDto.createFrom({
+        name: "John",
+        lastname: "Doe",
+        email: "john.doe@example.com",
+        password: "SecurePass123!",
+        role: "USER",
+      });
       const mockUser = new UserEntity(
         "1",
         "john.doe@example.com",
@@ -669,12 +674,13 @@ describe("AuthController", () => {
 
   describe("Integration", () => {
     it("should properly integrate all dependencies", async () => {
-      const mockDto = new RegisterDto(
-        "John",
-        "Doe",
-        "john.doe@example.com",
-        "SecurePass123!",
-      );
+      const mockDto = RegisterDto.createFrom({
+        name: "John",
+        lastname: "Doe",
+        email: "john.doe@example.com",
+        password: "SecurePass123!",
+        role: "USER",
+      });
       const mockUser = new UserEntity(
         "1",
         "john.doe@example.com",

@@ -14,22 +14,26 @@ export class UserDatasource implements UserRepository {
     await dbClient.user.upsert({
       where: { id: dto.id },
       update: {
+        name: dto.name,
+        lastname: dto.lastname,
         email: dto.email,
         role: "USER",
-        profile: {
-          name: dto.name,
+        phone: dto.phone,
+        status: "ACTIVE",
+        metadata: {
           emailVerified: dto.email_verified,
-          phone: dto.phone,
         },
       },
       create: {
         id: dto.id,
+        name: dto.name,
+        lastname: dto.lastname,
         email: dto.email,
         role: "USER",
-        profile: {
-          name: dto.name,
+        phone: dto.phone,
+        status: "ACTIVE",
+        metadata: {
           emailVerified: dto.email_verified,
-          phone: dto.phone,
         },
       },
     });

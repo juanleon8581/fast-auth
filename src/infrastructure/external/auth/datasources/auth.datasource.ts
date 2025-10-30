@@ -78,6 +78,10 @@ export class AuthDatasource implements AuthRepository {
       options: {
         data: {
           display_name: `${dto.name} ${dto.lastname}`,
+          name: dto.name,
+          lastname: dto.lastname,
+          role: dto.role,
+          ...dto.metadata,
         },
       },
     });

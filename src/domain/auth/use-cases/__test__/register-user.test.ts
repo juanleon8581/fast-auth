@@ -27,14 +27,16 @@ describe("RegisterUser", () => {
 
   describe("execute", () => {
     it("should successfully register user with valid data", async () => {
-      const registerDto = new RegisterDto(
-        "John",
-        "Doe",
-        "john@example.com",
-        "password123",
-      );
+      const [error, registerDto] = RegisterDto.createFrom({
+        name: "John",
+        lastname: "Doe",
+        email: "john@example.com",
+        password: "password123",
+        role: "USER",
+      });
+      expect(error).toBeUndefined();
 
-      const result = await registerUser.execute(registerDto);
+      const result = await registerUser.execute(registerDto!);
 
       expect(result).toBeInstanceOf(AuthUserEntity);
       if (result instanceof AuthUserEntity) {
@@ -47,53 +49,60 @@ describe("RegisterUser", () => {
     });
 
     it("should call repository register method with correct parameters", async () => {
-      const registerDto = new RegisterDto(
-        "Jane",
-        "Smith",
-        "jane@example.com",
-        "password456",
-      );
+      const [error, registerDto] = RegisterDto.createFrom({
+        name: "Jane",
+        lastname: "Smith",
+        email: "jane@example.com",
+        password: "password456",
+        role: "USER",
+      });
+      expect(error).toBeUndefined();
 
       const repositorySpy = jest.spyOn(mockRepository, "register");
 
-      await registerUser.execute(registerDto);
+      await registerUser.execute(registerDto!);
 
       expect(repositorySpy).toHaveBeenCalledTimes(1);
       expect(repositorySpy).toHaveBeenCalledWith(registerDto);
     });
 
     it("should propagate repository errors", async () => {
-      const registerDto = new RegisterDto(
-        "John",
-        "Doe",
-        "john@example.com",
-        "password123",
-      );
+      const [error, registerDto] = RegisterDto.createFrom({
+        name: "John",
+        lastname: "Doe",
+        email: "john@example.com",
+        password: "password123",
+        role: "USER",
+      });
+      expect(error).toBeUndefined();
 
       mockRepository.setShouldFail(true, "Repository registration failed");
 
-      await expect(registerUser.execute(registerDto)).rejects.toThrow(
+      await expect(registerUser.execute(registerDto!)).rejects.toThrow(
         "Repository registration failed",
       );
     });
 
     it("should handle different RegisterDto instances", async () => {
-      const registerDto1 = new RegisterDto(
-        "Alice",
-        "Johnson",
-        "alice@example.com",
-        "password789",
-      );
+      const [error1, registerDto1] = RegisterDto.createFrom({
+        name: "Alice",
+        lastname: "Johnson",
+        email: "alice@example.com",
+        password: "password789",
+        role: "USER",
+      });
+      const [error2, registerDto2] = RegisterDto.createFrom({
+        name: "Bob",
+        lastname: "Wilson",
+        email: "bob@example.com",
+        password: "password000",
+        role: "USER",
+      });
+      expect(error1).toBeUndefined();
+      expect(error2).toBeUndefined();
 
-      const registerDto2 = new RegisterDto(
-        "Bob",
-        "Wilson",
-        "bob@example.com",
-        "password000",
-      );
-
-      const result1 = await registerUser.execute(registerDto1);
-      const result2 = await registerUser.execute(registerDto2);
+      const result1 = await registerUser.execute(registerDto1!);
+      const result2 = await registerUser.execute(registerDto2!);
 
       if (
         result1 instanceof AuthUserEntity &&
@@ -107,14 +116,16 @@ describe("RegisterUser", () => {
     });
 
     it("should return AuthUserEntity with correct structure", async () => {
-      const registerDto = new RegisterDto(
-        "Test",
-        "User",
-        "test@example.com",
-        "testpassword",
-      );
+      const [error, registerDto] = RegisterDto.createFrom({
+        name: "Test",
+        lastname: "User",
+        email: "test@example.com",
+        password: "testpassword",
+        role: "USER",
+      });
+      expect(error).toBeUndefined();
 
-      const result = await registerUser.execute(registerDto);
+      const result = await registerUser.execute(registerDto!);
 
       if (result instanceof AuthUserEntity) {
         expect(result).toHaveProperty("user");
@@ -147,14 +158,16 @@ describe("RegisterUser", () => {
       const customAuthUser = AuthUserEntity.createFrom(customAuthData);
       mockRepository.setMockResult(customAuthUser);
 
-      const registerDto = new RegisterDto(
-        "Any",
-        "Name",
-        "any@example.com",
-        "anypassword",
-      );
+      const [error, registerDto] = RegisterDto.createFrom({
+        name: "Any",
+        lastname: "Name",
+        email: "any@example.com",
+        password: "anypassword",
+        role: "USER",
+      });
+      expect(error).toBeUndefined();
 
-      const result = await registerUser.execute(registerDto);
+      const result = await registerUser.execute(registerDto!);
 
       if (result instanceof AuthUserEntity) {
         expect(result.user.id).toBe("custom-123");

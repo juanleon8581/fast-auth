@@ -42,6 +42,14 @@ export const ERROR_MESSAGES = {
           INVALID_FORMAT:
             "Password must contain at least: 1 lowercase, 1 uppercase, 1 number and 1 special character",
         },
+        PHONE: {
+          MIN_LENGTH: "Phone number must be at least 10 characters long",
+          MAX_LENGTH: "Phone number cannot exceed 15 characters",
+          INVALID_FORMAT: "Phone number must be in a valid format",
+        },
+        ROLE: {
+          INVALID_FORMAT: "Role must be a valid role",
+        },
       },
     },
     LOGIN: {
