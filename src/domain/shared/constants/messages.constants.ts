@@ -71,8 +71,8 @@ export const ERROR_MESSAGES = {
     LOGOUT: {
       USER_NOT_LOGGED_OUT: "User not logged out",
       VALIDATION: {
-        ACCESS_TOKEN: {
-          REQUIRED: "Access token is required",
+        SESSION_TOKEN: {
+          REQUIRED: "Session token is required",
         },
         REFRESH_TOKEN: {
           REQUIRED: "Refresh token is required",

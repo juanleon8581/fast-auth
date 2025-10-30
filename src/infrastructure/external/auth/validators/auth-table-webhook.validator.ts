@@ -5,15 +5,16 @@ import { SyncUserFromAuthDto } from "@/domain/user/dtos/sync-user-from-auth.dto"
 
 import { processValidationError } from "@/infrastructure/helpers/validators/processError.validator";
 import { z } from "zod";
+import { userSchemas } from "./schemas/auth.schemas";
 
 const insertSchema = z.object({
   id: z.uuid(),
-  email: z.email(),
-  name: z.string(),
-  lastname: z.string(),
-  role: z.string(),
+  email: userSchemas.email,
+  name: userSchemas.name,
+  lastname: userSchemas.lastname,
+  role: userSchemas.role,
   email_verified: z.boolean(),
-  phone: z.string().optional(),
+  phone: userSchemas.phone.optional(),
   display_name: z.string(),
 });
 

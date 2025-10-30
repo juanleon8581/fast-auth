@@ -48,7 +48,11 @@ describe("RegisterValidator", () => {
         const dto = RegisterValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(MockedRegisterDto.createFrom).toHaveBeenCalledWith(validData);
+        expect(MockedRegisterDto.createFrom).toHaveBeenCalledWith({
+          ...validData,
+          name: "john",
+          lastname: "doe",
+        });
       });
 
       it("should convert email to lowercase", () => {

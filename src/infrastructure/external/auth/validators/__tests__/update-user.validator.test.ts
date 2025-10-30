@@ -3,13 +3,26 @@ import { UpdateUserDto } from "@/domain/user/dtos/update-user.dto";
 import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 import { ValidationError } from "@/domain/errors/validation-error";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
+import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 
 // We will spy on the static createFrom method instead of mocking the class
 const { VALIDATION } = ERROR_MESSAGES.AUTH.UPDATE_USER;
 const { VALIDATION: REGISTER_VALIDATION } = ERROR_MESSAGES.AUTH.REGISTER;
 
 describe("UpdateUserValidator", () => {
+  let validDataForDto: TRawJson;
   beforeEach(() => {
+    validDataForDto = {
+      sessionToken: "session-token-123",
+      refreshToken: "refresh-token-456",
+      email: "user@example.com",
+      newPassword: "NewSecurePass123!",
+      newPasswordConfirmation: "NewSecurePass123!",
+      phone: "+1234567890",
+      name: "John",
+      lastname: "Doe",
+    };
+
     jest.clearAllMocks();
 
     // Mock UpdateUserDto.createFrom to return a valid DTO
@@ -31,18 +44,17 @@ describe("UpdateUserValidator", () => {
     describe("successful validation", () => {
       it("should validate correct data with all fields and return UpdateUserDto", () => {
         const validData = {
-          sessionToken: "session-token-123",
-          refreshToken: "refresh-token-456",
-          email: "user@example.com",
-          newPassword: "NewSecurePass123!",
-          newPasswordConfirmation: "NewSecurePass123!",
-          phone: "+1234567890",
+          ...validDataForDto,
         };
 
         const dto = UpdateUserValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith({
+          ...validData,
+          name: validData.name.toLowerCase(),
+          lastname: validData.lastname.toLowerCase(),
+        });
       });
 
       it("should validate data with only required fields", () => {
@@ -65,6 +77,8 @@ describe("UpdateUserValidator", () => {
           newPassword: "",
           newPasswordConfirmation: "",
           phone: "",
+          name: "",
+          lastname: "",
         };
 
         const dto = UpdateUserValidator.validate(validData);
@@ -215,7 +229,7 @@ describe("UpdateUserValidator", () => {
           ValidationError,
         );
         expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
-          VALIDATION.NEW_PASSWORD.MIN_LENGTH,
+          REGISTER_VALIDATION.PASSWORD.MIN_LENGTH,
         );
       });
 
@@ -231,7 +245,7 @@ describe("UpdateUserValidator", () => {
           ValidationError,
         );
         expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
-          VALIDATION.NEW_PASSWORD.MAX_LENGTH,
+          REGISTER_VALIDATION.PASSWORD.MAX_LENGTH,
         );
       });
 
@@ -247,7 +261,7 @@ describe("UpdateUserValidator", () => {
           ValidationError,
         );
         expect(() => UpdateUserValidator.validate(invalidData)).toThrow(
-          VALIDATION.NEW_PASSWORD.INVALID_FORMAT,
+          REGISTER_VALIDATION.PASSWORD.INVALID_FORMAT,
         );
       });
 
@@ -425,7 +439,11 @@ describe("UpdateUserValidator", () => {
         const dto = UpdateUserValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith({
+          ...validData,
+          name: validData.name.toLowerCase(),
+          lastname: validData.lastname.toLowerCase(),
+        });
       });
 
       it("should validate update with name, lastname and other fields", () => {
@@ -441,7 +459,11 @@ describe("UpdateUserValidator", () => {
         const dto = UpdateUserValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith({
+          ...validData,
+          name: validData.name.toLowerCase(),
+          lastname: validData.lastname.toLowerCase(),
+        });
       });
 
       it("should validate update with complex names containing spaces", () => {
@@ -455,7 +477,11 @@ describe("UpdateUserValidator", () => {
         const dto = UpdateUserValidator.validate(validData);
 
         expect(dto).toBeDefined();
-        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith(validData);
+        expect(UpdateUserDto.createFrom).toHaveBeenCalledWith({
+          ...validData,
+          name: validData.name.toLowerCase(),
+          lastname: validData.lastname.toLowerCase(),
+        });
       });
     });
 

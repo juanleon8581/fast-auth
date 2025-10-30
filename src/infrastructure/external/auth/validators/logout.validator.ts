@@ -5,18 +5,12 @@ import { LogoutDto } from "@/domain/auth/dtos/logout.dto";
 
 import type { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 
-import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 import { processValidationError } from "../../../helpers/validators/processError.validator";
-
-const { VALIDATION } = ERROR_MESSAGES.AUTH.LOGOUT;
+import { tokenSchemas } from "./schemas/auth.schemas";
 
 const logoutSchema = z.object({
-  sessionToken: z
-    .string({ message: VALIDATION.ACCESS_TOKEN.REQUIRED })
-    .min(1, VALIDATION.ACCESS_TOKEN.REQUIRED),
-  refreshToken: z
-    .string({ message: VALIDATION.REFRESH_TOKEN.REQUIRED })
-    .min(1, VALIDATION.REFRESH_TOKEN.REQUIRED),
+  sessionToken: tokenSchemas.sessionToken,
+  refreshToken: tokenSchemas.refreshToken,
 });
 
 type ILogoutSchema = z.infer<typeof logoutSchema>;

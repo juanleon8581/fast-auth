@@ -46,8 +46,8 @@ describe("AuthTableWebhookValidator", () => {
           display_name: "John Doe",
           email: "user@example.com",
           email_verified: true,
-          lastname: "Doe",
-          name: "John",
+          lastname: "doe",
+          name: "john",
           phone: "+1234567890",
           role: "USER",
         }),
@@ -55,10 +55,10 @@ describe("AuthTableWebhookValidator", () => {
       expect(result).toBeInstanceOf(SyncUserFromAuthDto);
       expect(result.id).toBe(validUuid);
       expect(result.email).toBe("user@example.com");
-      expect(result.name).toBe("John");
-      expect(result.lastname).toBe("Doe");
+      expect(result.name).toBe("john");
+      expect(result.lastname).toBe("doe");
       expect(result.role).toBe("USER");
-      // expect(result.display_name).toBe("John Doe");
+      expect(result.display_name).toBe("John Doe");
       expect(result.email_verified).toBe(true);
       expect(result.phone).toBe("+1234567890");
     });
@@ -87,7 +87,7 @@ describe("AuthTableWebhookValidator", () => {
         const err = error as ValidationError;
         expect(err.field).toBe("email");
         expect(err.code).toBe("VALIDATION_ERROR");
-        expect(err.message).toMatch(/Invalid email/i);
+        expect(err.message).toBe("Must be a valid email");
       }
     });
 

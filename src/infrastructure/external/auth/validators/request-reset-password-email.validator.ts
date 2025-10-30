@@ -1,22 +1,16 @@
 import { z } from "zod";
 import { RequestResetPasswordEmailDto } from "@/domain/auth/dtos/request-reset-password-email.dto";
 import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
-import {
-  EMAIL_BASIC_REGEX,
-  URL_REGEX,
-} from "@/domain/shared/validators/regex.validators";
+import { URL_REGEX } from "@/domain/shared/validators/regex.validators";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 import { processValidationError } from "../../../helpers/validators/processError.validator";
+import { userSchemas } from "./schemas/auth.schemas";
 
 const { VALIDATION } = ERROR_MESSAGES.AUTH.REQUEST_RESET_PASSWORD_EMAIL;
 
 const requestResetPasswordEmailSchema = z.object({
-  email: z
-    .email(VALIDATION.EMAIL.INVALID_FORMAT)
-    .regex(EMAIL_BASIC_REGEX, VALIDATION.EMAIL.INVALID_FORMAT)
-    .max(100, VALIDATION.EMAIL.MAX_LENGTH)
-    .toLowerCase(),
+  email: userSchemas.email,
 
   redirectTo: z
     .string()

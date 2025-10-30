@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 
+export { UserRole } from "@prisma/client";
+
 export type DatabaseClientType = PrismaClient;
 
 interface DatabaseConfig {
