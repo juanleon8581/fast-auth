@@ -16,7 +16,7 @@ const updateUserSchema = z
     email: userSchemas.email.optional().or(z.literal("")),
     name: userSchemas.name.optional().or(z.literal("")),
     lastname: userSchemas.lastname.optional().or(z.literal("")),
-    display_name: z.string().optional().or(z.literal("")),
+    display_name: userSchemas.display_name.optional().or(z.literal("")),
     role: userSchemas.role.optional().or(z.literal("")),
     metadata: userSchemas.metadata.optional(),
     phone: userSchemas.phone.optional().or(z.literal("")),

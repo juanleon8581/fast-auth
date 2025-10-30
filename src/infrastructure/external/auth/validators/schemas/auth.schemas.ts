@@ -28,6 +28,10 @@ export const userSchemas = {
     .regex(PERSON_NAME_PATTERN, E_REGISTER_MSGS.LASTNAME.INVALID_FORMAT)
     .toLowerCase(),
 
+  display_name: z.string(),
+
+  email_verified: z.boolean().optional(),
+
   email: z
     .email(E_REGISTER_MSGS.EMAIL.INVALID_FORMAT)
     .regex(EMAIL_BASIC_REGEX, E_REGISTER_MSGS.EMAIL.INVALID_FORMAT)

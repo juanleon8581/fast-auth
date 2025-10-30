@@ -13,9 +13,9 @@ const insertSchema = z.object({
   name: userSchemas.name,
   lastname: userSchemas.lastname,
   role: userSchemas.role,
-  email_verified: z.boolean(),
+  email_verified: userSchemas.email_verified,
   phone: userSchemas.phone.optional(),
-  display_name: z.string(),
+  display_name: userSchemas.display_name,
 });
 
 export class AuthTableWebhookValidator {
