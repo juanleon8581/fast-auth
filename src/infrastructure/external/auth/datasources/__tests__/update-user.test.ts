@@ -142,6 +142,108 @@ describe("AuthDatasource - UpdateUser Functionality", () => {
         });
       });
 
+      it("should successfully update user with name and lastname only", async () => {
+        const updateDto = {
+          sessionToken: mockUpdateUserDto.sessionToken,
+          refreshToken: mockUpdateUserDto.refreshToken,
+          email: undefined,
+          phone: undefined,
+          name: "John",
+          lastname: "Doe",
+        } as UpdateUserDto;
+
+        await authDatasource.updateUser(updateDto);
+
+        expect(mockSupabaseClient.auth.updateUser).toHaveBeenCalledWith({
+          data: {
+            name: "John",
+            lastname: "Doe",
+          },
+        });
+      });
+
+      it("should successfully update user with only display_name", async () => {
+        const updateDto = {
+          sessionToken: mockUpdateUserDto.sessionToken,
+          refreshToken: mockUpdateUserDto.refreshToken,
+          email: undefined,
+          phone: undefined,
+          display_name: "John D.",
+        } as UpdateUserDto;
+
+        await authDatasource.updateUser(updateDto);
+
+        expect(mockSupabaseClient.auth.updateUser).toHaveBeenCalledWith({
+          data: {
+            display_name: "John D.",
+          },
+        });
+      });
+
+      it("should successfully update user with only role", async () => {
+        const updateDto = {
+          sessionToken: mockUpdateUserDto.sessionToken,
+          refreshToken: mockUpdateUserDto.refreshToken,
+          email: undefined,
+          phone: undefined,
+          role: "USER",
+        } as UpdateUserDto;
+
+        await authDatasource.updateUser(updateDto);
+
+        expect(mockSupabaseClient.auth.updateUser).toHaveBeenCalledWith({
+          data: {
+            role: "USER",
+          },
+        });
+      });
+
+      it("should successfully update user with only email_verified", async () => {
+        const updateDto = {
+          sessionToken: mockUpdateUserDto.sessionToken,
+          refreshToken: mockUpdateUserDto.refreshToken,
+          email: undefined,
+          phone: undefined,
+          email_verified: true,
+        } as UpdateUserDto;
+
+        await authDatasource.updateUser(updateDto);
+
+        expect(mockSupabaseClient.auth.updateUser).toHaveBeenCalledWith({
+          data: {
+            email_verified: true,
+          },
+        });
+      });
+
+      it("should successfully update user with combined fields including data object", async () => {
+        const updateDto = {
+          sessionToken: mockUpdateUserDto.sessionToken,
+          refreshToken: mockUpdateUserDto.refreshToken,
+          email: "new.email@example.com",
+          phone: "+1987654321",
+          name: "Jane",
+          lastname: "Doe",
+          display_name: "Jane D.",
+          role: "ADMIN",
+          email_verified: true,
+        } as UpdateUserDto;
+
+        await authDatasource.updateUser(updateDto);
+
+        expect(mockSupabaseClient.auth.updateUser).toHaveBeenCalledWith({
+          email: "new.email@example.com",
+          phone: "+1987654321",
+          data: {
+            name: "Jane",
+            lastname: "Doe",
+            display_name: "Jane D.",
+            role: "ADMIN",
+            email_verified: true,
+          },
+        });
+      });
+
       it("should return AuthUserEntity", async () => {
         const result = await authDatasource.updateUser(mockUpdateUserDto);
 

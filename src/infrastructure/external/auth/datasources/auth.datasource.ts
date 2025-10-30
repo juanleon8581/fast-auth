@@ -181,13 +181,18 @@ export class AuthDatasource implements AuthRepository {
       dto.refreshToken,
     );
 
-    const updateData: TRawJson = {};
+    const updateData: TRawJson = {
+      data: {},
+    };
     if (dto.email) updateData.email = dto.email;
     if (dto.phone) updateData.phone = dto.phone;
-    if (dto.name && dto.lastname)
-      updateData.data = {
-        display_name: `${dto.name} ${dto.lastname}`,
-      };
+    if (dto.name) updateData.data.name = dto.name;
+    if (dto.lastname) updateData.data.lastname = dto.lastname;
+    if (dto.display_name) updateData.data.display_name = dto.display_name;
+    if (dto.role) updateData.data.role = dto.role;
+    if (dto.email_verified) updateData.data.email_verified = dto.email_verified;
+
+    if (Object.keys(updateData.data).length === 0) delete updateData.data;
 
     const { data, error } = await authClient.auth.updateUser(updateData);
 
