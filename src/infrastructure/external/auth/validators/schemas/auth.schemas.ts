@@ -1,17 +1,18 @@
 import { z } from "zod";
 import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 
-import { UserRole } from "@/infrastructure/persistence/database.client";
-
 import {
   EMAIL_BASIC_REGEX,
   PERSON_NAME_PATTERN,
   PHONE_INTERNATIONAL_REGEX,
   STRONG_PASSWORD_PATTERN,
 } from "@/domain/shared/validators/regex.validators";
+import { TUserRole } from "@/domain/shared/interfaces/general.interfaces";
 
 const { VALIDATION: E_REGISTER_MSGS } = ERROR_MESSAGES.AUTH.REGISTER;
 const { VALIDATION: E_UPDATE_MSGS } = ERROR_MESSAGES.AUTH.UPDATE_USER;
+
+const UserRole: TUserRole[] = ["ADMIN", "USER", "MODERATOR"] as const;
 
 export const userSchemas = {
   name: z
