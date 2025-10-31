@@ -18,11 +18,11 @@
     "code:check": "pnpm lint && pnpm format:check",
     "code:fix": "pnpm lint:fix && pnpm format",
     "db:migrate:dev": "dotenv -e .env.dev -- prisma migrate dev",
-    "db:migrate:prod": "dotenv -e .env.prod -- prisma migrate deploy",
+    "db:migrate:prod": "prisma migrate deploy",
     "db:push:dev": "dotenv -e .env.dev -- prisma db push",
-    "db:push:prod": "dotenv -e .env.prod -- prisma db push",
+    "db:push:prod": "prisma db push",
     "db:studio:dev": "dotenv -e .env.dev -- prisma studio",
-    "db:studio:prod": "dotenv -e .env.prod -- prisma studio",
+    "db:studio:prod": "prisma studio",
     "db:generate": "prisma generate"
   },
   "keywords": [
