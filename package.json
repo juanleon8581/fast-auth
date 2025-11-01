@@ -23,7 +23,15 @@
     "db:push:prod": "prisma db push",
     "db:studio:dev": "dotenv -e .env.dev -- prisma studio",
     "db:studio:prod": "prisma studio",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "docker:dev": "docker-compose --profile dev up --build",
+    "docker:prod": "docker-compose --profile prod up --build -d",
+    "docker:stop": "docker-compose down",
+    "docker:clean": "docker-compose down -v --rmi all --remove-orphans",
+    "test:docker": "docker-compose exec api-dev pnpm test",
+    "db:migrate:docker": "docker-compose exec api-dev pnpm prisma migrate dev",
+    "db:studio:docker": "docker-compose exec api-dev pnpm prisma studio --hostname 0.0.0.0",
+    "shell:docker": "docker-compose exec api-dev sh"
   },
   "keywords": [
     "express",
