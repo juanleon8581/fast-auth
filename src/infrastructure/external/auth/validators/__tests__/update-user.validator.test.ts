@@ -4,7 +4,6 @@ import { ERROR_MESSAGES } from "@/domain/shared/constants/messages.constants";
 import { ValidationError } from "@/domain/errors/validation-error";
 import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
-import { UserRole } from "@prisma/client";
 
 // We will spy on the static createFrom method instead of mocking the class
 const { VALIDATION } = ERROR_MESSAGES.AUTH.UPDATE_USER;
@@ -131,7 +130,7 @@ describe("UpdateUserValidator", () => {
         const validData = {
           sessionToken: "session-token-123",
           refreshToken: "refresh-token-456",
-          role: UserRole.USER,
+          role: "USER",
         };
 
         const dto = UpdateUserValidator.validate(validData);

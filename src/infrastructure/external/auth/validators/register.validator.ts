@@ -5,7 +5,6 @@ import { BadRequestError } from "@/domain/errors/bad-request-error";
 import { TRawJson } from "@/domain/shared/interfaces/general.interfaces";
 import { processValidationError } from "../../../helpers/validators/processError.validator";
 import { userSchemas } from "@/infrastructure/external/auth/validators/schemas/auth.schemas";
-import { UserRole } from "@/infrastructure/persistence/database.client";
 
 const registerSchema = z.object({
   name: userSchemas.name,
@@ -13,7 +12,7 @@ const registerSchema = z.object({
   email: userSchemas.email,
   password: userSchemas.password,
   phone: userSchemas.phone.optional(),
-  role: userSchemas.role.optional().default(UserRole.USER),
+  role: userSchemas.role.optional().default("USER"),
   metadata: userSchemas.metadata.optional().default({}),
 });
 
