@@ -52,4 +52,4 @@ RUN mkdir -p ./.keys
 EXPOSE 3000
 
 # Generate Prisma client, keys (idempotent) and start the server
-CMD [ "sh", "-c", "pnpm db:generate && node dist/scripts/generateKeys.js && node dist/app.js" ]
+CMD [ "sh", "-c", "node dist/scripts/generateKeys.js && node dist/app.js" ]
