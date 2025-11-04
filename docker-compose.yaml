@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  api-prod:
+  api:
     build:
       context: .
       dockerfile: Dockerfile
@@ -35,32 +35,3 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
-    profiles: ["prod"]
-
-  api-dev:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: dev
-    container_name: fast-auth-api-dev
-    env_file:
-      - .env.dev
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./src:/app/src
-      - ./docs:/app/docs
-      - ./prisma:/app/prisma
-      - ./.keys:/app/.keys
-    restart: unless-stopped
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          'node -e "require(''http'').get(''http://localhost:3000/health'', res => process.exit(res.statusCode === 200 ? 0 : 1)).on(''error'', () => process.exit(1))"',
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-    profiles: ["dev"]
