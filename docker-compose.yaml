@@ -23,6 +23,8 @@ services:
     volumes:
       - ./.keys:/app/.keys
       - ./.env.prod:/app/.env.prod
+    networks:
+      - prod-net
     restart: unless-stopped
     healthcheck:
       test:
@@ -39,6 +41,12 @@ services:
   api-pr-preview:
     <<: *api_base
     ports:
-      - 3001:3000
+      - "${NODE_ENV:-3001}:3000"
+    networks:
+      - preview-net
     container_name: fast-auth-api-pr-preview
     profiles: ["preview"]
+
+networks:
+  prod-net:
+  preview-net:
