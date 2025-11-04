@@ -1,10 +1,10 @@
 {
   "name": "fast-auth",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Api de Autenticación",
   "main": "dist/app.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules --watch src/config/docs -r tsconfig-paths/register src/app.ts",
+    "dev": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules --watch docs/ -r tsconfig-paths/register src/app.ts",
     "build": "jest && tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json",
     "start": "node dist/app.js",
     "prestart": "ts-node -r tsconfig-paths/register src/scripts/generateKeys.ts",
@@ -24,15 +24,12 @@
     "db:studio:dev": "dotenv -e .env.dev -- prisma studio",
     "db:studio:prod": "prisma studio",
     "db:generate": "prisma generate",
-    "docker:dev": "docker-compose --profile dev up --build",
-    "docker:prod": "docker-compose --profile prod up --build -d",
+    "docker:dev": "docker-compose -f docker-compose-dev.yaml up",
+    "docker:prod": "docker-compose up --build -d",
     "docker:stop": "docker-compose down",
     "docker:clean": "docker-compose down -v --rmi all --remove-orphans",
     "docker:debug:dev": "docker-compose -f docker-compose.yaml -f docker-compose.debug.yaml --profile dev up --build",
     "docker:debug:prod": "docker-compose -f docker-compose.yaml -f docker-compose.debug.yaml --profile prod up --build",
-    "test:docker": "docker-compose exec api-dev pnpm test",
-    "db:migrate:docker": "docker-compose exec api-dev pnpm prisma migrate dev",
-    "db:studio:docker": "docker-compose exec api-dev pnpm prisma studio --hostname 0.0.0.0",
     "shell:docker": "docker-compose exec api-dev sh"
   },
   "keywords": [
@@ -41,7 +38,7 @@
     "api",
     "template"
   ],
-  "author": "Tu Nombre",
+  "author": "Juan Pablo Leon Maya",
   "license": "MIT",
   "dependencies": {
     "@prisma/client": "^6.16.3",
