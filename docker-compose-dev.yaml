@@ -5,16 +5,19 @@ services:
       dockerfile: Dockerfile.dev
     container_name: fast-auth-api-dev
     env_file:
+      - .env
       - .env.dev
     ports:
-      - "3000:3000"
+      - 3000:3000
+      - 9229:9229
     volumes:
       - ./src:/app/src
       - ./docs:/app/docs
       - ./prisma:/app/prisma
       - ./.keys:/app/.keys
+      - ./.env:/app/.env
       - ./.env.dev:/app/.env.dev
-    restart: unless-stopped
+    restart: always
     healthcheck:
       test:
         [
@@ -27,6 +30,7 @@ services:
       start_period: 10s
     networks:
       - supabase_network_fast-auth
+    command: sh -c "npx ts-node-dev --respawn --transpile-only --ignore-watch node_modules --watch docs/ -r tsconfig-paths/register --inspect=0.0.0.0:9229 src/app.ts"
 
 networks:
   supabase_network_fast-auth:
