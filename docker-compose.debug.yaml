@@ -1,0 +1,19 @@
+services:
+  api-dev:
+    environment:
+      - NODE_OPTIONS=--inspect=0.0.0.0:9229
+    ports:
+      - "9229:9229"
+
+  api-prod:
+    build:
+      target: dev
+    environment:
+      - NODE_OPTIONS=--inspect=0.0.0.0:9229
+    ports:
+      - "9229:9229"
+    volumes:
+      - ./src:/app/src
+      - ./docs:/app/docs
+      - ./prisma:/app/prisma
+      - ./.keys:/app/.keys

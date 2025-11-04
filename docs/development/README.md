@@ -5,6 +5,7 @@ This documentation provides comprehensive guidance for developers working on the
 ## Table of Contents
 
 - [Project Architecture](#project-architecture)
+- [Development Environment](#development-environment)
 - [Development Guidelines](#development-guidelines)
 - [Creating New API Endpoints](#creating-new-api-endpoints)
 - [Testing Strategy](#testing-strategy)
@@ -51,6 +52,79 @@ import { EMAIL_BASIC_REGEX } from "@/domain/shared/validators/regex.validators";
 - **Routes**: API route definitions
 - **Middlewares**: Request/response processing
 - **Server**: Express server configuration
+
+## Development Environment
+
+The project supports both local and containerized development environments to accommodate different developer preferences and deployment scenarios.
+
+### Local Development
+
+Traditional development setup with direct Node.js execution:
+
+```bash
+# Setup
+pnpm install
+cp .env.example .env.dev
+
+# Start development
+pnpm dev              # Hot reload development server
+pnpm test             # Run tests locally
+pnpm lint             # Code quality checks
+```
+
+**Advantages:**
+- Direct access to Node.js debugging tools
+- Faster startup times
+- Native IDE integration
+- Direct file system access
+
+### Docker Development
+
+Containerized development environment for consistency and isolation:
+
+```bash
+# Setup
+cp .env.example .env.dev
+
+# Development workflow
+pnpm docker:dev       # Start development environment with hot reload
+pnpm test:docker      # Run tests in container
+pnpm db:migrate:docker # Database operations
+pnpm shell:docker     # Access container shell for debugging
+```
+
+**Advantages:**
+- Environment consistency across team
+- Isolated dependencies
+- Production-like environment
+- Easy cleanup and reset
+
+### Docker Commands Reference
+
+| Command | Purpose | Environment |
+|---------|---------|-------------|
+| `pnpm docker:dev` | Start development with hot reload | Development |
+| `pnpm docker:prod` | Start production environment | Production |
+| `pnpm docker:stop` | Stop all containers | Both |
+| `pnpm docker:clean` | Remove containers and volumes | Both |
+| `pnpm test:docker` | Run tests in container | Development |
+| `pnpm db:migrate:docker` | Run database migrations | Development |
+| `pnpm db:studio:docker` | Open Prisma Studio | Development |
+| `pnpm shell:docker` | Access container shell | Development |
+
+### Choosing Your Environment
+
+**Use Local Development when:**
+- You need direct debugging capabilities
+- Working on performance-sensitive code
+- Prefer faster iteration cycles
+- Have stable local Node.js setup
+
+**Use Docker Development when:**
+- Working in a team with different OS/environments
+- Need production-like environment
+- Want isolated dependencies
+- Preparing for containerized deployment
 
 ## Development Guidelines
 
@@ -177,11 +251,30 @@ API documentation is automatically generated from YAML files in `docs/api/`:
 
 ### Quality Commands
 
+#### Local Environment
+
 ```bash
 pnpm lint              # Check code quality
 pnpm lint:fix          # Fix linting issues
 pnpm format            # Format code
 pnpm code:check        # Run all quality checks
+```
+
+#### Docker Environment
+
+```bash
+pnpm test:docker       # Run tests in container
+pnpm shell:docker      # Access container for manual testing
+```
+
+For other quality checks in Docker, use the shell access:
+
+```bash
+pnpm shell:docker
+# Inside container:
+pnpm lint
+pnpm format
+pnpm code:check
 ```
 
 ## Troubleshooting
@@ -211,15 +304,52 @@ For test-related issues:
 - Check test environment configuration
 - Verify mock implementations
 
+#### Docker Issues
+
+Common Docker-related problems:
+
+**Container won't start:**
+```bash
+# Check container logs
+pnpm docker:stop
+pnpm docker:clean
+pnpm docker:dev
+```
+
+**Port conflicts:**
+- Ensure port 3000 is not in use by other applications
+- Check `docker-compose.yaml` port mappings
+
+**Volume mounting issues:**
+```bash
+# Clean and restart
+pnpm docker:clean
+pnpm docker:dev
+```
+
+**Database connection issues in Docker:**
+```bash
+# Verify database migrations
+pnpm db:migrate:docker
+```
+
 ### Getting Help
 
 1. Check existing documentation
 2. Review similar implementations in the codebase
 3. Run diagnostic commands:
+
+   **Local Environment:**
    ```bash
    pnpm test              # Verify functionality
    pnpm lint              # Check code quality
    pnpm build             # Verify compilation
+   ```
+
+   **Docker Environment:**
+   ```bash
+   pnpm test:docker       # Verify functionality in container
+   pnpm shell:docker      # Access container for debugging
    ```
 
 ## Next Steps

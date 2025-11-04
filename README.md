@@ -85,6 +85,8 @@ import { EMAIL_BASIC_REGEX } from "@/domain/shared/validators/regex.validators";
 
 ## 🛠️ Setup
 
+### Option 1: Local Development
+
 ```bash
 pnpm install
 cp .env.example .env.dev
@@ -101,7 +103,7 @@ SUPABASE_ANON_KEY=your-supabase-anon-key
 JWT_SECRET=super-secret-jwt-token-with-at-least-32-characters-long
 ```
 
-### Supabase (local)
+#### Supabase (local)
 
 ```bash
 npx supabase start
@@ -109,7 +111,7 @@ npx supabase start
 
 Update `.env.dev` with local Supabase credentials.
 
-### Database (Prisma)
+#### Database (Prisma)
 
 ```bash
 # Development
@@ -123,7 +125,33 @@ pnpm db:push:prod
 pnpm db:studio:prod
 ```
 
+### Option 2: Docker Development
+
+For a containerized development environment:
+
+```bash
+# Setup environment file
+cp .env.example .env.dev
+
+# Start development environment
+pnpm docker:dev
+
+# Run database migrations
+pnpm db:migrate:docker
+
+# Access Prisma Studio
+pnpm db:studio:docker
+```
+
+The Docker setup includes:
+- Hot reload for development
+- Automatic dependency installation
+- Isolated environment
+- Easy cleanup with `pnpm docker:clean`
+
 ## 📦 Scripts
+
+### Local Development
 
 ```bash
 pnpm dev             # Start dev server
@@ -142,6 +170,24 @@ pnpm format
 pnpm format:check
 pnpm code:check
 pnpm code:fix
+```
+
+### Docker Development
+
+```bash
+# Development & Production
+pnpm docker:dev      # Start development environment with hot reload
+pnpm docker:prod     # Start production environment
+pnpm docker:stop     # Stop all containers
+pnpm docker:clean    # Remove containers and volumes
+
+# Testing & Database
+pnpm test:docker     # Run tests in Docker container
+pnpm db:migrate:docker   # Run database migrations in Docker
+pnpm db:studio:docker    # Open Prisma Studio in Docker
+
+# Debugging
+pnpm shell:docker    # Access container shell for debugging
 ```
 
 ## 🧪 Testing

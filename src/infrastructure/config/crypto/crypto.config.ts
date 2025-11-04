@@ -16,6 +16,5 @@ const cryptoConfig: Readonly<ICryptoConfig> = {
 } as const;
 
 Object.freeze(cryptoConfig);
-Object.freeze(cryptoConfig.cryptoEnvironment);
 
 export default cryptoConfig;

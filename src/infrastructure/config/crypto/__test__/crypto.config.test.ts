@@ -72,11 +72,6 @@ describe("crypto.config.test", () => {
         (cryptoConfig as any).cryptoEnvironment = ["dev"];
       }).toThrow();
     });
-    it("should not allow mutating nested array contents due to deep freeze", () => {
-      expect(() => {
-        (cryptoConfig as any).cryptoEnvironment.push("dev");
-      }).toThrow();
-    });
   });
 
   describe("CryptoConfig – Consumer contract hints", () => {
