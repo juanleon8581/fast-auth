@@ -41,7 +41,7 @@ services:
   api-pr-preview:
     <<: *api_base
     ports:
-      - "${NODE_ENV:-3001}:3000"
+      - "${PORT:-3001}:3000"
     networks:
       - preview-net
     container_name: fast-auth-api-pr-preview
