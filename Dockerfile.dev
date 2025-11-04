@@ -28,4 +28,4 @@ RUN mkdir -p ./.keys
 EXPOSE 3000
 
 # Generate Prisma client, keys and start dev server with HMR
-CMD [ "pnpm", "dev" ]
+CMD [ "sh", "-c", "pnpm dev" ]
