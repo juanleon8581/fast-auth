@@ -1,7 +1,5 @@
-version: "3.9"
-
 services:
-  api:
+  api: &api_base
     build:
       context: .
       dockerfile: Dockerfile
@@ -21,9 +19,10 @@ services:
       LOG_TRANSPORT: ${LOG_TRANSPORT:-console}
       LOG_LEVEL: ${LOG_LEVEL:-info}
     ports:
-      - "3000:3000"
+      - 3000:3000
     volumes:
       - ./.keys:/app/.keys
+      - ./.env.prod:/app/.env.prod
     restart: unless-stopped
     healthcheck:
       test:
@@ -35,3 +34,11 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    profiles: ["prod"]
+
+  api-pr-preview:
+    <<: *api_base
+    ports:
+      - 3001:3000
+    container_name: fast-auth-api-pr-preview
+    profiles: ["preview"]

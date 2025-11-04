@@ -49,7 +49,9 @@ COPY --from=builder /app/prisma ./prisma
 # Ensure keys directory exists at runtime
 RUN mkdir -p ./.keys
 
+RUN node -e 'try { require(\"@prisma/client\"); process.exit(0) } catch (e) { process.exit(1) }' || pnpm db:generate;
+
 EXPOSE 3000
 
-# Generate Prisma client, keys (idempotent) and start the server
-CMD [ "sh", "-c", "node dist/scripts/generateKeys.js && node dist/app.js" ]
+# Ensure Prisma client exists (generate if missing), then init keys and start
+CMD ["sh", "-lc", "node dist/scripts/generateKeys.js && node dist/app.js"]
